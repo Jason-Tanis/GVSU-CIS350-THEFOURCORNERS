@@ -16,6 +16,7 @@ Goals for next week (include responsibilities)
 
 * Link Figma to Jira project
 * Start creating Figma board
+* Check to see if Unity is an option for usage with the 2D videogame
 * Set up Jira board into phases (create tickets for each phase)
 * Phase 1 - designing for the front end (Figma) ~ 2-3 weeks
 * Phase 2 - development (adding & debugging features)
