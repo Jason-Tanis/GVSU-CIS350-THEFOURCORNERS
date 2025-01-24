@@ -9,7 +9,7 @@ Time: 2:00 PM - 2:30 PM
 Discussion points:
 
 *   Cover three project ideas
-*   Discuss team roles
+*   Discuss team roles (Jason - team leader)
 *   
 
 Goals for next week (include responsibilities)
