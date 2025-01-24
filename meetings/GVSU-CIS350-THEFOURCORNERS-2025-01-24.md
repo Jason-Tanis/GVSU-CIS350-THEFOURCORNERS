@@ -8,9 +8,9 @@ Time: 2:00 PM - 2:30 PM
 
 Discussion points:
 
+*   Cover three project ideas
+*   Discuss team roles
 *   
-* 
-* 
 
 Goals for next week (include responsibilities)
 
