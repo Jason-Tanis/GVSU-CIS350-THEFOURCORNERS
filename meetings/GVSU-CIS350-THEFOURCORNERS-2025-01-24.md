@@ -15,7 +15,9 @@ Discussion points:
 Goals for next week (include responsibilities)
 
 * Link Figma to Jira project
-* 
-* 
+* Start creating Figma board
+* Set up Jira board into phases
+* Phase 1 - designing for the front end (Figma) ~ 2-3 weeks
+* Phase 2 - 
 
 
