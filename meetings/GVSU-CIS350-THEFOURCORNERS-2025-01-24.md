@@ -11,6 +11,10 @@ Discussion points:
 *   Cover three project ideas
 *   Discuss team roles (Jason - team leader)
 *   Created Jira and Figma projects
+*   Jira Board Phases:
+*   Phase 1 - designing for the front end (Figma) ~ 2-3 weeks
+* Phase 2 - development (adding & debugging features)
+* Phase 3 - create environments (one that is local, one for user testing (UAT), one that is live)
 
 Goals for next week (include responsibilities)
 
@@ -18,8 +22,4 @@ Goals for next week (include responsibilities)
 * Start creating Figma board
 * Check to see if Unity is an option for usage with the 2D videogame
 * Set up Jira board into phases (create tickets for each phase)
-* Phase 1 - designing for the front end (Figma) ~ 2-3 weeks
-* Phase 2 - development (adding & debugging features)
-* Phase 3 - create environments (one that is local, one for user testing (UAT), one that is live)
-
 
