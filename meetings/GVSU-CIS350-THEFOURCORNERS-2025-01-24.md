@@ -10,11 +10,11 @@ Discussion points:
 
 *   Cover three project ideas
 *   Discuss team roles (Jason - team leader)
-*   
+*   Created Jira and Figma projects
 
 Goals for next week (include responsibilities)
 
-* 
+* Link Figma to Jira project
 * 
 * 
 
