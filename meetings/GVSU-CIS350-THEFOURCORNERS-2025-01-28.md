@@ -11,7 +11,7 @@ Discussion points:
 *   Decided to move forward with budgeting app
 *   Covered features within app
 
-*   Roles:
+Roles:
 *   Sam (developer)
 *   Jason (team leader)
 *   Tony (developer)
