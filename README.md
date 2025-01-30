@@ -1,4 +1,4 @@
-# Team Name
+# The Four Corners
 
 Project description (~1 Paragraph)
 
