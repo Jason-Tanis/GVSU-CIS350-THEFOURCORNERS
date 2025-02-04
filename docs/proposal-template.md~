@@ -25,7 +25,7 @@ In summary, Degree Dollars will have the following features:
 * Transfer Funds
   - Throughout the semester, student may transfer funds from one category to others of their choosing
 * See my History
-  - Produces list of student's spending/saving activity to date
+  - Produces summary of student's spending/saving activity to date
 * Loan Payment Planning
   - Given total loan amount, interest rate, and either (1)-planned monthly payment or (2)-time to pay in full, calculates (2) if (1) is entered, and (1) if (2) is entered
 
@@ -39,23 +39,13 @@ Our team will be using a combination of the iterative and parallel process flows
 
 # Estimated Timeline
 
-* Development team finishes BeeWare tutorial by February 11th
-  - Planning team completes BeeWare tutorial by February 18th
-* Planning team will have basic layout of app and user login feature in Figma complete by February 11th
-  - Development team implements basic layout and user login feature in BeeWare by 18th
-* Planning team designs "Budgeting" feature in Figma by 20th
-  - Development team implements "Budgeting" feature in BeeWare by March 6th
-* Planning team designs "Spending" and "Add Funds" by March 6th
-  - Development team implements "Spending" and "Add Funds" in BeeWare by March 20th
-* Planning team designs "Transfer Funds" in Figma by March 20th
-  - Development team implements "Transfer Funds" in BeeWare by March 27th
-* Planning team designs "See my History" in Figma by March 27th
-  - Development team implements "See my History" in BeeWare by April 3rd
-* Planning team designs "Loan Payment Planning" in Figma by April 3rd
-  - Development team implements "Loan Payment Planning" in BeeWare by April 10th
-* 2 team members complete deployment of app by April 16th
-  - Other 2 team members create final presentation by April 16th
+(Figure out what your major milestones for this project will be, including how long you anticipate it *may* take to reach that point)
 
+* Development team finishes BeeWare tutorial by February 11^{th}.
+  - Planning team completes by February 18^{th}.
+* Planning team will have structure in Figma complete by February 11^{th}
+  - 
+* 
 
 # Anticipated Problems
 
