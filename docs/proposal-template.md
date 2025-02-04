@@ -35,13 +35,17 @@ Degree Dollars will be written using the Python coding language and the [BeeWare
 
 # Method/Approach
 
-(What is your estimated "plan of attack" for developing this project)
-
 Our team will be using a combination of the iterative and parallel process flows. We will have one team member working on the planning and communication steps while the others are iteratively working on the modeling and construction steps. We will group features that have similar implementation which will allow for the planning member to be working on the next group of features while the development team works on the previous group.
 
 # Estimated Timeline
 
 (Figure out what your major milestones for this project will be, including how long you anticipate it *may* take to reach that point)
+
+* Development team finishes BeeWare tutorial by February 11^{th}.
+  - Planning team completes by February 18^{th}.
+* Planning team will have structure in Figma complete by February 11^{th}
+  - 
+* 
 
 # Anticipated Problems
 
