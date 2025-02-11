@@ -41,9 +41,9 @@ Our team will be using a combination of the iterative and parallel process flows
 
 * Development team finishes BeeWare tutorial by February 11th
   - Planning team completes BeeWare tutorial by February 18th
-* Planning team will have basic layout of app and user login feature in Figma complete by February 11th
-  - Development team implements basic layout and user login feature in BeeWare by 18th
-* Planning team designs "Budgeting" feature in Figma by 20th
+* Planning team will have basic layout of app in Figma complete by February 11th
+  - Development team implements basic layout in BeeWare by February 18th
+* Planning team designs "Budgeting" feature in Figma by February 20th
   - Development team implements "Budgeting" feature in BeeWare by March 6th
 * Planning team designs "Spending" and "Add Funds" by March 6th
   - Development team implements "Spending" and "Add Funds" in BeeWare by March 20th
@@ -55,6 +55,9 @@ Our team will be using a combination of the iterative and parallel process flows
   - Development team implements "Loan Payment Planning" in BeeWare by April 10th
 * 2 team members complete deployment of app by April 16th
   - Other 2 team members create final presentation by April 16th
+___
+* The "user login" feature is lower on our list of priorities
+  - Should time allow, we will incorporate the development of this feature into our proposed timeline
 
 
 # Anticipated Problems
