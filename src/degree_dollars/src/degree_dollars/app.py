@@ -15,7 +15,7 @@ class DegreeDollars(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-        main_box = toga.Box(style=Pack(background_color=("#DDFFD6"))) #The box that opens upon startup
+        main_box = toga.Box(style=Pack(background_color=("#C0E4B8"))) #The box that opens upon startup
 
         self.main_window = toga.MainWindow(title=self.formal_name) #Window in which box is displayed
         self.main_window.content = main_box
