@@ -1,0 +1,11 @@
+Metadata-Version: 2.1
+Briefcase-Version: 0.3.22
+Name: degree_dollars
+Formal-Name: Degree Dollars
+App-ID: com.example.degree-dollars
+Version: 0.0.1
+Home-page: https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS.git
+Download-URL: https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS.git
+Author: The Four Corners
+Author-email: tanisjas@mail.gvsu.edu
+Summary: A budgeting application for undergraduate and graduate college students
