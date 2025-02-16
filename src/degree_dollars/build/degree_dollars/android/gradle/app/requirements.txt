@@ -1,3 +1,0 @@
-# Generated 2025-02-15 15:54:18.920543
-httpx
-toga-android~=0.4.7

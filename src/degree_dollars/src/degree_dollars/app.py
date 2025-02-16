@@ -5,7 +5,7 @@ A budgeting application for undergraduate and graduate college students
 import toga
 import httpx
 from toga.style import Pack
-from toga.style.pack import COLUMN, ROW
+from toga.style.pack import COLUMN, ROW, CENTER
 
 
 class DegreeDollars(toga.App):
@@ -17,15 +17,21 @@ class DegreeDollars(toga.App):
         show the main window.
         """
 
-        main_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN)) #The box that opens upon startup
-        logo_img = toga.Image("DegreeDollarsLogo.png") #imports the logo
-        # it requires a ImageView object to see the image
-        view = toga.ImageView(logo_img, style=Pack(padding=(207, 22, 0, 22), width=350, height=140))
+        #This is the box that opens upon startup; all elements inside the box are to be vertically stacked (COLUMN),
+        #and center-aligned (CENTER)
+        main_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
+        logo_img = toga.Image("DegreeDollarsLogo.png") #Imports the logo
+
+        #An ImageView object is required to view the image
+        view = toga.ImageView(logo_img, style=Pack(padding=(200, 0, 0), width=300, height=150))
         main_box.add(view)
+
+        #Define the "View my Budgets" button
         button = toga.Button(
             "View My Budgets",
             on_press=self.button_hi,
-            style=Pack(padding=(33, 50), width=302, height=56)
+            style=Pack(padding=(35, 0, 200), width=300, height=55,
+                       font_weight="bold", font_size=18)
         )
         main_box.add(button)
 
