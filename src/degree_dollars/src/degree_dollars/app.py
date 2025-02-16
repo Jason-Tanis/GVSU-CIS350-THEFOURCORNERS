@@ -30,7 +30,7 @@ class DegreeDollars(toga.App):
         button = toga.Button(
             "View My Budgets",
             on_press=self.button_hi,
-            style=Pack(padding=(35, 0, 200), width=300, height=55,
+            style=Pack(background_color=("#F5F5F5"), padding=(35, 0, 200), width=300, height=55,
                        font_weight="bold", font_size=18)
         )
         main_box.add(button)
