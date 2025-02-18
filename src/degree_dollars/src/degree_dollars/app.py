@@ -39,22 +39,34 @@ class DegreeDollars(toga.App):
         self.main_window.show()
 
     async def homescreen(self, widget): #Open the Home Screen of the app
-        background = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
+
+        #Box for background
+        background = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN))
+
+        #Box for navigation bar
+        navbar = toga.Box(style=Pack(background_color=("#62C54C"), direction=COLUMN, alignment=CENTER))
         
         #Import the navigation bar icons (for when Home Screen is active)
         profile_img = toga.Image("Profile.png")
         activehome_img = toga.Image("Home (Active).png") #Active version of "Home" button
-        addexpense_img = toga.Image("Add Expense.png")
         loancalc_img = toga.Image("Loan Calculation.png")
+        addexpense_img = toga.Image("Add Expense.png")
 
-        profile_view = toga.ImageView(profile_img, style=Pack(width=40, height=40))
+        #Create image view objects for each icon
+        profile_view = toga.ImageView(profile_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 36)))
+        activehome_view = toga.ImageView(activehome_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 0)))
+        loancalc_view = toga.ImageView(loancalc_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 0)))
+        addexpense_view = toga.ImageView(addexpense_img, style=Pack(width=40, height=40, padding=(11, 36, 11, 0)))
 
-        nav_bar = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, height=62))
+        #Add the icons to the navigation bar
+        icons = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, alignment=CENTER, height=62))
+        icons.add(profile_view, activehome_view, loancalc_view, addexpense_view)
+        navbar.add(icons)
 
-        nav_bar.add(profile_view)
-        
-        background.add(nav_bar)
+        #Add the navigation bar to the background box
+        background.add(navbar)
 
+        #Display the homescreen contents
         self.main_window.content = background
         self.main_window.show()
 
