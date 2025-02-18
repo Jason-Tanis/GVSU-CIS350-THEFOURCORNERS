@@ -7,7 +7,6 @@ import httpx
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
 
-
 class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
         """Construct and show the Toga application.
@@ -29,7 +28,7 @@ class DegreeDollars(toga.App):
         #Define the "View my Budgets" button
         button = toga.Button(
             "View My Budgets",
-            on_press=self.button_hi,
+            on_press=self.homescreen,
             style=Pack(background_color=("#F5F5F5"), padding=(35, 0, 200), width=300, height=55,
                        font_weight="bold", font_size=18)
         )
@@ -39,13 +38,15 @@ class DegreeDollars(toga.App):
         self.main_window.content = main_box
         self.main_window.show()
 
-    async def button_hi(self, widget):
-        await self.main_window.dialog(
-            toga.InfoDialog(
-                "Hey you pressed my button!",
-                "Wowww"
-            )
-        )
+    async def homescreen(self, widget):
+        background = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
+        nav_bar = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, height=62))
+        
+
+        background.add(nav_bar)
+
+        self.main_window.content = background
+        self.main_window.show()
 
 def main():
     return DegreeDollars()
