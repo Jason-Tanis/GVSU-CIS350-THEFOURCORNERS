@@ -38,11 +38,21 @@ class DegreeDollars(toga.App):
         self.main_window.content = main_box
         self.main_window.show()
 
-    async def homescreen(self, widget):
+    async def homescreen(self, widget): #Open the Home Screen of the app
         background = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
-        nav_bar = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, height=62))
         
+        #Import the navigation bar icons (for when Home Screen is active)
+        profile_img = toga.Image("Profile.png")
+        activehome_img = toga.Image("Home (Active).png") #Active version of "Home" button
+        addexpense_img = toga.Image("Add Expense.png")
+        loancalc_img = toga.Image("Loan Calculation.png")
 
+        profile_view = toga.ImageView(profile_img, style=Pack(width=40, height=40))
+
+        nav_bar = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, height=62))
+
+        nav_bar.add(profile_view)
+        
         background.add(nav_bar)
 
         self.main_window.content = background
