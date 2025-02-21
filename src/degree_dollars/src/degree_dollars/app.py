@@ -41,7 +41,7 @@ class DegreeDollars(toga.App):
     async def homescreen(self, widget): #Open the Home Screen of the app
 
         #Box for background
-        background = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN))
+        bg_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN))
 
         #Box for navigation bar
         navbar = toga.Box(style=Pack(background_color=("#62C54C"), direction=COLUMN, alignment=CENTER))
@@ -64,7 +64,11 @@ class DegreeDollars(toga.App):
         navbar.add(icons)
 
         #Add the navigation bar to the background box
-        background.add(navbar)
+        bg_box.add(navbar)
+
+        #Make the Home Screen a ScrollContainer (so it will have a scroll bar when it has more content
+        #than can be displayed in the window)
+        background = toga.ScrollContainer(horizontal = False, content = bg_box) #Do not permit horizontal scrolling
 
         #Display the homescreen contents
         self.main_window.content = background
