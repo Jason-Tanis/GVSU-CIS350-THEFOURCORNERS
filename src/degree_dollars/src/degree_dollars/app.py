@@ -47,20 +47,20 @@ class DegreeDollars(toga.App):
         navbar = toga.Box(style=Pack(background_color=("#62C54C"), direction=COLUMN, alignment=CENTER))
         
         #Import the navigation bar icons (for when Home Screen is active)
-        profile_img = toga.Image("Profile.png")
-        activehome_img = toga.Image("Home (Active).png") #Active version of "Home" button
-        loancalc_img = toga.Image("Loan Calculation.png")
-        addexpense_img = toga.Image("Add Expense.png")
+        profile = toga.Icon("Profile")
+        home = toga.Icon("Home")
+        loancalc = toga.Icon("Loan Calculation")
+        addexpense = toga.Icon("Add Expense.png")
 
-        #Create image view objects for each icon
-        profile_view = toga.ImageView(profile_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 36)))
-        activehome_view = toga.ImageView(activehome_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 0)))
-        loancalc_view = toga.ImageView(loancalc_img, style=Pack(width=40, height=40, padding=(11, 54, 11, 0)))
-        addexpense_view = toga.ImageView(addexpense_img, style=Pack(width=40, height=40, padding=(11, 36, 11, 0)))
+        #Create buttons for each icon
+        profile_btn = toga.Button(icon = profile, style=Pack(width=45, height=45, padding=(6, 44, 6, 31)))
+        home_btn = toga.Button(icon = home, enabled = False, style=Pack(width=45, height=45, padding=(6, 44, 6, 0))) #You cannot press the home button while the Home Screen is open (i.e., enabled = False)
+        loancalc_btn = toga.Button(icon = loancalc, style=Pack(width=45, height=45, padding=(6, 44, 6, 0)))
+        addexpense_btn = toga.Button(icon = addexpense, style=Pack(width=45, height=45, padding=(6, 31, 6, 0)))
 
         #Add the icons to the navigation bar
         icons = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, alignment=CENTER, height=62))
-        icons.add(profile_view, activehome_view, loancalc_view, addexpense_view)
+        icons.add(profile_btn, home_btn, loancalc_btn, addexpense_btn)
         navbar.add(icons)
 
         #Add the navigation bar to the background box
