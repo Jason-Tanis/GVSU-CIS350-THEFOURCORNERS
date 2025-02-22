@@ -40,39 +40,32 @@ class DegreeDollars(toga.App):
 
     async def homescreen(self, widget): #Open the Home Screen of the app
 
-        #Box for background
-        bg_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN))
+        #Create boxes for each navigation bar tab (currently, they are all empty boxes)
+        profile = self.empty_box()
+        home    = self.empty_box()
+        loan    = self.empty_box()
+        addexp  = self.empty_box()
 
-        #Box for navigation bar
-        navbar = toga.Box(style=Pack(background_color=("#62C54C"), direction=COLUMN, alignment=CENTER))
-        
-        #Import the navigation bar icons (for when Home Screen is active)
-        profile = toga.Icon("Profile")
-        home = toga.Icon("Home")
-        loancalc = toga.Icon("Loan Calculation")
-        addexpense = toga.Icon("Add Expense.png")
+        #Create navigation bar as an OptionContainer
+        navbar = toga.OptionContainer(
+                content = [
+                    toga.OptionItem("Profile", profile, icon = toga.Icon("Profile.png")),
+                    toga.OptionItem("Home", home, icon = toga.Icon("Home.png")),
+                    toga.OptionItem("Loan Planner", loan, icon = toga.Icon("Loan Calculation.png")),
+                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("Add Expense.png"))
+                ]
+        )
 
-        #Create buttons for each icon
-        profile_btn = toga.Button(icon = profile, style=Pack(width=45, height=45, padding=(6, 44, 6, 31)))
-        home_btn = toga.Button(icon = home, enabled = False, style=Pack(width=45, height=45, padding=(6, 44, 6, 0))) #You cannot press the home button while the Home Screen is open (i.e., enabled = False)
-        loancalc_btn = toga.Button(icon = loancalc, style=Pack(width=45, height=45, padding=(6, 44, 6, 0)))
-        addexpense_btn = toga.Button(icon = addexpense, style=Pack(width=45, height=45, padding=(6, 31, 6, 0)))
-
-        #Add the icons to the navigation bar
-        icons = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, alignment=CENTER, height=62))
-        icons.add(profile_btn, home_btn, loancalc_btn, addexpense_btn)
-        navbar.add(icons)
-
-        #Add the navigation bar to the background box
-        bg_box.add(navbar)
-
-        #Make the Home Screen a ScrollContainer (so it will have a scroll bar when it has more content
-        #than can be displayed in the window)
-        background = toga.ScrollContainer(horizontal = False, content = bg_box) #Do not permit horizontal scrolling
+        #Make "Home" the currently open tab
+        navbar.current_tab = "Home"
 
         #Display the homescreen contents
-        self.main_window.content = background
+        self.main_window.content = navbar
         self.main_window.show()
+
+    def empty_box(self):
+        empty_box = toga.Box(style=Pack(background_color = ("#C0E4B8"), direction=COLUMN, alignment=CENTER))
+        return empty_box
 
 def main():
     return DegreeDollars()
