@@ -49,10 +49,10 @@ class DegreeDollars(toga.App):
         #Create navigation bar as an OptionContainer
         navbar = toga.OptionContainer(
                 content = [
-                    toga.OptionItem("Profile", profile, icon = toga.Icon("Profile.png")),
-                    toga.OptionItem("Home", home, icon = toga.Icon("Home.png")),
-                    toga.OptionItem("Loan Planner", loan, icon = toga.Icon("Loan Calculation.png")),
-                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("Add Expense.png"))
+                    toga.OptionItem("Profile", profile, icon = toga.Icon("ProfileTab")),
+                    toga.OptionItem("Home", home, icon = toga.Icon("HomeTab")),
+                    toga.OptionItem("Loan Planner", loan, icon = toga.Icon("LoanTab")),
+                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("EditTab"))
                 ]
         )
 
