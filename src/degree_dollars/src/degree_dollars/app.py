@@ -40,39 +40,77 @@ class DegreeDollars(toga.App):
 
     async def homescreen(self, widget): #Open the Home Screen of the app
 
-        #Box for background
-        bg_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN))
+        #Create boxes for each navigation bar tab (currently, they are all empty boxes except for home content)
+        profile = self.empty_box()
+        loan    = self.empty_box()
+        addexp  = self.empty_box()
+        home = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
-        #Box for navigation bar
-        navbar = toga.Box(style=Pack(background_color=("#62C54C"), direction=COLUMN, alignment=CENTER))
-        
-        #Import the navigation bar icons (for when Home Screen is active)
-        profile = toga.Icon("Profile")
-        home = toga.Icon("Home")
-        loancalc = toga.Icon("Loan Calculation")
-        addexpense = toga.Icon("Add Expense.png")
+        # Create New Budget Button
+        create_budget_button = toga.Button(
+            "Create New Budget",
+            on_press=self.create_budget_view,
+            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=250, height=50, font_weight="bold", font_size=16)
+        )
+        home.add(create_budget_button)
 
-        #Create buttons for each icon
-        profile_btn = toga.Button(icon = profile, style=Pack(width=45, height=45, padding=(6, 44, 6, 31)))
-        home_btn = toga.Button(icon = home, enabled = False, style=Pack(width=45, height=45, padding=(6, 44, 6, 0))) #You cannot press the home button while the Home Screen is open (i.e., enabled = False)
-        loancalc_btn = toga.Button(icon = loancalc, style=Pack(width=45, height=45, padding=(6, 44, 6, 0)))
-        addexpense_btn = toga.Button(icon = addexpense, style=Pack(width=45, height=45, padding=(6, 31, 6, 0)))
+        #Create navigation bar as an OptionContainer
+        navbar = toga.OptionContainer(
+                style = Pack(background_color = ("#62C54C")),
+                content = [
+                    toga.OptionItem("Profile", profile, icon = toga.Icon("PTab")),
+                    toga.OptionItem("Home", home, icon = toga.Icon("HTab")),
+                    toga.OptionItem("Loan Planner", loan, icon = toga.Icon("LTab")),
+                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("ATab"))
+                ]
+        )
 
-        #Add the icons to the navigation bar
-        icons = toga.Box(style=Pack(background_color=("#62C54C"), direction=ROW, alignment=CENTER, height=62))
-        icons.add(profile_btn, home_btn, loancalc_btn, addexpense_btn)
-        navbar.add(icons)
-
-        #Add the navigation bar to the background box
-        bg_box.add(navbar)
-
-        #Make the Home Screen a ScrollContainer (so it will have a scroll bar when it has more content
-        #than can be displayed in the window)
-        background = toga.ScrollContainer(horizontal = False, content = bg_box) #Do not permit horizontal scrolling
+        #Make "Home" the currently open tab
+        navbar.current_tab = "Home"
 
         #Display the homescreen contents
-        self.main_window.content = background
+        self.main_window.content = navbar
         self.main_window.show()
+
+    async def create_budget_view(self, widget): #New viewing screen for creating new budget
+        budget_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
+
+        #Title
+        title = toga.Label("Create New Budget", style=Pack(background_color="#C0E4B8", font_size=24, font_weight="bold", padding=(10, 0)))
+        budget_box.add(title)
+
+        #Predefined categories (just to fill in space)
+        categories = ["Food", "Transport", "Entertainment", "Education"]
+        for category in categories:
+            category_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(10, 0)))
+            label = toga.Label(category, style=Pack(background_color="#C0E4B8", font_size=20, font_weight="bold", padding=(5, 0)))
+            budget_box.add(label)
+
+            #Input fields (to be improved later)
+            subcategory_input = toga.TextInput(placeholder="Subcategory", style=Pack(width=150, padding=(5, 5)))
+            category_box.add(subcategory_input)
+
+            amount_input = toga.TextInput(placeholder="$ Budget Amount", style=Pack(width=120, padding=(5, 5)))
+            category_box.add(amount_input)
+
+            budget_box.add(category_box)
+
+        #Save Budget Button
+        save_button = toga.Button(
+            "Save Budget",
+            on_press=self.homescreen,
+            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=16)
+        )
+        budget_box.add(save_button)
+
+        #For Scrolling
+        scroll_container = toga.ScrollContainer(content=budget_box, horizontal=False, style=Pack(padding=10))
+        
+        self.main_window.content = scroll_container
+        self.main_window.show()
+
+    def empty_box(self):
+        return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
 def main():
     return DegreeDollars()
