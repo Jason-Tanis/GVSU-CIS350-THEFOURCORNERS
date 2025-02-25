@@ -22,7 +22,7 @@ class DegreeDollars(toga.App):
         logo_img = toga.Image("DegreeDollarsLogo.png") #Imports the logo
 
         #An ImageView object is required to view the image
-        view = toga.ImageView(logo_img, style=Pack(padding=(200, 0, 0), width=300, height=150))
+        view = toga.ImageView(logo_img, style=Pack(padding=(200, 0, 0), width=350, height=150))
         main_box.add(view)
 
         #Define the "View my Budgets" button
