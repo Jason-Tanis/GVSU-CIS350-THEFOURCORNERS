@@ -46,13 +46,27 @@ class DegreeDollars(toga.App):
         addexp  = self.empty_box()
         home = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
+        # Homescreen
         # Create New Budget Button
+        create_budget_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         create_budget_button = toga.Button(
             "Create New Budget",
             on_press=self.create_budget_view,
             style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=250, height=50, font_weight="bold", font_size=16)
         )
-        home.add(create_budget_button)
+        create_budget_box.add(create_budget_button)
+
+        # Add expense box
+        expense_button_box = toga.Box(style=Pack(direction=ROW))
+        expense_button = toga.Button(
+            icon=toga.Icon("ATab"),
+            on_press=self.homescreen,
+            style=Pack(background_color="#F5F5F5", padding=5)
+        )
+        spacer = toga.Box(style=Pack(flex=1))
+        expense_button_box.add(spacer, expense_button)
+
+        home.add(create_budget_box, expense_button_box)
 
         #Create navigation bar as an OptionContainer
         navbar = toga.OptionContainer(
