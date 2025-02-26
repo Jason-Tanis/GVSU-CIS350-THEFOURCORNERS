@@ -44,29 +44,19 @@ class DegreeDollars(toga.App):
         profile = self.empty_box()
         loan    = self.empty_box()
         addexp  = self.empty_box()
-        home = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
+        home    = self.empty_box()
 
         # Homescreen
         # Create New Budget Button
-        create_budget_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        create_budget_box = self.empty_box()
         create_budget_button = toga.Button(
             "Create New Budget",
             on_press=self.create_budget_view,
-            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=250, height=50, font_weight="bold", font_size=16)
+            style=Pack(background_color="#62C54C", padding=(10, 0, 10),
+            width=250, height=50, font_weight="bold", font_size=16)
         )
         create_budget_box.add(create_budget_button)
-
-        # Add expense box
-        expense_button_box = toga.Box(style=Pack(direction=ROW))
-        expense_button = toga.Button(
-            icon=toga.Icon("ATab"),
-            on_press=self.homescreen,
-            style=Pack(background_color="#F5F5F5", padding=5)
-        )
-        spacer = toga.Box(style=Pack(flex=1))
-        expense_button_box.add(spacer, expense_button)
-
-        home.add(create_budget_box, expense_button_box)
+        home.add(create_budget_box)
 
         #Create navigation bar as an OptionContainer
         navbar = toga.OptionContainer(
@@ -87,24 +77,36 @@ class DegreeDollars(toga.App):
         self.main_window.show()
 
     async def create_budget_view(self, widget): #New viewing screen for creating new budget
-        budget_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
+        budget_box = self.empty_box()
 
         #Title
-        title = toga.Label("Create New Budget", style=Pack(background_color="#C0E4B8", font_size=24, font_weight="bold", padding=(10, 0)))
+        title = toga.Label("Create New Budget", style=Pack(background_color="#C0E4B8", color="#000000", font_size=24, font_weight="bold", padding=(10, 0)))
         budget_box.add(title)
 
+        #Add a box in which the user can specify the current month
+        spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
+        month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
+        monthfield_label = toga.Label("Indicate current month", style=Pack(color="#000000", font_size=14))
+        monthfield = toga.NumberInput(min = 1, max = 12, value = 1, step = 1)
+        month_box.add(monthfield_label, monthfield)
+        spacer.add(month_box)
+        budget_box.add(spacer)
+
         #Predefined categories (just to fill in space)
-        categories = ["Food", "Transport", "Entertainment", "Education"]
+        categories = ["Food", "Transportation", "Education", "Entertainment"]
         for category in categories:
             category_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(10, 0)))
-            label = toga.Label(category, style=Pack(background_color="#C0E4B8", font_size=20, font_weight="bold", padding=(5, 0)))
+            label = toga.Label(category, style=Pack(background_color="#C0E4B8", color="#000000", font_size=20, font_weight="bold", padding=(5, 0)))
             budget_box.add(label)
 
-            #Input fields (to be improved later)
-            subcategory_input = toga.TextInput(placeholder="Subcategory", style=Pack(width=150, padding=(5, 5)))
+            #Input fields
+            subcategory_input = toga.TextInput(placeholder="Subcategory", style=Pack(width=200, padding=(5, 5)))
             category_box.add(subcategory_input)
 
-            amount_input = toga.TextInput(placeholder="$ Budget Amount", style=Pack(width=120, padding=(5, 5)))
+            amount_input = toga.NumberInput(
+                    min = 0, value = 0, step = 0.01,
+                    style=Pack(width=120, padding=(5, 5)))
+
             category_box.add(amount_input)
 
             budget_box.add(category_box)
