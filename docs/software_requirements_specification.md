@@ -5,23 +5,43 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 # Functional Requirements
 1. Create New Budget
     1. CBF1: The "Create New Budget" menu shall contain seven (7) predefined categories: "Education", "Housing/Utilities", "Food", "Transportation", "Medical", "Entertainment", and "Other".
-    2. CBF2: In the "Create New Budget" menu, the user shall be able to add an unlimited number of additional subcategories to each predefined category. 
+    2. CBF2: In the "Create New Budget" menu, the user shall be able to add a maximum of 24 additional subcategories to each predefined category (for a total of up to 25). 
     3. CBF3: The user-entered budget information shall be stored in a SQL database specific to the current active user when the "Save Budget" button is selected.
 
 2. Add Income/Expense
     1. IEF1: The "Add Income/Expense" button shall exist inside the window for viewing a previously saved budget.
-    2. IEF2: The feature shall have the following input fields: "Income or Expense", "Date", "Amount", "Section (and subsection)", "Merchant".
+    2. IEF2: The feature shall have the following input fields: "Income or Expense", "Date", "Amount", "Section (and subsection)", and "Merchant".
     3. IEF3: When the user completes recording their transaction, a summary of their input shall be saved to their user-specific SQL database.
 
 3. Transaction History
-    1. THF1: The "Transaction History" screen shall display non-clickable summary boxes for each individual transaction made by the user.
+    1. THF1: The "Transaction History" screen shall display a column of non-clickable summary boxes for each individual transaction made by the user.
     2. THF2: The month of the transaction shall be displayed as the first three (3) letters of the month (e.g., "JAN", "FEB", "MAR").
+
+4. Loan Payment Planner
+    1. LPF1: The feature shall receive the total loan amount, the interest rate, and either the user's planned monthly payment amount or their planned time frame (in months) to pay the loan in full as input.
+    2. LPF2: If the user did not enter their planned monthly payment amount, the number of months to pay the loan in full shall be computed and displayed.
+    3. LPF3: If the user did not enter their planned time frame, the amount to pay per month shall be computed and displayed.
+
+5. Login
+    1. ACCF1: On the opening screen, the user shall have the option to either create a new account, or log in to an existing account.
+    2. ACCF2: Once a new account is created, the application shall allow the user to log in using the new account in the future.
 
 # Non-Functional Requirements
 1. Create New Budget
-    1. CBNF1: The user's local download of the application shall not contain the the SQL database of their saved budget information.
+    1. CBNF1: A remote database containing the user's saved budget information shall be associated with their account.
     2. CBNF2: One active user shall not be able to intentionally or unintentionally modify the saved budget information of another user.
+    3. CBNF3: To save storage space, a user shall not be able to have more than 12 monthly budgets at a time.
 
 2. Add Income/Expense
     1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
+
+3. Transaction History
+
+4. Loan Payment Planner
+    1. LPNF1: The feature shall not be integrated with the database of user accounts; all its functions can be performed locally.
+
+5. Login
+    1. ACCNF1: The user account database shall not allow there to be more than one account with the same email address.
+    2. ACCNF2: The user account database shall be remote (i.e., not included in a local download of the application).
+    3. ACCNF3: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
 
