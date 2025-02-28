@@ -12,6 +12,7 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     1. IEF1: The "Add Income/Expense" button shall exist inside the window for viewing a previously saved budget.
     2. IEF2: The feature shall have the following input fields: "Income or Expense", "Date", "Amount", "Section (and subsection)", and "Merchant".
     3. IEF3: When the user completes recording their transaction, a summary of their input shall be saved to their user-specific SQL database.
+    4. IEF4: When the user completes recording their transaction, the corresponding budget shall be updated in the user's database.
 
 3. Transaction History
     1. THF1: The "Transaction History" screen shall display a column of non-clickable summary boxes for each individual transaction made by the user.
