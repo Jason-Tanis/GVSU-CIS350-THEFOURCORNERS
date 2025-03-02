@@ -3,11 +3,45 @@ A budgeting application for undergraduate and graduate college students
 """
 
 import toga
-import httpx
+import os
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER
+import sqlite3
+import datetime
 
-class DegreeDollars(toga.App):
+# Get the correct app storage directory
+def get_database_path(app):
+    """Returns the correct database path inside the app's data directory."""
+    db_path = app.paths.data / "degree_dollars.db"  # Get writable path
+    os.makedirs(app.paths.data, exist_ok=True)  # Ensure directory exists
+    return str(db_path)
+
+def create_database(app):
+    """Creates the budgets table in the SQLite database if it doesn’t exist."""
+    db_path = get_database_path(app)  # Get correct database path
+    print(f"Database path: {db_path}")  # Debugging: Check if path is correct
+
+    try:
+        conn = sqlite3.connect(get_database_path(app))  # Use the absolute path
+        cursor = conn.cursor()
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS budgets (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_id INTEGER,
+            month INTEGER NOT NULL,
+            category TEXT NOT NULL,
+            subcategory TEXT,
+            amount REAL NOT NULL
+        )
+        ''')
+        conn.commit()
+        conn.close()
+        
+    except sqlite3.OperationalError as e:
+        print(f"Database Error: {e}")  # Print error for debugging
+
+
+class DegreeDollarsExperiment(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
         """Construct and show the Toga application.
 
@@ -15,7 +49,10 @@ class DegreeDollars(toga.App):
         We then create a main window (with a name matching the app), and
         show the main window.
         """
-
+        
+        # create database
+        create_database(self)
+        
         #This is the box that opens upon startup; all elements inside the box are to be vertically stacked (COLUMN),
         #and center-aligned (CENTER)
         main_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
@@ -52,8 +89,8 @@ class DegreeDollars(toga.App):
         create_budget_button = toga.Button(
             "Create New Budget",
             on_press=self.create_budget_view,
-            style=Pack(background_color="#62C54C", padding=(10, 0, 10),
-            width=250, height=50, font_weight="bold", font_size=16)
+            style=Pack(background_color="#62C54C", padding=(35, 0, 200),
+            width=300, height=55, font_weight="bold", font_size=18)
         )
         create_budget_box.add(create_budget_button)
         home.add(create_budget_box)
@@ -71,6 +108,51 @@ class DegreeDollars(toga.App):
 
         #Make "Home" the currently open tab
         navbar.current_tab = "Home"
+        
+        # Connect to database
+        db_path = get_database_path(self)
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Get all budgets for the latest month
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE user_id = 1 ORDER BY id DESC LIMIT 1")
+        latest_month = cursor.fetchone()
+        if latest_month:
+            latest_month = latest_month[0]
+            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE user_id = 1 AND month = ?", (latest_month,))
+            budget_data = cursor.fetchall()
+        else:
+            budget_data = []
+
+        conn.close()
+
+        # Display the budget
+        if budget_data:
+            month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold"))
+            home.add(budget_title)
+
+            current_category = None
+            category_box = None
+
+            for category, subcategory, amount in budget_data:
+                if category != current_category:
+                    current_category = category
+                    category_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+                    category_label = toga.Label(category, style=Pack(font_size=18, font_weight="bold"))
+                    category_box.add(category_label)
+                    home.add(category_box)
+
+                sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
+                sub_label = toga.Label(subcategory, style=Pack(width=150))
+                amount_label = toga.Label(f"${amount:.2f}", style=Pack(width=100, text_align=RIGHT))
+
+                sub_box.add(sub_label, amount_label)
+                category_box.add(sub_box)
+    
+        else:
+            home.add(toga.Label("No budget found. Create a new one!"))
+
 
         #Display the homescreen contents
         self.main_window.content = navbar
@@ -86,35 +168,33 @@ class DegreeDollars(toga.App):
         #Add a box in which the user can specify the current month
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
-        monthfield_label = toga.Label("Indicate current month", style=Pack(color="#000000", font_size=14))
-        monthfield = toga.NumberInput(min = 1, max = 12, value = 1, step = 1)
-        month_box.add(monthfield_label, monthfield)
+        monthfield_label = toga.Label("'s Budget", style=Pack(color="#000000", font_size=18,padding_left=10))
+        months = ["January", "February", "March", "April", "May", "June", "July",
+          "August", "September", "October", "November", "December"]
+        current_month_index = datetime.datetime.now().month - 1
+        self.month_selection = toga.Selection(items=months, value=months[current_month_index], style=Pack(width=250))
+    
+        month_box.add(monthfield_label, self.month_selection)
         spacer.add(month_box)
         budget_box.add(spacer)
 
         #Predefined categories (just to fill in space)
         categories = ["Food", "Transportation", "Education", "Entertainment"]
         for category in categories:
-            category_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(10, 0)))
-            label = toga.Label(category, style=Pack(background_color="#C0E4B8", color="#000000", font_size=20, font_weight="bold", padding=(5, 0)))
-            budget_box.add(label)
+            section_box = self.create_budget_section(category)
+            budget_box.add(section_box)
 
-            #Input fields
-            subcategory_input = toga.TextInput(placeholder="Subcategory", style=Pack(width=200, padding=(5, 5)))
-            category_box.add(subcategory_input)
-
-            amount_input = toga.NumberInput(
-                    min = 0, value = 0, step = 0.01,
-                    style=Pack(width=120, padding=(5, 5)))
-
-            category_box.add(amount_input)
-
-            budget_box.add(category_box)
+        # "Add Section" Button
+        add_section_button = toga.Button(
+            "+", on_press=self.add_budget_section,
+            style=Pack(font_size=24, width=40, height=40, padding=10)
+        )
+        budget_box.add(add_section_button)
 
         #Save Budget Button
         save_button = toga.Button(
             "Save Budget",
-            on_press=self.homescreen,
+            on_press=self.save_budget,
             style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=16)
         )
         budget_box.add(save_button)
@@ -124,9 +204,112 @@ class DegreeDollars(toga.App):
         
         self.main_window.content = scroll_container
         self.main_window.show()
+        
+    def create_budget_section(self, category):
+        section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+        
+        # title
+        section_label = toga.Label(category, style=Pack(font_size=20, font_weight="bold"))
+        section_box.add(section_label)
+        
+        # default subsections
+        for _ in range(2):
+            subsection_box = self.create_budget_subsection()
+            section_box.add(subsection_box)
+            
+        # add subsection button
+        add_subsection_button = toga.Button(
+                                            "Add Subsection +", on_press=self.add_budget_subsection,
+                                            style=Pack(padding=5, font_size=14)
+                                            )
+        section_box.add(add_subsection_button)
+        
+        return section_box
+        
+    # Helper function to create a budget subsection
+    def create_budget_subsection(self):
+        subsection_box = toga.Box(style=Pack(direction=ROW, padding=5, alignment=CENTER))
+
+        # Subsection Name
+        subcategory_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
+
+        # Budget Amount
+        amount_input = toga.NumberInput(min=0, value=0, step=0.01, style=Pack(width=100, padding=(5, 5)))
+
+        # Remaining Budget Label
+        remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10))
+
+        subsection_box.add(subcategory_input, amount_input, remaining_label)
+        return subsection_box
+            
+    # Event Handlers
+    async def add_budget_section(self, widget):
+        new_section = self.create_budget_section("New Section")
+        self.main_window.content.add(new_section)
+
+    async def add_budget_subsection(self, widget):
+        parent_box = widget.parent
+        new_subsection = self.create_budget_subsection()
+        parent_box.add(new_subsection)
+        
+    async def save_budget(self, widget):
+        # Connect to SQLite database (or create it if it doesn't exist)
+        db_path = get_database_path(self)
+        conn = sqlite3.connect(db_path)
+        cursor = conn.cursor()
+
+        # Create table if it doesn’t exist
+        cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
+                            id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            month TEXT,
+                            category TEXT,
+                            subcategory TEXT,
+                            amount REAL
+                        )''')
+
+        # Get selected month
+        self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
+        selected_month = self.month_selection.value
+        selected_month_index = self.month_names.index(selected_month[:3])
+        
+        user_id = 1 # UPDATE THIS LATER FOR LOGIN
+
+        # Iterate through categories and save them
+        for section in self.main_window.content.children:
+            if isinstance(section, toga.Box):  # Ensure it's a section
+                category_label = section.children[0]  # First child is the category label
+                category_name = category_label.text
+
+                for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
+                    if isinstance(sub_box, toga.Box):  # Ensure it's a subsection
+                        subcategory_input = sub_box.children[0]  # First child: Subcategory input
+                        amount_input = sub_box.children[1]  # Second child: Amount input
+
+                        subcategory_name = subcategory_input.value
+                        amount = amount_input.value
+                        
+                        print(f"Inserting: user_id={user_id}, month={selected_month_index}, category={category_name}, subcategory={subcategory_name}, amount={amount}")
+                        
+                        amount = amount_input.value if amount_input.value is not None else 0
+
+                        
+                        # Insert data into database
+                        cursor.execute("INSERT INTO budgets (user_id, month, category, subcategory, amount) VALUES (?, ?, ?, ?, ?)",
+                                        (user_id, selected_month, category_name, subcategory_name, amount))
+
+        cursor.execute("SELECT * FROM budgets")
+        print("Budgets in DB:", cursor.fetchall())
+        
+        conn.commit()
+        conn.close()
+
+        # Redirect back to home screen
+        await self.homescreen(widget)
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
+
+
 def main():
-    return DegreeDollars()
+    return DegreeDollarsExperiment()
