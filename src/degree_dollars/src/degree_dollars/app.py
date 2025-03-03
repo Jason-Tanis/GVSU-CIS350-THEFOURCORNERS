@@ -128,7 +128,7 @@ class DegreeDollarsExperiment(toga.App):
 
         # Display the budget
         if budget_data:
-            month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+            month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold"))
             home.add(budget_title)
 
@@ -245,7 +245,7 @@ class DegreeDollarsExperiment(toga.App):
     # Event Handlers
     async def add_budget_section(self, widget):
         new_section = self.create_budget_section("New Section")
-        self.main_window.content.add(new_section)
+        self.main_window.content.content.add(new_section)
 
     async def add_budget_subsection(self, widget):
         parent_box = widget.parent
@@ -270,7 +270,7 @@ class DegreeDollarsExperiment(toga.App):
         # Get selected month
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
-        selected_month_index = self.month_names.index(selected_month[:3])
+        selected_month_index = self.month_names.index(selected_month)
         
         user_id = 1 # UPDATE THIS LATER FOR LOGIN
 
