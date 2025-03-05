@@ -195,7 +195,7 @@ class DegreeDollarsExperiment(toga.App):
         save_button = toga.Button(
             "Save Budget",
             on_press=self.save_budget,
-            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=16)
+            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=18)
         )
         add_save_box.add(save_button)
 
