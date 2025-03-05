@@ -5,7 +5,7 @@ A budgeting application for undergraduate and graduate college students
 import toga
 import os
 from toga.style import Pack
-from toga.style.pack import COLUMN, ROW, CENTER
+from toga.style.pack import COLUMN, ROW, CENTER, RIGHT
 import sqlite3
 import datetime
 
@@ -28,10 +28,7 @@ def create_database(app):
         CREATE TABLE IF NOT EXISTS budgets (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_id INTEGER,
-            month INTEGER NOT NULL,
-            category TEXT NOT NULL,
-            subcategory TEXT,
-            amount REAL NOT NULL
+            month INTEGER NOT NULL
         )
         ''')
         conn.commit()
@@ -210,6 +207,7 @@ class DegreeDollarsExperiment(toga.App):
         
         # title
         section_label = toga.Label(category, style=Pack(font_size=20, font_weight="bold"))
+        print(section_label)
         section_box.add(section_label)
         
         # default subsections
@@ -234,12 +232,15 @@ class DegreeDollarsExperiment(toga.App):
         subcategory_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
 
         # Budget Amount
-        amount_input = toga.NumberInput(min=0, value=0, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        amount_input = toga.NumberInput(min_value=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
 
         # Remaining Budget Label
         remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10))
 
-        subsection_box.add(subcategory_input, amount_input, remaining_label)
+        subsection_box.add(subcategory_input)
+        subsection_box.add(amount_input)
+        subsection_box.add(remaining_label)
+
         return subsection_box
             
     # Event Handlers
@@ -261,10 +262,8 @@ class DegreeDollarsExperiment(toga.App):
         # Create table if it doesn’t exist
         cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
                             id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            month TEXT,
-                            category TEXT,
-                            subcategory TEXT,
-                            amount REAL
+                            user_id INTEGER NOT NULL,
+                            month INTEGER NOT NULL
                         )''')
 
         # Get selected month
@@ -274,30 +273,42 @@ class DegreeDollarsExperiment(toga.App):
         
         user_id = 1 # UPDATE THIS LATER FOR LOGIN
 
+        
+        # Create Subcategory table in SQL
+        cursor.execute('''CREATE TABLE IF NOT EXISTS subcategories (
+                            sc_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                            name TEXT,
+                            budget_id INTEGER,
+                            amount REAL,
+                            category TEXT
+                        )''')
+        
+        budget_we_on = 1 # To be changed when the budget and user ids are implemented
+
         # Iterate through categories and save them
-        for section in self.main_window.content.children:
+        for section in self.main_window.content.content.children[2:-1]:
             if isinstance(section, toga.Box):  # Ensure it's a section
                 category_label = section.children[0]  # First child is the category label
-                category_name = category_label.text
+                category_name = category_label.text #this one is giving an error
 
                 for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
-                    if isinstance(sub_box, toga.Box):  # Ensure it's a subsection
+                    if isinstance(sub_box, toga.Box) and sub_box.children[0].value != '':  # Ensure it's a subsection and exists
+
                         subcategory_input = sub_box.children[0]  # First child: Subcategory input
                         amount_input = sub_box.children[1]  # Second child: Amount input
 
                         subcategory_name = subcategory_input.value
                         amount = amount_input.value
                         
-                        print(f"Inserting: user_id={user_id}, month={selected_month_index}, category={category_name}, subcategory={subcategory_name}, amount={amount}")
+                        print(f"Inserting: subcategory={subcategory_name}, budget_id={budget_we_on}, amount={amount}, category={category_name}")
                         
                         amount = amount_input.value if amount_input.value is not None else 0
-
                         
                         # Insert data into database
-                        cursor.execute("INSERT INTO budgets (user_id, month, category, subcategory, amount) VALUES (?, ?, ?, ?, ?)",
-                                        (user_id, selected_month, category_name, subcategory_name, amount))
+                        cursor.execute("INSERT INTO subcategories (name, budget_id, amount, category) VALUES (?, ?, ?, ?)",
+                                        (subcategory_name, budget_we_on, float(amount), category_name))
 
-        cursor.execute("SELECT * FROM budgets")
+        cursor.execute("SELECT * FROM subcategories")
         print("Budgets in DB:", cursor.fetchall())
         
         conn.commit()
