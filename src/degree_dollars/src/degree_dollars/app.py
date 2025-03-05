@@ -181,12 +181,15 @@ class DegreeDollarsExperiment(toga.App):
             section_box = self.create_budget_section(category)
             budget_box.add(section_box)
 
+        #Box to contain "Add Section" and "Save Budget" buttons
+        add_save_box = self.empty_box()
+
         # "Add Section" Button
         add_section_button = toga.Button(
             "Add Section +", on_press=self.add_budget_section,
             style=Pack(font_size=18, width=200, height=40, padding=10)
         )
-        budget_box.add(add_section_button)
+        add_save_box.add(add_section_button)
 
         #Save Budget Button
         save_button = toga.Button(
@@ -194,7 +197,10 @@ class DegreeDollarsExperiment(toga.App):
             on_press=self.save_budget,
             style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=16)
         )
-        budget_box.add(save_button)
+        add_save_box.add(save_button)
+
+        #Add the add_save_box to the background box
+        budget_box.add(add_save_box)
 
         #For Scrolling
         scroll_container = toga.ScrollContainer(content=budget_box, horizontal=False, style=Pack(padding=10))
@@ -232,7 +238,7 @@ class DegreeDollarsExperiment(toga.App):
         subcategory_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
 
         # Budget Amount
-        amount_input = toga.NumberInput(min_value=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        amount_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
 
         # Remaining Budget Label
         remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10))
@@ -245,8 +251,15 @@ class DegreeDollarsExperiment(toga.App):
             
     # Event Handlers
     async def add_budget_section(self, widget):
+
+        #Get the parent and grandparent boxes of the widget
+        parent_box = widget.parent
+        grandparent_box = parent_box.parent
+
+        grandparent_box.remove(parent_box) #Temporarily remove the parent box from the grandparent box
         new_section = self.create_budget_section("New Section")
-        self.main_window.content.content.add(new_section)
+        grandparent_box.add(new_section)
+        grandparent_box.add(parent_box) #Re-insert the parent box beneath the new section
 
     async def add_budget_subsection(self, widget):
         parent_box = widget.parent
