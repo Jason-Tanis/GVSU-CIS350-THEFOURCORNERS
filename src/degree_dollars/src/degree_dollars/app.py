@@ -176,15 +176,15 @@ class DegreeDollarsExperiment(toga.App):
         budget_box.add(spacer)
 
         #Predefined categories (just to fill in space)
-        categories = ["Food", "Transportation", "Education", "Entertainment"]
+        categories = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
         for category in categories:
             section_box = self.create_budget_section(category)
             budget_box.add(section_box)
 
         # "Add Section" Button
         add_section_button = toga.Button(
-            "+", on_press=self.add_budget_section,
-            style=Pack(font_size=24, width=40, height=40, padding=10)
+            "Add Section +", on_press=self.add_budget_section,
+            style=Pack(font_size=18, width=200, height=40, padding=10)
         )
         budget_box.add(add_section_button)
 
@@ -250,8 +250,10 @@ class DegreeDollarsExperiment(toga.App):
 
     async def add_budget_subsection(self, widget):
         parent_box = widget.parent
+        parent_box.remove(widget) #Temporarily remove the "Add Subsection +" button
         new_subsection = self.create_budget_subsection()
         parent_box.add(new_subsection)
+        parent_box.add(widget) #Re-insert the "Add Subsection +" button
         
     async def save_budget(self, widget):
         # Connect to SQLite database (or create it if it doesn't exist)
