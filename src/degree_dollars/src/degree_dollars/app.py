@@ -86,7 +86,7 @@ class DegreeDollarsExperiment(toga.App):
         create_budget_button = toga.Button(
             "Create New Budget",
             on_press=self.create_budget_view,
-            style=Pack(background_color="#62C54C", padding=(35, 0, 200),
+            style=Pack(background_color="#62C54C", padding=(35, 0, 35),
             width=300, height=55, font_weight="bold", font_size=18)
         )
         create_budget_box.add(create_budget_button)
