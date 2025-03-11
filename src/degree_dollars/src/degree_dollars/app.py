@@ -6,8 +6,14 @@ import toga
 import os
 from toga.style import Pack
 from toga.style.pack import COLUMN, ROW, CENTER, RIGHT
-import sqlite3
+import mysql.connector
 import datetime
+
+# MySQL Connection Settings
+MYSQL_HOST = "localhost"  # Change if using a remote server and edit below contents
+MYSQL_USER = "create_username"
+MYSQL_PASSWORD = "create_password"
+MYSQL_DATABASE = "degree_dollars"
 
 # Get the correct app storage directory
 def get_database_path(app):
@@ -17,28 +23,78 @@ def get_database_path(app):
     return str(db_path)
 
 def create_database(app):
-    """Creates the budgets table in the SQLite database if it doesn’t exist."""
+    """Creates the MySQL database and necessary tables if they don’t exist."""
     db_path = get_database_path(app)  # Get correct database path
     print(f"Database path: {db_path}")  # Debugging: Check if path is correct
 
     try:
-        conn = sqlite3.connect(get_database_path(app))  # Use the absolute path
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(
+            host=MYSQL_HOST,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD
+        )
         cursor = conn.cursor()
+        
+        # Create Database if not exists
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
+        cursor.execute(f"USE {MYSQL_DATABASE}")
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS budgets (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_id INTEGER,
-            month INTEGER NOT NULL
+        CREATE TABLE IF NOT EXISTS profile (
+        client_id INTEGER PRIMARY KEY,
+        password VARCHAR(255) NOT NULL, --hash the password before storing in db
+        email VARCHAR(50) NOT NULL,
+        first_name VARCHAR(50),
+        last_name VARCHAR(50)
+        )
+        ''')
+        
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS budget (
+        client_id INTEGER,
+        section CHAR(50),
+        subsection CHAR(50) PRIMARY KEY,
+        budget_total NUMERIC,
+        month INTEGER, --1 through 12 will be stored
+        year INTEGER,
+        
+        FOREIGN KEY (client_id)
+            REFERENCES profile(client_id)
+            ON DELETE CASCADE
+        )
+        ''')
+        
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS transactions (
+        transaction_id INTEGER PRIMARY KEY,
+        client_id INTEGER,
+        section CHAR(50),
+        subsection CHAR(50),
+        date DATE,
+        amount NUMERIC,
+        merchant CHAR(50),
+        expense BOOL,
+
+        FOREIGN KEY (client_id)
+            REFERENCES profile(client_id)
+            ON DELETE CASCADE,
+    
+        FOREIGN KEY (subsection)
+            REFERENCES budget(subsection)
+            ON DELETE CASCADE
         )
         ''')
         conn.commit()
-        conn.close()
+        print("Database and tables created successfully!")
         
-    except sqlite3.OperationalError as e:
-        print(f"Database Error: {e}")  # Print error for debugging
+    except mysql.connector.Error as e:
+        print(f"MySQL Error: {e}")
+        
+    finally:
+        cursor.close()
+        conn.close()
 
-
-class DegreeDollarsExperiment(toga.App):
+class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
         """Construct and show the Toga application.
 
@@ -338,4 +394,4 @@ class DegreeDollarsExperiment(toga.App):
 
 
 def main():
-    return DegreeDollarsExperiment()
+    return DegreeDollars()
