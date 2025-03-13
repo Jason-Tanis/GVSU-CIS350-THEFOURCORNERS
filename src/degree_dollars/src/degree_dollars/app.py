@@ -10,19 +10,18 @@ import mysql.connector
 import datetime
 
 # MySQL Connection Settings
-MYSQL_HOST = "7qabt5a5zo4i5ynsrh22hglu5q.dsql.us-east-2.on.aws"  # this is the endpoint of the AWS DSQL cluster (serverless database)
-MYSQL_USER = "DegreeDollarsApp"
-MYSQL_PASSWORD = "DegreeDollars350!"
-MYSQL_DATABASE = "DegreeDollars"
+config = {
+    "host": "degreedollars.cjomye0mu2mi.us-east-2.rds.amazonaws.com",
+    "port": 3306,
+    "user": "DegreeDollars350",
+    "password": "DegreeDollars350!",
+    "database": "degreedollars"
+}
 
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
     # Connect to MySQL Server
-    conn = mysql.connector.connect(
-        host=MYSQL_HOST,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD
-    )
+    conn = mysql.connector.connect(**config)
     cursor = conn.cursor()
     
     try:
@@ -153,11 +152,7 @@ class DegreeDollars(toga.App):
         navbar.current_tab = "Home"
         
         # Connect to MySQL Server
-        conn = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
+        conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
 
         # Get all budgets for the latest month
