@@ -10,23 +10,22 @@ import mysql.connector
 import datetime
 
 # MySQL Connection Settings
-MYSQL_HOST = "degreedollarsapp"  # Change if using a remote server and edit below contents
+MYSQL_HOST = "7qabt5a5zo4i5ynsrh22hglu5q.dsql.us-east-2.on.aws"  # this is the endpoint of the AWS DSQL cluster (serverless database)
 MYSQL_USER = "DegreeDollarsApp"
 MYSQL_PASSWORD = "DegreeDollars350!"
 MYSQL_DATABASE = "DegreeDollars"
 
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
-
+    # Connect to MySQL Server
+    conn = mysql.connector.connect(
+        host=MYSQL_HOST,
+        user=MYSQL_USER,
+        password=MYSQL_PASSWORD
+    )
+    cursor = conn.cursor()
+    
     try:
-        # Connect to MySQL Server
-        conn = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
-        cursor = conn.cursor()
-        
         # Create Database if not exists
         cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
         cursor.execute(f"USE {MYSQL_DATABASE}")
@@ -326,6 +325,7 @@ class DegreeDollars(toga.App):
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
         selected_month_index = self.month_names.index(selected_month)
+        current_year = datetime.datetime.now().year
         
         user_id = 1 # UPDATE THIS LATER FOR LOGIN
 
@@ -345,17 +345,13 @@ class DegreeDollars(toga.App):
                         subcategory_name = subcategory_input.value
                         amount = amount_input.value
                         
-                        print(f"Inserting: subcategory={subcategory_name}, budget_id={budget_we_on}, amount={amount}, category={category_name}")
-                        
                         amount = amount_input.value if amount_input.value is not None else 0
                         
                         # Insert data into database
-                        cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month) VALUES (?, ?, ?, ?, ?)", # ADD YEAR
-                                       (user_id, category_name, subcategory_name, round(float(amount),2), budget_we_on))
-
-        cursor.execute("SELECT * FROM subcategories")
-        print("Budgets in DB:", cursor.fetchall())
-        
+                        cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
+                                       "VALUES (%s, %s, %s, %s, %s, %s)",
+                                       (user_id, category_name, subcategory_name, float(amount), selected_month_index, current_year)
+                                       )
         conn.commit()
         conn.close()
 
