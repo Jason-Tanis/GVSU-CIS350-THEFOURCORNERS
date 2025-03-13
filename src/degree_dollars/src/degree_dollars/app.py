@@ -15,13 +15,6 @@ MYSQL_USER = "DegreeDollarsApp"
 MYSQL_PASSWORD = "DegreeDollars350!"
 MYSQL_DATABASE = "DegreeDollars"
 
-# Get the correct app storage directory
-def get_database_path(app):
-    """Returns the correct database path inside the app's data directory."""
-    db_path = app.paths.data / "DegreeDollars.db"  # Get writable path
-    os.makedirs(app.paths.data, exist_ok=True)  # Ensure directory exists
-    return str(db_path)
-
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
 
@@ -160,9 +153,12 @@ class DegreeDollars(toga.App):
         #Make "Home" the currently open tab
         navbar.current_tab = "Home"
         
-        # Connect to database
-        db_path = get_database_path(self)
-        conn = sqlite3.connect(db_path)
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(
+            host=MYSQL_HOST,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD
+        )
         cursor = conn.cursor()
 
         # Get all budgets for the latest month
@@ -323,27 +319,8 @@ class DegreeDollars(toga.App):
         parent_box.add(widget) #Re-insert the "Add Subsection +" button
         
     async def save_budget(self, widget):
-        # Connect to MySQL Server
-        conn = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
-        cursor = conn.cursor()
-
-        # Create table if it doesn’t exist
-        cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
-            client_id INTEGER,
-            section CHAR(50),
-            subsection CHAR(50) PRIMARY KEY,
-            budget_total NUMERIC,
-            month INTEGER, -- 1 through 12 will be stored
-            year INTEGER,
-        
-            FOREIGN KEY (client_id)
-                REFERENCES profile(client_id)
-                ON DELETE CASCADE
-            )''')
+        # Create database if one isn't already created
+        create_database(self)
 
         # Get selected month
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
@@ -357,8 +334,7 @@ class DegreeDollars(toga.App):
         # Iterate through categories and save them
         for section in self.main_window.content.content.children[2:-1]:
             if isinstance(section, toga.Box):  # Ensure it's a section
-                category_label = section.children[0]  # First child is the category label
-                category_name = category_label.text #this one is giving an error
+                category_name = section.children[0]  # First child is the category label
 
                 for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
                     if isinstance(sub_box, toga.Box) and sub_box.children[0].value != '':  # Ensure it's a subsection and exists
@@ -374,8 +350,8 @@ class DegreeDollars(toga.App):
                         amount = amount_input.value if amount_input.value is not None else 0
                         
                         # Insert data into database
-                        cursor.execute("INSERT INTO subcategories (name, budget_id, amount, category) VALUES (?, ?, ?, ?)",
-                                        (subcategory_name, budget_we_on, float(amount), category_name))
+                        cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month) VALUES (?, ?, ?, ?, ?)", # ADD YEAR
+                                       (user_id, category_name, subcategory_name, round(float(amount),2), budget_we_on))
 
         cursor.execute("SELECT * FROM subcategories")
         print("Budgets in DB:", cursor.fetchall())
