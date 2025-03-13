@@ -47,16 +47,13 @@ Our method/approach also utilizes elements of Agile: we will hold regular SCRUM 
   - Prototyping team will finish BeeWare tutorial by February 18th
 * Figma prototyping of all features will be completed by March 13th
 * The MySQL database will be integrated with the main Python script for the app by March 20th
-* Implementation team will complete and test the "Budgeting" feature by March 27th
-* Implementation team will complete and test the "Spending/Income" feature by April 3rd
-* Implementation team will complete and test the "See my History" feature by April 3rd
-* Implementation team will complete and test the "Loan Payment Planner" feature by April 10th
-* Implementation team will complete and test the "Sign Up/Log In" feature by April 16th
+* Implementation team will complete and manually test the "Budgeting" feature by March 27th
+* Implementation team will complete and manually test the "Spending/Income" feature by April 3rd
+* Implementation team will complete and manually test the "See my History" feature by April 3rd
+* Implementation team will complete and manually test the "Loan Payment Planner" feature by April 10th
+* Implementation team will complete and manually test the "Sign Up/Log In" feature by April 16th
 * 2 team members complete deployment of app by April 16th
   - Other 2 team members create final presentation by April 16th
-___
-* The "Sign Up/Log In" feature is lower on our list of priorities
-
 
 # Anticipated Problems
 
