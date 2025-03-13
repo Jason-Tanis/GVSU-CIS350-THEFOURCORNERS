@@ -10,22 +10,20 @@ import mysql.connector
 import datetime
 
 # MySQL Connection Settings
-MYSQL_HOST = "localhost"  # Change if using a remote server and edit below contents
-MYSQL_USER = "create_username"
-MYSQL_PASSWORD = "create_password"
-MYSQL_DATABASE = "degree_dollars"
+MYSQL_HOST = "degreedollarsapp"  # Change if using a remote server and edit below contents
+MYSQL_USER = "DegreeDollarsApp"
+MYSQL_PASSWORD = "DegreeDollars350!"
+MYSQL_DATABASE = "DegreeDollars"
 
 # Get the correct app storage directory
 def get_database_path(app):
     """Returns the correct database path inside the app's data directory."""
-    db_path = app.paths.data / "degree_dollars.db"  # Get writable path
+    db_path = app.paths.data / "DegreeDollars.db"  # Get writable path
     os.makedirs(app.paths.data, exist_ok=True)  # Ensure directory exists
     return str(db_path)
 
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
-    db_path = get_database_path(app)  # Get correct database path
-    print(f"Database path: {db_path}")  # Debugging: Check if path is correct
 
     try:
         # Connect to MySQL Server
@@ -42,7 +40,7 @@ def create_database(app):
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS profile (
         client_id INTEGER PRIMARY KEY,
-        password VARCHAR(255) NOT NULL, --hash the password before storing in db
+        password VARCHAR(255) NOT NULL, -- hash the password before storing in db
         email VARCHAR(50) NOT NULL,
         first_name VARCHAR(50),
         last_name VARCHAR(50)
@@ -50,12 +48,12 @@ def create_database(app):
         ''')
         
         cursor.execute('''
-        CREATE TABLE IF NOT EXISTS budget (
+        CREATE TABLE IF NOT EXISTS budgets (
         client_id INTEGER,
         section CHAR(50),
         subsection CHAR(50) PRIMARY KEY,
         budget_total NUMERIC,
-        month INTEGER, --1 through 12 will be stored
+        month INTEGER, -- 1 through 12 will be stored
         year INTEGER,
         
         FOREIGN KEY (client_id)
@@ -80,7 +78,7 @@ def create_database(app):
             ON DELETE CASCADE,
     
         FOREIGN KEY (subsection)
-            REFERENCES budget(subsection)
+            REFERENCES budgets(subsection)
             ON DELETE CASCADE
         )
         ''')
@@ -168,11 +166,11 @@ class DegreeDollars(toga.App):
         cursor = conn.cursor()
 
         # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE user_id = 1 ORDER BY id DESC LIMIT 1")
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
         latest_month = cursor.fetchone()
         if latest_month:
             latest_month = latest_month[0]
-            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE user_id = 1 AND month = ?", (latest_month,))
+            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
             budget_data = cursor.fetchall()
         else:
             budget_data = []
@@ -325,17 +323,27 @@ class DegreeDollars(toga.App):
         parent_box.add(widget) #Re-insert the "Add Subsection +" button
         
     async def save_budget(self, widget):
-        # Connect to SQLite database (or create it if it doesn't exist)
-        db_path = get_database_path(self)
-        conn = sqlite3.connect(db_path)
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(
+            host=MYSQL_HOST,
+            user=MYSQL_USER,
+            password=MYSQL_PASSWORD
+        )
         cursor = conn.cursor()
 
         # Create table if it doesn’t exist
         cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            user_id INTEGER NOT NULL,
-                            month INTEGER NOT NULL
-                        )''')
+            client_id INTEGER,
+            section CHAR(50),
+            subsection CHAR(50) PRIMARY KEY,
+            budget_total NUMERIC,
+            month INTEGER, -- 1 through 12 will be stored
+            year INTEGER,
+        
+            FOREIGN KEY (client_id)
+                REFERENCES profile(client_id)
+                ON DELETE CASCADE
+            )''')
 
         # Get selected month
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
@@ -344,16 +352,6 @@ class DegreeDollars(toga.App):
         
         user_id = 1 # UPDATE THIS LATER FOR LOGIN
 
-        
-        # Create Subcategory table in SQL
-        cursor.execute('''CREATE TABLE IF NOT EXISTS subcategories (
-                            sc_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT,
-                            budget_id INTEGER,
-                            amount REAL,
-                            category TEXT
-                        )''')
-        
         budget_we_on = 1 # To be changed when the budget and user ids are implemented
 
         # Iterate through categories and save them
