@@ -25,4 +25,5 @@ Create a remote, publicly accessible MySQL database in which user data (e.g., ac
 ### 3. Application Testing
 Execute manual and automated tests for appropriate application features to ensure that invalid user input is properly handled.
  - Time estimate: 21 days (3 weeks)
+   - Task has been in-progress for roughly 3 days
  - Assignee(s): Tony
