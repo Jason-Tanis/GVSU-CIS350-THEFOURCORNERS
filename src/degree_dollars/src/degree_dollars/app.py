@@ -5,7 +5,7 @@ A budgeting application for undergraduate and graduate college students
 import toga
 import os
 from toga.style import Pack
-from toga.style.pack import COLUMN, ROW, CENTER, RIGHT
+from toga.style.pack import COLUMN, ROW, CENTER, RIGHT, LEFT
 import mysql.connector
 import datetime
 
@@ -27,72 +27,72 @@ def create_database(app):
     db_path = get_database_path(app)  # Get correct database path
     print(f"Database path: {db_path}")  # Debugging: Check if path is correct
 
-    try:
+    # try:
         # Connect to MySQL Server
-        conn = mysql.connector.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
-        cursor = conn.cursor()
+        # conn = mysql.connector.connect(
+        #     host=MYSQL_HOST,
+        #     user=MYSQL_USER,
+        #     password=MYSQL_PASSWORD
+        # )
+        # cursor = conn.cursor()
         
         # Create Database if not exists
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
-        cursor.execute(f"USE {MYSQL_DATABASE}")
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS profile (
-        client_id INTEGER PRIMARY KEY,
-        password VARCHAR(255) NOT NULL, --hash the password before storing in db
-        email VARCHAR(50) NOT NULL,
-        first_name VARCHAR(50),
-        last_name VARCHAR(50)
-        )
-        ''')
+        # cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
+        # cursor.execute(f"USE {MYSQL_DATABASE}")
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS profile (
+        # client_id INTEGER PRIMARY KEY,
+        # password VARCHAR(255) NOT NULL, --hash the password before storing in db
+        # email VARCHAR(50) NOT NULL,
+        # first_name VARCHAR(50),
+        # last_name VARCHAR(50)
+        # )
+        # ''')
         
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS budget (
-        client_id INTEGER,
-        section CHAR(50),
-        subsection CHAR(50) PRIMARY KEY,
-        budget_total NUMERIC,
-        month INTEGER, --1 through 12 will be stored
-        year INTEGER,
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS budget (
+        # client_id INTEGER,
+        # section CHAR(50),
+        # subsection CHAR(50) PRIMARY KEY,
+        # budget_total NUMERIC,
+        # month INTEGER, --1 through 12 will be stored
+        # year INTEGER,
         
-        FOREIGN KEY (client_id)
-            REFERENCES profile(client_id)
-            ON DELETE CASCADE
-        )
-        ''')
+        # FOREIGN KEY (client_id)
+        #     REFERENCES profile(client_id)
+        #     ON DELETE CASCADE
+        # )
+        # ''')
         
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS transactions (
-        transaction_id INTEGER PRIMARY KEY,
-        client_id INTEGER,
-        section CHAR(50),
-        subsection CHAR(50),
-        date DATE,
-        amount NUMERIC,
-        merchant CHAR(50),
-        expense BOOL,
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS transactions (
+        # transaction_id INTEGER PRIMARY KEY,
+        # client_id INTEGER,
+        # section CHAR(50),
+        # subsection CHAR(50),
+        # date DATE,
+        # amount NUMERIC,
+        # merchant CHAR(50),
+        # expense BOOL,
 
-        FOREIGN KEY (client_id)
-            REFERENCES profile(client_id)
-            ON DELETE CASCADE,
+        # FOREIGN KEY (client_id)
+        #     REFERENCES profile(client_id)
+        #     ON DELETE CASCADE,
     
-        FOREIGN KEY (subsection)
-            REFERENCES budget(subsection)
-            ON DELETE CASCADE
-        )
-        ''')
-        conn.commit()
-        print("Database and tables created successfully!")
+        # FOREIGN KEY (subsection)
+        #     REFERENCES budget(subsection)
+        #     ON DELETE CASCADE
+        # )
+        # ''')
+        # conn.commit()
+        # print("Database and tables created successfully!")
         
-    except mysql.connector.Error as e:
-        print(f"MySQL Error: {e}")
+    # except mysql.connector.Error as e:
+        # print(f"MySQL Error: {e}")
         
-    finally:
-        cursor.close()
-        conn.close()
+    # finally:
+        # cursor.close()
+        # conn.close()
 
 class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
@@ -163,23 +163,24 @@ class DegreeDollars(toga.App):
         navbar.current_tab = "Home"
         
         # Connect to database
-        db_path = get_database_path(self)
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
+        # db_path = get_database_path(self)
+        # conn = sqlite3.connect(db_path)
+        # cursor = conn.cursor()
 
         # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE user_id = 1 ORDER BY id DESC LIMIT 1")
-        latest_month = cursor.fetchone()
-        if latest_month:
-            latest_month = latest_month[0]
-            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE user_id = 1 AND month = ?", (latest_month,))
-            budget_data = cursor.fetchall()
-        else:
-            budget_data = []
+        # cursor.execute("SELECT DISTINCT month FROM budgets WHERE user_id = 1 ORDER BY id DESC LIMIT 1")
+        # latest_month = cursor.fetchone()
+        # if latest_month:
+        #     latest_month = latest_month[0]
+        #     cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE user_id = 1 AND month = ?", (latest_month,))
+        #     budget_data = cursor.fetchall()
+        # else:
+        #     budget_data = []
 
-        conn.close()
+        # conn.close()
 
         # Display the budget
+        budget_data = []
         if budget_data:
             month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold"))
@@ -206,10 +207,70 @@ class DegreeDollars(toga.App):
         else:
             home.add(toga.Label("No budget found. Create a new one!"))
 
+        # Loan Planner
+
+        loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10))
+        prompt_text_1 = toga.Label("Please enter the following information:", style=Pack(font_size=12, font_weight="bold", text_align=CENTER))
+        dollar_amount_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        dollar_amount_label = toga.Label("Total dollar amount of loan:", style=Pack(font_size=18, text_align=LEFT))
+        dollar_amount_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
+        dollar_amount_box.add(dollar_amount_label, dollar_amount_input)
+        interest_rate_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        interest_rate_label = toga.Label("Interest rate of loan (APR):", style=Pack(font_size=18, text_align=LEFT))
+        interest_rate_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
+        interest_rate_box.add(interest_rate_label, interest_rate_input)
+
+        buttons_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        calculate_payment_button = toga.Button(
+            "Calculate Monthly Payment",
+            on_press=self.calculate_payment,
+            style=Pack(font_size=18, width=400, height=40, padding=10)
+        )
+        calculate_timeline_button = toga.Button(
+            "Calculate Timeline",
+            on_press=self.calculate_timeline,
+            style=Pack(font_size=18, width=400, height=40, padding=10)
+        )
+        buttons_box.add(calculate_payment_button, calculate_timeline_button)
+        
+        loan.add(loan_planner_label, prompt_text_1, dollar_amount_box, interest_rate_box, buttons_box)
+        
 
         #Display the homescreen contents
         self.main_window.content = navbar
         self.main_window.show()
+
+    async def calculate_payment(self, widget): # Calculate the payment required for the timeline
+        parent_box = widget.parent
+        grandparent_box = parent_box.parent
+        grandparent_box.clear()
+        payment_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        timeline_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=18, text_align=LEFT))
+        timeline_input = toga.NumberInput(min=0.00, value=0.00, step=1, style=Pack(width=100, padding=(5, 5)))
+        timeline_box.add(timeline_label, timeline_input)
+        calculate_payment_button_final = toga.Button(
+            "Compute!",
+            on_press=self.calculate_payment_math,
+            style=Pack(font_size=18, width=400, height=40, padding=10)
+        )
+        payment_calculator_box.add(timeline_box, calculate_payment_button_final)
+        grandparent_box.add(payment_calculator_box)
+    
+    async def calculate_payment_math(self, widget):
+        parent_box = widget.parent
+        grandparent_box = parent_box.parent
+        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        loan_amount = 5
+        interest_rate = 5
+        dollar_amount_label_final = toga.Label(f"Total loan amount: ${loan_amount}", style=Pack(font_size=18, text_align=LEFT))
+        interest_rate_label_final = toga.Label(f"Interest rate: {interest_rate}%", style=Pack(font_size=18, text_align=LEFT))
+        results_box.add(dollar_amount_label_final, interest_rate_label_final)
+        grandparent_box.add(results_box)
+
+        
+    async def calculate_timeline(self, widget): # Calculate the timeline from data
+        timeline_calculator_box = toga.Box()
 
     async def create_budget_view(self, widget): #New viewing screen for creating new budget
         budget_box = self.empty_box()
