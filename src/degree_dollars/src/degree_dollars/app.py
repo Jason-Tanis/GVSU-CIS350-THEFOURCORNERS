@@ -76,12 +76,12 @@ def create_database(app):
         conn.commit()
         print("Database and tables created successfully!")
         
-    # except mysql.connector.Error as e:
-        # print(f"MySQL Error: {e}")
+    except mysql.connector.Error as e:
+        print(f"MySQL Error: {e}")
         
-    # finally:
-        # cursor.close()
-        # conn.close()
+    finally:
+        cursor.close()
+        conn.close()
 
 class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
