@@ -12,7 +12,7 @@ Manual testing for Degree Dollars
 6. Press save budget and see what is shown in shell
 
 **Expected Results**:
-- Any name can be input for subsection, it is the user's choice, exception for numbers
+- Any name can be input for subsection
 - Dollar amount should be reasonable amount, even if over billion but not negative
 
 **Actual Results**:
