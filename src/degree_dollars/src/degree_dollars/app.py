@@ -95,27 +95,8 @@ class DegreeDollars(toga.App):
         # create database
         create_database(self)
         
-        #This is the box that opens upon startup; all elements inside the box are to be vertically stacked (COLUMN),
-        #and center-aligned (CENTER)
-        main_box = toga.Box(style=Pack(background_color=("#C0E4B8"), direction=COLUMN, alignment=CENTER))
-        logo_img = toga.Image("DegreeDollarsLogo.png") #Imports the logo
-
-        #An ImageView object is required to view the image
-        view = toga.ImageView(logo_img, style=Pack(padding=(200, 0, 0), width=350, height=150))
-        main_box.add(view)
-
-        #Define the "View my Budgets" button
-        button = toga.Button(
-            "View My Budgets",
-            on_press=self.homescreen,
-            style=Pack(background_color=("#F5F5F5"), padding=(35, 0, 200), width=300, height=55,
-                       font_weight="bold", font_size=18)
-        )
-        main_box.add(button)
-
         self.main_window = toga.MainWindow(title=self.formal_name) #Window in which box is displayed
-        self.main_window.content = main_box
-        self.main_window.show()
+        self.startscreen()
 
     async def homescreen(self, widget): #Open the Home Screen of the app
 
@@ -417,7 +398,139 @@ class DegreeDollars(toga.App):
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
+    #Helper function to define startup screen
+    def startscreen(self):
+        main_box = self.empty_box() #Create a box for the background
+        logo_img = toga.Image("DegreeDollarsLogo.png") #Imports the logo
 
+        #An ImageView object is required to display the image
+        view = toga.ImageView(logo_img, style=Pack(padding=(200, 0, 0), width=350, height=150))
+        main_box.add(view)
+
+        #Define the "Sign Up" and "Log In" buttons (store them in a box)
+        sign_log = self.empty_box()
+
+        #Sign Up button
+        signup = toga.Button(
+            "Sign Up",
+            on_press=self.signup,
+            style=Pack(background_color=("#F5F5F5"), padding=(35, 0, 20), width=300, height=55,
+                       font_weight="bold", font_size=18)
+        )
+        sign_log.add(signup)
+
+        #Log In button
+        login = toga.Button(
+            "Log In",
+            on_press=self.login,
+            style=Pack(background_color=("#F5F5F5"), padding=(0, 0, 200), width=300, height=55,
+                       font_weight="bold", font_size=18)
+        )
+        sign_log.add(login)
+
+        main_box.add(sign_log) #Add the box containing the buttons to the background box
+
+        #Display the main_box in the main window
+        self.main_window.content = main_box
+        self.main_window.show()
+
+    #Helper function to return to the startup screen, specifically when a button is pressed
+    async def startscreen_button(self, widget):
+        self.startscreen()
+
+    #Create the signup screen
+    async def signup(self, widget):
+        parent_box=widget.parent #The parent box is the box containing the "Sign Up" and "Log In" buttons
+        grandparent_box=parent_box.parent #The grandparent box is the background of the startup screen
+
+        #Remove the parent box from the grandparent box
+        grandparent_box.remove(parent_box)
+
+        #Create a new box to add to the grandparent box that will contain the signup fields
+        fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
+        
+        #Define user input fields for signing up and add them to the fields box
+        self.sign_log_field(fields, "First Name:", "First name here")
+        self.sign_log_field(fields, "Last Name:", "Last name here")
+        self.sign_log_field(fields, "Username:", "Username here")
+        self.sign_log_field(fields, "Password:", "Password here")
+        self.sign_log_field(fields, "Confirm Password:", "Password here")
+
+        #"Sign Up" and "Cancel" buttons
+        buttons=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
+                                    padding=(15, 0, 0)))
+        sign_up=toga.Button(
+            "Sign Up",
+            on_press=self.homescreen,
+            style=Pack(background_color=("#F5F5F5"), width=160, height=50,
+                       font_weight="bold", font_size=16, padding_right=30)
+        )
+        cancel=toga.Button(
+            "Cancel",
+            on_press=self.startscreen_button,
+            style=Pack(background_color=("#F5F5F5"), width=160, height=50,
+                       font_weight="bold", font_size=16)
+        )
+        buttons.add(sign_up, cancel)
+
+        #Add the buttons to the "fields" box
+        fields.add(buttons)
+
+        #Add the "fields" box to the grandparent box
+        grandparent_box.add(fields)
+
+    #Create the login screen
+    async def login(self, widget):
+        parent_box=widget.parent #The parent box is the box containing the "Sign Up" and "Log In" buttons
+        grandparent_box=parent_box.parent #The grandparent box is the background of the startup screen
+
+        #Remove the parent box from the grandparent box
+        grandparent_box.remove(parent_box)
+
+        #Create a new box to add to the grandparent box that will contain the login fields
+        fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
+        
+        #Define user input fields for logging in and add them to the fields box
+        self.sign_log_field(fields, "Username:", "Username here")
+        self.sign_log_field(fields, "Password:", "Password here")
+
+        #"Log In" and "Cancel" buttons
+        buttons=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
+                                    padding=(15, 0, 0)))
+        log_in=toga.Button(
+            "Log In",
+            on_press=self.homescreen,
+            style=Pack(background_color=("#F5F5F5"), width=160, height=50,
+                       font_weight="bold", font_size=16, padding_right=30)
+        )
+        cancel=toga.Button(
+            "Cancel",
+            on_press=self.startscreen_button,
+            style=Pack(background_color=("#F5F5F5"), width=160, height=50,
+                       font_weight="bold", font_size=16)
+        )
+        buttons.add(log_in, cancel)
+
+        #Add the buttons to the "fields" box
+        fields.add(buttons)
+
+        #Add the "fields" box to the grandparent box
+        grandparent_box.add(fields)       
+
+    #Helper function to make a signup/login field
+    def sign_log_field(self, parent_box, field_label, placeholder_text):
+        field_box=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
+                           padding=(15, 0, 0)))
+        field_label=toga.Label(field_label, style=Pack(background_color="#C0E4B8", color="#000000",
+                                                        font_size=14))
+        if field_label=="Password:" or field_label == "Confirm Password:":
+            field_input=toga.PasswordInput(placeholder=placeholder_text, style=Pack(width=150,
+                                           background_color="#F5F5F5"))
+        else:                                                                    
+            field_input=toga.TextInput(placeholder=placeholder_text, style=Pack(width=150,
+                                                                             background_color="#F5F5F5"))
+        field_box.add(field_label, field_input)
+        parent_box.add(field_box)
 
 def main():
     return DegreeDollars()
