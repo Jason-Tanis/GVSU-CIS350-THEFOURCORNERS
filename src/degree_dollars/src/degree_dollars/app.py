@@ -10,53 +10,42 @@ import mysql.connector
 import datetime
 
 # MySQL Connection Settings
-MYSQL_HOST = "localhost"  # Change if using a remote server and edit below contents
-MYSQL_USER = "create_username"
-MYSQL_PASSWORD = "create_password"
-MYSQL_DATABASE = "degree_dollars"
-
-# Get the correct app storage directory
-def get_database_path(app):
-    """Returns the correct database path inside the app's data directory."""
-    db_path = app.paths.data / "degree_dollars.db"  # Get writable path
-    os.makedirs(app.paths.data, exist_ok=True)  # Ensure directory exists
-    return str(db_path)
+config = {
+    "host": "degreedollars.cjomye0mu2mi.us-east-2.rds.amazonaws.com",
+    "port": 3306,
+    "user": "DegreeDollars350",
+    "password": "DegreeDollars350!",
+    "database": "degreedollars"
+}
 
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
-    db_path = get_database_path(app)  # Get correct database path
-    print(f"Database path: {db_path}")  # Debugging: Check if path is correct
-
-    # try:
-        # Connect to MySQL Server
-        # conn = mysql.connector.connect(
-        #     host=MYSQL_HOST,
-        #     user=MYSQL_USER,
-        #     password=MYSQL_PASSWORD
-        # )
-        # cursor = conn.cursor()
-        
+    # Connect to MySQL Server
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
+    
+    try:
         # Create Database if not exists
-        # cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
-        # cursor.execute(f"USE {MYSQL_DATABASE}")
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS profile (
-        # client_id INTEGER PRIMARY KEY,
-        # password VARCHAR(255) NOT NULL, --hash the password before storing in db
-        # email VARCHAR(50) NOT NULL,
-        # first_name VARCHAR(50),
-        # last_name VARCHAR(50)
-        # )
-        # ''')
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS profile (
+        client_id INTEGER PRIMARY KEY,
+        password VARCHAR(255) NOT NULL, -- hash the password before storing in db
+        email VARCHAR(50) NOT NULL,
+        first_name VARCHAR(50),
+        last_name VARCHAR(50)
+        )
+        ''')
         
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS budget (
-        # client_id INTEGER,
-        # section CHAR(50),
-        # subsection CHAR(50) PRIMARY KEY,
-        # budget_total NUMERIC,
-        # month INTEGER, --1 through 12 will be stored
-        # year INTEGER,
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS budgets (
+        client_id INTEGER,
+        section CHAR(50),
+        subsection CHAR(50) PRIMARY KEY,
+        budget_total NUMERIC,
+        month INTEGER, -- 1 through 12 will be stored
+        year INTEGER,
         
         # FOREIGN KEY (client_id)
         #     REFERENCES profile(client_id)
@@ -64,7 +53,7 @@ def create_database(app):
         # )
         # ''')
         
-        # cursor.execute('''
+        cursor.execute('''
         # CREATE TABLE IF NOT EXISTS transactions (
         # transaction_id INTEGER PRIMARY KEY,
         # client_id INTEGER,
@@ -79,13 +68,13 @@ def create_database(app):
         #     REFERENCES profile(client_id)
         #     ON DELETE CASCADE,
     
-        # FOREIGN KEY (subsection)
-        #     REFERENCES budget(subsection)
-        #     ON DELETE CASCADE
-        # )
-        # ''')
-        # conn.commit()
-        # print("Database and tables created successfully!")
+        FOREIGN KEY (subsection)
+            REFERENCES budgets(subsection)
+            ON DELETE CASCADE
+        )
+        ''')
+        conn.commit()
+        print("Database and tables created successfully!")
         
     # except mysql.connector.Error as e:
         # print(f"MySQL Error: {e}")
@@ -162,20 +151,19 @@ class DegreeDollars(toga.App):
         #Make "Home" the currently open tab
         navbar.current_tab = "Home"
         
-        # Connect to database
-        # db_path = get_database_path(self)
-        # conn = sqlite3.connect(db_path)
-        # cursor = conn.cursor()
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
 
         # Get all budgets for the latest month
-        # cursor.execute("SELECT DISTINCT month FROM budgets WHERE user_id = 1 ORDER BY id DESC LIMIT 1")
-        # latest_month = cursor.fetchone()
-        # if latest_month:
-        #     latest_month = latest_month[0]
-        #     cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE user_id = 1 AND month = ?", (latest_month,))
-        #     budget_data = cursor.fetchall()
-        # else:
-        #     budget_data = []
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
+        latest_month = cursor.fetchone()
+        if latest_month:
+            latest_month = latest_month[0]
+            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
+            budget_data = cursor.fetchall()
+        else:
+            budget_data = []
 
         # conn.close()
 
@@ -386,42 +374,23 @@ class DegreeDollars(toga.App):
         parent_box.add(widget) #Re-insert the "Add Subsection +" button
         
     async def save_budget(self, widget):
-        # Connect to SQLite database (or create it if it doesn't exist)
-        db_path = get_database_path(self)
-        conn = sqlite3.connect(db_path)
-        cursor = conn.cursor()
-
-        # Create table if it doesn’t exist
-        cursor.execute('''CREATE TABLE IF NOT EXISTS budgets (
-                            id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            user_id INTEGER NOT NULL,
-                            month INTEGER NOT NULL
-                        )''')
+        # Create database if one isn't already created
+        create_database(self)
 
         # Get selected month
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
         selected_month_index = self.month_names.index(selected_month)
+        current_year = datetime.datetime.now().year
         
         user_id = 1 # UPDATE THIS LATER FOR LOGIN
 
-        
-        # Create Subcategory table in SQL
-        cursor.execute('''CREATE TABLE IF NOT EXISTS subcategories (
-                            sc_id INTEGER PRIMARY KEY AUTOINCREMENT,
-                            name TEXT,
-                            budget_id INTEGER,
-                            amount REAL,
-                            category TEXT
-                        )''')
-        
         budget_we_on = 1 # To be changed when the budget and user ids are implemented
 
         # Iterate through categories and save them
         for section in self.main_window.content.content.children[2:-1]:
             if isinstance(section, toga.Box):  # Ensure it's a section
-                category_label = section.children[0]  # First child is the category label
-                category_name = category_label.text #this one is giving an error
+                category_name = section.children[0]  # First child is the category label
 
                 for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
                     if isinstance(sub_box, toga.Box) and sub_box.children[0].value != '':  # Ensure it's a subsection and exists
@@ -432,17 +401,13 @@ class DegreeDollars(toga.App):
                         subcategory_name = subcategory_input.value
                         amount = amount_input.value
                         
-                        print(f"Inserting: subcategory={subcategory_name}, budget_id={budget_we_on}, amount={amount}, category={category_name}")
-                        
                         amount = amount_input.value if amount_input.value is not None else 0
                         
                         # Insert data into database
-                        cursor.execute("INSERT INTO subcategories (name, budget_id, amount, category) VALUES (?, ?, ?, ?)",
-                                        (subcategory_name, budget_we_on, float(amount), category_name))
-
-        cursor.execute("SELECT * FROM subcategories")
-        print("Budgets in DB:", cursor.fetchall())
-        
+                        cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
+                                       "VALUES (%s, %s, %s, %s, %s, %s)",
+                                       (user_id, category_name, subcategory_name, float(amount), selected_month_index, current_year)
+                                       )
         conn.commit()
         conn.close()
 

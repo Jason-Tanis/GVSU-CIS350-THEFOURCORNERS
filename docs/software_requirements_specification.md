@@ -4,8 +4,8 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 # Functional Requirements
 1. Create New Budget
-    1. CBF1: The "Create New Budget" menu shall contain seven (7) predefined categories: "Education", "Housing/Utilities", "Food", "Transportation", "Medical", "Entertainment", and "Other".
-    2. CBF2: In the "Create New Budget" menu, the user shall be able to add a maximum of 24 additional subcategories to each predefined category (for a total of up to 25). 
+    1. CBF1: The "Create New Budget" menu shall contain five (5) predefined categories: "Education", "Housing/Utilities", "Food", "Transportation", and "Entertainment".
+    2. CBF2: In the "Create New Budget" menu, the user shall be able to add infinitely many subcategories to each predefined category. 
     3. CBF3: The user-entered budget information shall be stored in a SQL database specific to the current active user when the "Save Budget" button is selected.
 
 2. Add Income/Expense
@@ -26,6 +26,7 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 5. Login
     1. ACCF1: On the opening screen, the user shall have the option to either create a new account, or log in to an existing account.
     2. ACCF2: Once a new account is created, the application shall allow the user to log in using the new account in the future.
+    3. ACCF3: The "Log out" button on the "Profile" screen shall redirect the user to the opening screen when clicked.
 
 # Non-Functional Requirements
 1. Create New Budget
@@ -37,11 +38,12 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
 
 3. Transaction History
+    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in their database (i.e., they shall never be deleted)
 
-4. Loan Payment Planner
+5. Loan Payment Planner
     1. LPNF1: The feature shall not be integrated with the database of user accounts; all its functions can be performed locally.
 
-5. Login
+6. Login
     1. ACCNF1: The user account database shall not allow there to be more than one account with the same email address.
     2. ACCNF2: The user account database shall be remote (i.e., not included in a local download of the application).
     3. ACCNF3: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
