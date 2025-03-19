@@ -10,13 +10,23 @@ import mysql.connector
 import datetime
 
 # MySQL Connection Settings
-config = {
+"""config = {
     "host": "degreedollars.cjomye0mu2mi.us-east-2.rds.amazonaws.com",
     "port": 3306,
     "user": "DegreeDollars350",
     "password": "DegreeDollars350!",
     "database": "degreedollars"
 }
+"""
+
+config = {
+    "host": "localhost",
+    "port": 3306,
+    "user": "DegreeDollarsApp",
+    "password": "DegreeDollars350!"
+}
+MYSQL_DATABASE = "DegreeDollars"
+
 
 def create_database(app):
     """Creates the MySQL database and necessary tables if they don’t exist."""
@@ -40,9 +50,10 @@ def create_database(app):
         
         cursor.execute('''
         CREATE TABLE IF NOT EXISTS budgets (
+        budget_id INTEGER PRIMARY KEY AUTO_INCREMENT,
         client_id INTEGER,
         section CHAR(50),
-        subsection CHAR(50) PRIMARY KEY,
+        subsection CHAR(50),
         budget_total NUMERIC,
         month INTEGER, -- 1 through 12 will be stored
         year INTEGER,
@@ -54,6 +65,7 @@ def create_database(app):
         # ''')
         
         cursor.execute('''
+<<<<<<< HEAD
         # CREATE TABLE IF NOT EXISTS transactions (
         # transaction_id INTEGER PRIMARY KEY,
         # client_id INTEGER,
@@ -70,6 +82,23 @@ def create_database(app):
     
         FOREIGN KEY (subsection)
             REFERENCES budgets(subsection)
+=======
+        CREATE TABLE IF NOT EXISTS transactions (
+        transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        client_id INTEGER,
+        budget_id INTEGER,
+        date DATE,
+        amount NUMERIC,
+        merchant CHAR(50),
+        expense BOOL,
+
+        FOREIGN KEY (client_id)
+            REFERENCES profile(client_id)
+            ON DELETE CASCADE,
+
+        FOREIGN KEY (budget_id)
+            REFERENCES budgets(budget_id)
+>>>>>>> aedffc1 (Updated to using MySQL Server on Kelsey's computer)
             ON DELETE CASCADE
         )
         ''')
@@ -135,9 +164,11 @@ class DegreeDollars(toga.App):
         # Connect to MySQL Server
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
+        cursor.execute(f"USE `{MYSQL_DATABASE}`")
+
 
         # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY month DESC LIMIT 1")
         latest_month = cursor.fetchone()
         if latest_month:
             latest_month = latest_month[0]
@@ -385,11 +416,13 @@ class DegreeDollars(toga.App):
                         amount = amount_input.value if amount_input.value is not None else 0
                         
                         # Insert data into database
+                        cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
-                                       "VALUES (%s, %s, %s, %s, %s, %s)",
-                                       (user_id, category_name, subcategory_name, float(amount), selected_month_index, current_year)
-                                       )
+                            "VALUES (%s, %s, %s, %s, %s, %s)",
+                            (user_id, category_name, subcategory_name, float(amount), selected_month_index, current_year)
+                            )
         conn.commit()
+        budget_id = cursor.lastrowid  # Fetch the inserted budget_id
         conn.close()
 
         # Redirect back to home screen
