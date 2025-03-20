@@ -588,14 +588,14 @@ class DegreeDollars(toga.App):
         
     #Save sign-up data to the database
     async def save_signup_data(self, widget):
-        first_name = self.first_name_input.value
-        last_name = self.last_name_input.value
-        username = self.username_input.value
-        password = self.password_input.value
-        password_confirmation = self.password_confirmation_input.value
+        self.first_name = self.first_name_input.value
+        self.last_name = self.last_name_input.value
+        self.username = self.username_input.value
+        self.password = self.password_input.value
+        self.password_confirmation = self.password_confirmation_input.value
         
         #Password validation
-        if password != password_confirmation:
+        if self.password != self.password_confirmation:
             print("Passwords do not match.")
             return
                 
@@ -608,7 +608,7 @@ class DegreeDollars(toga.App):
             INSERT INTO profile (first_name, last_name, username, password)
             VALUES (%s, %s, %s, %s)
             ''',
-                       (first_name, last_name, username, password))
+                       (self.first_name, self.last_name, self.username, self.password))
                        
         conn.commit()
         conn.close()
