@@ -20,8 +20,8 @@ import datetime
 """
 
 config = {
-    "host": "localhost",
-    "port": 3306,
+    "host": "4.tcp.ngrok.io",
+    "port": 17015,
     "user": "DegreeDollarsApp",
     "password": "DegreeDollars350!"
 }
