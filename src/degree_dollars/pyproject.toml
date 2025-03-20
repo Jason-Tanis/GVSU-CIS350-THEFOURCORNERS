@@ -33,11 +33,13 @@ universal_build = true
 requires = [
     "toga-cocoa~=0.4.7",
     "std-nslog~=1.0.3",
+    "mysql-connector-python"
 ]
 
 [tool.briefcase.app.degree_dollars.linux]
 requires = [
     "toga-gtk~=0.4.7",
+    "mysql-connector-python"
 ]
 
 [tool.briefcase.app.degree_dollars.linux.system.debian]
@@ -153,6 +155,7 @@ flatpak_sdk = "org.gnome.Sdk"
 [tool.briefcase.app.degree_dollars.windows]
 requires = [
     "toga-winforms~=0.4.7",
+    "mysql-connector-python"
 ]
 
 # Mobile deployments
