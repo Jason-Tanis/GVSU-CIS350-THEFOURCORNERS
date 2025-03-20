@@ -147,14 +147,27 @@ class DegreeDollars(toga.App):
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
         cursor.execute(f"USE `{MYSQL_DATABASE}`")
+        
+        #Find client_id
+        cursor.execute('''
+        SELECT client_id FROM profile WHERE username = %s AND password = %s
+        ''', (self.username, self.password))
 
+        result = cursor.fetchone()
+        
+        if result:
+            self.client_id = result[0]
+            
+        else:
+            print("Error: client_id not found")
+            return
 
         # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY month DESC LIMIT 1")
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = %s ORDER BY month DESC LIMIT 1", (self.client_id,))
         latest_month = cursor.fetchone()
         if latest_month:
             latest_month = latest_month[0]
-            cursor.execute("SELECT section, subsection, budget_total FROM budgets WHERE client_id = 1 AND month = %s", (latest_month,))
+            cursor.execute("SELECT section, subsection, budget_total FROM budgets WHERE client_id = %s AND month = %s", (self.client_id, latest_month))
             budget_data = cursor.fetchall()
         else:
             budget_data = []
@@ -379,9 +392,27 @@ class DegreeDollars(toga.App):
         selected_month_index = self.month_names.index(selected_month)
         current_year = datetime.datetime.now().year
         
-        user_id = 1 # UPDATE THIS LATER FOR LOGIN
+        #Find client_id
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+        SELECT client_id FROM profile WHERE username = %s AND password = %s
+        ''', (self.username, self.password))
 
-        budget_we_on = 1 # To be changed when the budget and user ids are implemented
+        result = cursor.fetchone()
+        
+        if result:
+            self.client_id = result[0]
+            
+        else:
+            print("Error: client_id not found")
+            return
+
+        #Current Budget
+        cursor.execute('''
+        SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
+        ''', (self.client_id, current_year, selected_month_index))
+
+        budget_we_on = cursor.fetchone()
 
         # Iterate through categories and save them
         for section in self.main_window.content.content.children[2:-1]:
@@ -404,7 +435,7 @@ class DegreeDollars(toga.App):
                         cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
                             "VALUES (%s, %s, %s, %s, %s, %s)",
-                            (user_id, category_text, subcategory_name, float(amount), selected_month_index, current_year)
+                            (self.client_id, category_text, subcategory_name, float(amount), selected_month_index, current_year)
                             )
         conn.commit()
         budget_id = cursor.lastrowid  # Fetch the inserted budget_id
@@ -597,6 +628,9 @@ class DegreeDollars(toga.App):
         
         if result:
             print("Login successful.")
+            self.client_id = result[0]
+            self.username = username
+            self.password = password
             await self.homescreen(widget)
         
         else:
