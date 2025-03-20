@@ -154,7 +154,7 @@ class DegreeDollars(toga.App):
         latest_month = cursor.fetchone()
         if latest_month:
             latest_month = latest_month[0]
-            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
+            cursor.execute("SELECT section, subsection, budget_total FROM budgets WHERE client_id = 1 AND month = %s", (latest_month,))
             budget_data = cursor.fetchall()
         else:
             budget_data = []
@@ -168,23 +168,23 @@ class DegreeDollars(toga.App):
             budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
             home.add(budget_title)
 
-            current_category = None
-            category_box = None
+            current_section = None
+            section_box = None
 
-            for category, subcategory, amount in budget_data:
-                if category != current_category:
-                    current_category = category
-                    category_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-                    category_label = toga.Label(category, style=Pack(font_size=18, font_weight="bold",color="#000000"))
-                    category_box.add(category_label)
-                    home.add(category_box)
+            for section, subcategory, budget_total in budget_data:
+                if section != current_section:
+                    current_section = section
+                    section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+                    section_label = toga.Label(category, style=Pack(font_size=18, font_weight="bold",color="#000000"))
+                    section_box.add(section_label)
+                    home.add(section_box)
 
                 sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
                 sub_label = toga.Label(subcategory, style=Pack(width=150))
-                amount_label = toga.Label(f"${amount:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
+                budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
 
-                sub_box.add(sub_label, amount_label)
-                category_box.add(sub_box)
+                sub_box.add(sub_label, budget_total_label)
+                section_box.add(sub_box)
     
         else:
             home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
@@ -517,7 +517,7 @@ class DegreeDollars(toga.App):
                                     padding=(15, 0, 0)))
         log_in=toga.Button(
             "Log In",
-            on_press=self.save_signup_data,
+            on_press=self.check_login_credentials,
             style=Pack(background_color=("#F5F5F5"), width=160, height=50,
                        font_weight="bold", font_size=16, padding_right=30)
         )
@@ -587,7 +587,7 @@ class DegreeDollars(toga.App):
         #Connect to database
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
-        
+        cursor.execute(f"USE {MYSQL_DATABASE}")
         cursor.execute('''
             SELECT * FROM profile WHERE username = %s AND password = %s
             ''',
@@ -597,7 +597,7 @@ class DegreeDollars(toga.App):
         
         if result:
             print("Login successful.")
-            await self.homescreen()
+            await self.homescreen(widget)
         
         else:
             print("Invalid username or password")
