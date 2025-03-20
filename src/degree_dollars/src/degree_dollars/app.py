@@ -276,6 +276,8 @@ class DegreeDollars(toga.App):
         #Add a box in which the user can specify the current month
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
+        year_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
+
         monthfield_label = toga.Label("Month", style=Pack(color="#000000", font_size=18, padding_left=10))
         yearfield_label = toga.Label("Year", style=Pack(color="#000000", font_size=18, padding_left=10))
         months = ["January", "February", "March", "April", "May", "June", "July",
@@ -285,8 +287,9 @@ class DegreeDollars(toga.App):
         self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year, 
                                                step=1, style=Pack(width=100, padding=(5, 5)))
     
-        month_box.add(monthfield_label, yearfield_label, self.month_selection)
-        spacer.add(month_box)
+        month_box.add(monthfield_label, self.month_selection)
+        year_box.add(yearfield_label, self.year_selection)
+        spacer.add(month_box, year_box)
         budget_box.add(spacer)
 
         #Predefined sections (just to fill in space)
