@@ -113,7 +113,7 @@ Write code to save user transaction information to the database, and modify budg
 
 ## 3. Application Testing
 
-### NOTE: The 7 tasks below are being completed simultaneously with the incomplete BeeWare Implementation and Database Integration tasks.
+### NOTE: The 6 tasks below are being completed simultaneously with the incomplete BeeWare Implementation and Database Integration tasks.
 
 ### 1. Manually Test Budget Creation
 Description.
