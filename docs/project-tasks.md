@@ -144,8 +144,3 @@ Description.
 Description. (The automated Loan Pmt. Planner tests are for the helper functions that do the actual math and return the result)
  - Time estimate: X days
  - Responsible: Tony
-
-### 7. Automatically Test Application Interactions with Database
-Description.
- - Time estimate: X days
- - Responsible: Tony
