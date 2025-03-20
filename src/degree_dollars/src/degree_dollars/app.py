@@ -276,13 +276,16 @@ class DegreeDollars(toga.App):
         #Add a box in which the user can specify the current month
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
-        monthfield_label = toga.Label("'s Budget", style=Pack(color="#000000", font_size=18,padding_left=10))
+        monthfield_label = toga.Label("Month", style=Pack(color="#000000", font_size=18, padding_left=10))
+        yearfield_label = toga.Label("Year", style=Pack(color="#000000", font_size=18, padding_left=10))
         months = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
         current_month_index = datetime.datetime.now().month - 1
         self.month_selection = toga.Selection(items=months, value=months[current_month_index], style=Pack(width=250))
+        self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year, 
+                                               step=1, style=Pack(width=100, padding=(5, 5)))
     
-        month_box.add(monthfield_label, self.month_selection)
+        month_box.add(monthfield_label, yearfield_label, self.month_selection)
         spacer.add(month_box)
         budget_box.add(spacer)
 
@@ -389,7 +392,7 @@ class DegreeDollars(toga.App):
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
         selected_month_index = self.month_names.index(selected_month)
-        current_year = datetime.datetime.now().year
+        year = self.year_selection.value
         
         #Find client_id
         cursor.execute(f"USE {MYSQL_DATABASE}")
@@ -409,7 +412,7 @@ class DegreeDollars(toga.App):
         #Current Budget
         cursor.execute('''
         SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
-        ''', (self.client_id, current_year, selected_month_index))
+        ''', (self.client_id, year, selected_month_index))
 
         budget_we_on = cursor.fetchone()
 
@@ -434,7 +437,7 @@ class DegreeDollars(toga.App):
                         cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
                             "VALUES (%s, %s, %s, %s, %s, %s)",
-                            (self.client_id, section_text, subsection_name, float(amount), selected_month_index, current_year)
+                            (self.client_id, section_text, subsection_name, float(amount), selected_month_index, year)
                             )
         conn.commit()
         budget_id = cursor.lastrowid  # Fetch the inserted budget_id
