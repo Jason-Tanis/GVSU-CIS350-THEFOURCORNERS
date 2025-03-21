@@ -48,8 +48,23 @@ Implement the Home screen of the application from which all of the app's feature
 
 ## 3. Database Integration
 ### 1. Create Remote mySQL Database
-Create and design a remote mySQL database in AWS that is publicly accessible.
+Create and design a mySQL database that is publicly accessible.
  - Time estimate: 3 days
+ - Responsible: Kelsey, Sam
+
+### 2. Establish Database Connection
+Connect to the database via the application's Python script.
+ - Time estimate: 7 days
+ - Responsible: Kelsey
+
+### 3. Save Budgets to the Database
+Write code to save user-created budgets to the database.
+ - Time estimate: 2 days
+ - Responsible: Kelsey, Sam
+
+### 4. Save/Verify Profiles
+Write code to save user profile information to the database when they Sign Up, and to verify user profile information when they try to Log In.
+ - Time estimate: 5 days
  - Responsible: Kelsey, Sam
 
 # Incomplete Tasks
@@ -66,13 +81,13 @@ Implement the feature that allows users to create new monthly budgets and save t
 ### 2. Sign Up/Log In Feature
 Implement the screens for the "Sign Up" and "Log In" features.
  - Time estimate: 11 days
-   - Task has been in-progress for roughly 4 days
+   - Task has been in-progress for roughly 7 days
  - Responsible: Jason, Tony
 
 ### 3. Loan Payment Planner
 Implement the Loan Payment Planner feature: it should be accessible from the Home screen.
  - Time estimate: 13 days
-   - Task has been in-progress for roughly 6 days
+   - Task has been in-progress for roughly 8 days
  - Responsible: Jason, Sam
 
 ### NOTE: The next two tasks will begin once the three previous tasks are complete.
@@ -89,22 +104,7 @@ Implement the "See my History" feature that lists all of a user's previous trans
 
 ## 2. Database Integration
 
-### NOTE: The four tasks below are being completed simultaneously with the incomplete BeeWare Implementation tasks.
-
-### 1. Establish Database Connection
-Connect to the remote database via the application's Python script.
- - Time estimate: 7 days
- - Responsible: Kelsey
-
-### 2. Save Budgets to the Database
-Write code to save user-created budgets to the database.
- - Time estimate: 2 days
- - Responsible: Kelsey, Sam
-
-### 3. Save/Verify Profiles
-Write code to save user profile information to the database when they Sign Up, and to verify user profile information when they try to Log In.
- - Time estimate: 5 days
- - Responsible: Kelsey, Sam
+### NOTE: The task below is being completed simultaneously with the incomplete BeeWare Implementation tasks.
 
 ### 4. Save Transactions
 Write code to save user transaction information to the database, and modify budget data in the database accordingly.
