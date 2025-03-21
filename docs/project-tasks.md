@@ -116,36 +116,36 @@ Write code to save user transaction information to the database, and modify budg
 ### NOTE: The 7 tasks below are being completed simultaneously with the incomplete BeeWare Implementation and Database Integration tasks.
 
 ### 1. Manually Test Budget Creation
-Description.
- - Time estimate: X days
+Verify that users can successfully create, edit, and save a new monthly budget.
+ - Time estimate: 3 days
  - Responsible: Tony
 
 ### 2. Manually Test Sign Up/Log In
-Description.
- - Time estimate: X days
+Ensure that users can sign up, log in, and access their account with valid credentials.
+ - Time estimate: 2 days
  - Responsible: Tony
 
 ### 3. Manually Test Loan Payment Planner
-Description. (The manual Loan Pmt. Planner tests are for the user input fields)
- - Time estimate: X days
+Check that users can input loan details in designated fields and receive accurate calculations. (The manual Loan Pmt. Planner tests are for the user input fields)
+ - Time estimate: 3 days
  - Responsible: Tony
 
 ### 4. Manually Test Expense/Income
-Description.
- - Time estimate: X days
+Confirm that users can add, modify, and categorize transactions within their saved budgets.
+ - Time estimate: 3 days
  - Responsible: Tony
 
 ### 5. Manually Test History
-Description.
- - Time estimate: X days
+Check that past transactions are correctly recorded and displayed in the history screen.
+ - Time estimate: 2 days
  - Responsible: Tony
 
 ### 6. Automatically Test Loan Payment Planner
-Description. (The automated Loan Pmt. Planner tests are for the helper functions that do the actual math and return the result)
- - Time estimate: X days
+Run unit tests to verify that the helper functions correctly compute loan payments and timelines. (The automated Loan Pmt. Planner tests are for the helper functions that do the actual math and return the result)
+ - Time estimate: 5 days
  - Responsible: Tony
 
 ### 7. Automatically Test Application Interactions with Database
-Description.
- - Time estimate: X days
+Verify that the application correctly saves, retrieves, and updates data in the remote database through automated tests.
+ - Time estimate: 5 days
  - Responsible: Tony
