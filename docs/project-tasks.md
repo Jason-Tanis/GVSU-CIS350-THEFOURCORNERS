@@ -113,7 +113,7 @@ Write code to save user transaction information to the database, and modify budg
 
 ## 3. Application Testing
 
-### NOTE: The 7 tasks below are being completed simultaneously with the incomplete BeeWare Implementation and Database Integration tasks.
+### NOTE: The 6 tasks below are being completed simultaneously with the incomplete BeeWare Implementation and Database Integration tasks.
 
 ### 1. Manually Test Budget Creation
 Verify that users can successfully create, edit, and save a new monthly budget.
@@ -142,10 +142,5 @@ Check that past transactions are correctly recorded and displayed in the history
 
 ### 6. Automatically Test Loan Payment Planner
 Run unit tests to verify that the helper functions correctly compute loan payments and timelines. (The automated Loan Pmt. Planner tests are for the helper functions that do the actual math and return the result)
- - Time estimate: 5 days
- - Responsible: Tony
-
-### 7. Automatically Test Application Interactions with Database
-Verify that the application correctly saves, retrieves, and updates data in the remote database through automated tests.
  - Time estimate: 5 days
  - Responsible: Tony

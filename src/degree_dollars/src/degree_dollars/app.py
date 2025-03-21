@@ -20,8 +20,8 @@ import datetime
 """
 
 config = {
-    "host": "localhost",
-    "port": 3306,
+    "host": "4.tcp.ngrok.io",
+    "port": 17015,
     "user": "DegreeDollarsApp",
     "password": "DegreeDollars350!"
 }
@@ -136,7 +136,7 @@ class DegreeDollars(toga.App):
                     toga.OptionItem("Profile", profile, icon = toga.Icon("PTab")),
                     toga.OptionItem("Home", home, icon = toga.Icon("HTab")),
                     toga.OptionItem("Loan Planner", loan, icon = toga.Icon("LTab")),
-                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("ATab"))
+                    toga.OptionItem("History", addexp, icon = toga.Icon("ATab"))
                 ]
         )
 
@@ -175,7 +175,6 @@ class DegreeDollars(toga.App):
         # conn.close()
 
         # Display the budget
-        budget_data = []
         if budget_data:
             month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
@@ -184,16 +183,16 @@ class DegreeDollars(toga.App):
             current_section = None
             section_box = None
 
-            for section, subcategory, budget_total in budget_data:
+            for section, subsection, budget_total in budget_data:
                 if section != current_section:
                     current_section = section
                     section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-                    section_label = toga.Label(category, style=Pack(font_size=18, font_weight="bold",color="#000000"))
+                    section_label = toga.Label(section, style=Pack(font_size=18, font_weight="bold",color="#000000"))
                     section_box.add(section_label)
                     home.add(section_box)
 
                 sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
-                sub_label = toga.Label(subcategory, style=Pack(width=150))
+                sub_label = toga.Label(subsection, style=Pack(width=150))
                 budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
 
                 sub_box.add(sub_label, budget_total_label)
@@ -277,20 +276,26 @@ class DegreeDollars(toga.App):
         #Add a box in which the user can specify the current month
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
-        monthfield_label = toga.Label("'s Budget", style=Pack(color="#000000", font_size=18,padding_left=10))
+        year_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
+
+        monthfield_label = toga.Label("Month", style=Pack(color="#000000", font_size=18, padding_left=10))
+        yearfield_label = toga.Label("Year", style=Pack(color="#000000", font_size=18, padding_left=10))
         months = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
         current_month_index = datetime.datetime.now().month - 1
         self.month_selection = toga.Selection(items=months, value=months[current_month_index], style=Pack(width=250))
+        self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year, 
+                                               step=1, style=Pack(width=100, padding=(5, 5)))
     
         month_box.add(monthfield_label, self.month_selection)
-        spacer.add(month_box)
+        year_box.add(yearfield_label, self.year_selection)
+        spacer.add(month_box, year_box)
         budget_box.add(spacer)
 
-        #Predefined categories (just to fill in space)
-        categories = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
-        for category in categories:
-            section_box = self.create_budget_section(category)
+        #Predefined sections (just to fill in space)
+        sections = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
+        for section in sections:
+            section_box = self.create_budget_section(section)
             budget_box.add(section_box)
 
         #Box to contain "Add Section" and "Save Budget" buttons
@@ -320,11 +325,11 @@ class DegreeDollars(toga.App):
         self.main_window.content = scroll_container
         self.main_window.show()
         
-    def create_budget_section(self, category):
+    def create_budget_section(self, section):
         section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
         
         # title
-        section_label = toga.Label(category, style=Pack(font_size=20, font_weight="bold",color="#000000"))
+        section_label = toga.Label(section, style=Pack(font_size=20, font_weight="bold",color="#000000"))
         print(section_label)
         section_box.add(section_label)
         
@@ -345,7 +350,7 @@ class DegreeDollars(toga.App):
         subsection_box = toga.Box(style=Pack(direction=ROW, padding=5, alignment=CENTER))
 
         # Subsection Name
-        subcategory_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
+        subsection_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
 
         # Budget Amount
         amount_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
@@ -353,7 +358,7 @@ class DegreeDollars(toga.App):
         # Remaining Budget Label
         remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10,color="#000000"))
 
-        subsection_box.add(subcategory_input)
+        subsection_box.add(subsection_input)
         subsection_box.add(amount_input)
         subsection_box.add(remaining_label)
 
@@ -390,7 +395,7 @@ class DegreeDollars(toga.App):
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
         selected_month_index = self.month_names.index(selected_month)
-        current_year = datetime.datetime.now().year
+        year = self.year_selection.value
         
         #Find client_id
         cursor.execute(f"USE {MYSQL_DATABASE}")
@@ -410,23 +415,23 @@ class DegreeDollars(toga.App):
         #Current Budget
         cursor.execute('''
         SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
-        ''', (self.client_id, current_year, selected_month_index))
+        ''', (self.client_id, year, selected_month_index))
 
         budget_we_on = cursor.fetchone()
 
-        # Iterate through categories and save them
+        # Iterate through sections and save them
         for section in self.main_window.content.content.children[2:-1]:
             if isinstance(section, toga.Box):  # Ensure it's a section
-                category_name = section.children[0]  # First child is the category label
-                category_text = category_name.text
+                section_name = section.children[0]  # First child is the section label
+                section_text = section_name.text
 
-                for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
+                for sub_box in section.children[1:-1]:  # Skip first (section label) and last (Add Subsection button)
                     if isinstance(sub_box, toga.Box) and sub_box.children[0].value != '':  # Ensure it's a subsection and exists
 
-                        subcategory_input = sub_box.children[0]  # First child: Subcategory input
+                        subsection_input = sub_box.children[0]  # First child: Subsection input
                         amount_input = sub_box.children[1]  # Second child: Amount input
 
-                        subcategory_name = subcategory_input.value
+                        subsection_name = subsection_input.value
                         amount = amount_input.value
                         
                         amount = amount_input.value if amount_input.value is not None else 0
@@ -435,7 +440,7 @@ class DegreeDollars(toga.App):
                         cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
                             "VALUES (%s, %s, %s, %s, %s, %s)",
-                            (self.client_id, category_text, subcategory_name, float(amount), selected_month_index, current_year)
+                            (self.client_id, section_text, subsection_name, float(amount), selected_month_index, year)
                             )
         conn.commit()
         budget_id = cursor.lastrowid  # Fetch the inserted budget_id
@@ -583,14 +588,14 @@ class DegreeDollars(toga.App):
         
     #Save sign-up data to the database
     async def save_signup_data(self, widget):
-        first_name = self.first_name_input.value
-        last_name = self.last_name_input.value
-        username = self.username_input.value
-        password = self.password_input.value
-        password_confirmation = self.password_confirmation_input.value
+        self.first_name = self.first_name_input.value
+        self.last_name = self.last_name_input.value
+        self.username = self.username_input.value
+        self.password = self.password_input.value
+        self.password_confirmation = self.password_confirmation_input.value
         
         #Password validation
-        if password != password_confirmation:
+        if self.password != self.password_confirmation:
             print("Passwords do not match.")
             return
                 
@@ -603,7 +608,7 @@ class DegreeDollars(toga.App):
             INSERT INTO profile (first_name, last_name, username, password)
             VALUES (%s, %s, %s, %s)
             ''',
-                       (first_name, last_name, username, password))
+                       (self.first_name, self.last_name, self.username, self.password))
                        
         conn.commit()
         conn.close()
