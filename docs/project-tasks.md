@@ -50,7 +50,7 @@ Implement the Home screen of the application from which all of the app's feature
 ### 1. Create Remote mySQL Database
 Create and design a mySQL database that is publicly accessible.
  - Time estimate: 3 days
- - Responsible: Kelsey, Sam
+ - Responsible: Kelsey
 
 ### 2. Establish Database Connection
 Connect to the database via the application's Python script.
@@ -60,12 +60,12 @@ Connect to the database via the application's Python script.
 ### 3. Save Budgets to the Database
 Write code to save user-created budgets to the database.
  - Time estimate: 2 days
- - Responsible: Kelsey, Sam
+ - Responsible: Kelsey
 
 ### 4. Save/Verify Profiles
 Write code to save user profile information to the database when they Sign Up, and to verify user profile information when they try to Log In.
  - Time estimate: 5 days
- - Responsible: Kelsey, Sam
+ - Responsible: Kelsey
 
 # Incomplete Tasks
 ## 1. BeeWare Implementation
@@ -109,7 +109,7 @@ Implement the "See my History" feature that lists all of a user's previous trans
 ### 4. Save Transactions
 Write code to save user transaction information to the database, and modify budget data in the database accordingly.
  - Time estimate: 5 days
- - Responsible: Kelsey, Sam
+ - Responsible: Kelsey
 
 ## 3. Application Testing
 
