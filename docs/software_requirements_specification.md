@@ -29,29 +29,29 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     3. ACCF3: The "Log out" button on the "Profile" screen shall redirect the user to the opening screen when clicked.
 
 # Non-Functional Requirements
-1. General
+1. General (i.e., the app as a whole)
     1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
-    2. GNF2: All screens within the app shall be connected to one another (i.e., no screen shall be completely isolated).
-    3. GNF3: The graphical user interface shall appear similarly across different platforms.
-    4. GNF4: Button labels shall be limited to 30 characters maximum.
-       
-3. Create New Budget
-    1. CBNF1: A remote database containing the user's saved budget information shall be associated with their account.
-    2. CBNF2: One active user shall not be able to intentionally or unintentionally modify the saved budget information of another user.
-    3. CBNF3: To save storage space, a user shall not be able to have more than 12 monthly budgets at a time.
+    2. GNF2: If a screen in the application is either broken or under development, the user shall receive an error message and be allowed to return to the previous screen.
+    3. GNF3: The color scheme of the app shall appear similarly across different platforms.
+    4. GNF4: Button labels shall contain a maximum of two words.
 
+2. Create New Budget
+    1. CBNF1: The application shall be optimized for the latest tech stack to allow for a greater amount of storage space.
+  
 4. Add Income/Expense
     1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
 
 5. Transaction History
-    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in their database (i.e., they shall never be deleted).
+    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in the database (i.e., they shall never be deleted).
 
 6. Loan Payment Planner
-    1. LPNF1: The feature shall not be integrated with the database of user accounts; all its functions shall be performed locally.
+    1. LPNF1: The loan payment planner feature shall not interact with the database.
     2. LPNF2: Computation shall take no longer than three (3) seconds to complete.
 
 7. Login
-    1. ACCNF1: The user account database shall not allow there to be more than one account with the same username.
-    2. ACCNF2: The user account database shall be remote (i.e., it shall not included in a local download of the application).
-    3. ACCNF3: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
-    4. ACCNF4: User passwords shall be hashed when stored in the database.
+    1. ACCNF1: One user shall not be able to deliberately sign in to a separate user's account.
+    2. ACCNF2: One user shall not be able to unintentionally access a separate user's account.
+    3. ACCNF3: The user account database shall not allow there to be more than one account with the same username.
+    4. ACCNF4: The user account database shall be remote (i.e., it shall not included in a local download of the application).
+    5. ACCNF5: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
+    6. ACCNF6: User passwords shall be hashed when stored in the database.
