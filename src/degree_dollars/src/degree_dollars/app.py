@@ -5,9 +5,11 @@ A budgeting application for undergraduate and graduate college students
 import toga
 import os
 from toga.style import Pack
-from toga.style.pack import COLUMN, ROW, CENTER, RIGHT, LEFT
+from toga.style.pack import COLUMN, ROW, CENTER, RIGHT, LEFT, HIDDEN, VISIBLE
 import mysql.connector
 import datetime
+from functools import partial
+import math
 
 # MySQL Connection Settings
 config = {
@@ -18,34 +20,34 @@ config = {
     "database": "degreedollars"
 }
 
-def create_database(app):
-    """Creates the MySQL database and necessary tables if they don’t exist."""
+# def create_database(app):
+    # """Creates the MySQL database and necessary tables if they don’t exist."""
     # Connect to MySQL Server
-    conn = mysql.connector.connect(**config)
-    cursor = conn.cursor()
+    # conn = mysql.connector.connect(**config)
+    # cursor = conn.cursor()
     
-    try:
+    # try:
         # Create Database if not exists
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
-        cursor.execute(f"USE {MYSQL_DATABASE}")
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS profile (
-        client_id INTEGER PRIMARY KEY,
-        password VARCHAR(255) NOT NULL, -- hash the password before storing in db
-        email VARCHAR(50) NOT NULL,
-        first_name VARCHAR(50),
-        last_name VARCHAR(50)
-        )
-        ''')
+        # cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
+        # cursor.execute(f"USE {MYSQL_DATABASE}")
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS profile (
+        # client_id INTEGER PRIMARY KEY,
+        # password VARCHAR(255) NOT NULL, -- hash the password before storing in db
+        # email VARCHAR(50) NOT NULL,
+        # first_name VARCHAR(50),
+        # last_name VARCHAR(50)
+        # )
+        # ''')
         
-        cursor.execute('''
-        CREATE TABLE IF NOT EXISTS budgets (
-        client_id INTEGER,
-        section CHAR(50),
-        subsection CHAR(50) PRIMARY KEY,
-        budget_total NUMERIC,
-        month INTEGER, -- 1 through 12 will be stored
-        year INTEGER,
+        # cursor.execute('''
+        # CREATE TABLE IF NOT EXISTS budgets (
+        # client_id INTEGER,
+        # section CHAR(50),
+        # subsection CHAR(50) PRIMARY KEY,
+        # budget_total NUMERIC,
+        # month INTEGER, -- 1 through 12 will be stored
+        # year INTEGER,
         
         # FOREIGN KEY (client_id)
         #     REFERENCES profile(client_id)
@@ -53,7 +55,7 @@ def create_database(app):
         # )
         # ''')
         
-        cursor.execute('''
+        # cursor.execute('''
         # CREATE TABLE IF NOT EXISTS transactions (
         # transaction_id INTEGER PRIMARY KEY,
         # client_id INTEGER,
@@ -68,20 +70,20 @@ def create_database(app):
         #     REFERENCES profile(client_id)
         #     ON DELETE CASCADE,
     
-        FOREIGN KEY (subsection)
-            REFERENCES budgets(subsection)
-            ON DELETE CASCADE
-        )
-        ''')
-        conn.commit()
-        print("Database and tables created successfully!")
+    #     FOREIGN KEY (subsection)
+    #         REFERENCES budgets(subsection)
+    #         ON DELETE CASCADE
+    #     )
+    #     ''')
+    #     conn.commit()
+    #     print("Database and tables created successfully!")
         
-    except mysql.connector.Error as e:
-        print(f"MySQL Error: {e}")
+    # except mysql.connector.Error as e:
+    #     print(f"MySQL Error: {e}")
         
-    finally:
-        cursor.close()
-        conn.close()
+    # finally:
+    #     cursor.close()
+    #     conn.close()
 
 class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
@@ -93,7 +95,7 @@ class DegreeDollars(toga.App):
         """
         
         # create database
-        create_database(self)
+        # create_database(self)
         
         self.main_window = toga.MainWindow(title=self.formal_name) #Window in which box is displayed
         self.startscreen()
@@ -133,23 +135,23 @@ class DegreeDollars(toga.App):
         navbar.current_tab = "Home"
         
         # Connect to MySQL Server
-        conn = mysql.connector.connect(**config)
-        cursor = conn.cursor()
+        # conn = mysql.connector.connect(**config)
+        # cursor = conn.cursor()
 
         # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
-        latest_month = cursor.fetchone()
-        if latest_month:
-            latest_month = latest_month[0]
-            cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
-            budget_data = cursor.fetchall()
-        else:
-            budget_data = []
+        # cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
+        # latest_month = cursor.fetchone()
+        # if latest_month:
+        #     latest_month = latest_month[0]
+        #     cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
+        #     budget_data = cursor.fetchall()
+        # else:
+        #     budget_data = []
 
         # conn.close()
 
         # Display the budget
-        budget_data = []
+        budget_data = [] # Remove when MySQL is figured out
         if budget_data:
             month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
             budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold"))
@@ -188,7 +190,6 @@ class DegreeDollars(toga.App):
         interest_rate_label = toga.Label("Interest rate of loan (APR):", style=Pack(font_size=18, text_align=LEFT))
         interest_rate_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
         interest_rate_box.add(interest_rate_label, interest_rate_input)
-
         buttons_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         calculate_payment_button = toga.Button(
             "Calculate Monthly Payment",
@@ -201,17 +202,19 @@ class DegreeDollars(toga.App):
             style=Pack(font_size=18, width=400, height=40, padding=10)
         )
         buttons_box.add(calculate_payment_button, calculate_timeline_button)
-        
         loan.add(loan_planner_label, prompt_text_1, dollar_amount_box, interest_rate_box, buttons_box)
-        
 
         #Display the homescreen contents
         self.main_window.content = navbar
         self.main_window.show()
 
+
     async def calculate_payment(self, widget): # Calculate the payment required for the timeline
-        parent_box = widget.parent
-        grandparent_box = parent_box.parent
+
+        parent_box = widget.parent # buttons box
+        grandparent_box = parent_box.parent # loan
+        loan_amount = grandparent_box.children[2].children[1].value
+        interest_rate = grandparent_box.children[3].children[1].value
         grandparent_box.clear()
         payment_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         timeline_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
@@ -220,26 +223,69 @@ class DegreeDollars(toga.App):
         timeline_box.add(timeline_label, timeline_input)
         calculate_payment_button_final = toga.Button(
             "Compute!",
-            on_press=self.calculate_payment_math,
+            on_press=partial(self.calculate_payment_math, loan_amount, interest_rate),
             style=Pack(font_size=18, width=400, height=40, padding=10)
         )
         payment_calculator_box.add(timeline_box, calculate_payment_button_final)
+        print(payment_calculator_box)
         grandparent_box.add(payment_calculator_box)
     
-    async def calculate_payment_math(self, widget):
-        parent_box = widget.parent
-        grandparent_box = parent_box.parent
+    async def calculate_payment_math(self, loan_amount, interest_rate, widget):
+        parent_box = widget.parent # payment_calculator_box
+        grandparent_box = parent_box.parent # loan
         results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
-        loan_amount = 5
-        interest_rate = 5
+        months = parent_box.children[0].children[1].value
+        Results_label = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold"))
         dollar_amount_label_final = toga.Label(f"Total loan amount: ${loan_amount}", style=Pack(font_size=18, text_align=LEFT))
         interest_rate_label_final = toga.Label(f"Interest rate: {interest_rate}%", style=Pack(font_size=18, text_align=LEFT))
-        results_box.add(dollar_amount_label_final, interest_rate_label_final)
+        months_label_final = toga.Label(f"Planned duration: {months} months", style=Pack(font_size=18, text_align=LEFT))
+
+        monthly_interest_rate = interest_rate / 12 / 100
+        recommendation = (loan_amount * monthly_interest_rate * (1 + monthly_interest_rate)**months) / ((1 + monthly_interest_rate)**months - 1)
+        recommendation_label = toga.Label("Recommended monthly payment:", style=Pack(font_size=24, text_align=CENTER))
+        recommendation_output = toga.Label(f"${recommendation:.2f} per month", style=Pack(font_size=36, text_align=CENTER))
+
+        results_box.add(Results_label, dollar_amount_label_final, interest_rate_label_final, months_label_final, recommendation_label, recommendation_output)
         grandparent_box.add(results_box)
 
         
     async def calculate_timeline(self, widget): # Calculate the timeline from data
-        timeline_calculator_box = toga.Box()
+        parent_box = widget.parent # buttons box
+        grandparent_box = parent_box.parent # loan
+        loan_amount = grandparent_box.children[2].children[1].value
+        interest_rate = grandparent_box.children[3].children[1].value
+        grandparent_box.clear()
+        timeline_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        payment_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        payment_label = toga.Label("Amount of monthly payment:", style=Pack(font_size=18, text_align=LEFT))
+        payment_input = toga.NumberInput(min=0.00, value=0.00, step=10, style=Pack(width=100, padding=(5, 5)))
+        payment_box.add(payment_label, payment_input)
+        calculate_timeline_button_final = toga.Button(
+            "Compute!",
+            on_press=partial(self.calculate_timeline_math, loan_amount, interest_rate),
+            style=Pack(font_size=18, width=400, height=40, padding=10)
+        )
+        timeline_calculator_box.add(payment_box, calculate_timeline_button_final)
+        grandparent_box.add(timeline_calculator_box)
+
+    async def calculate_timeline_math(self, loan_amount, interest_rate, widget):
+        parent_box = widget.parent # payment_calculator_box
+        grandparent_box = parent_box.parent # loan
+        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        payment = parent_box.children[0].children[1].value
+        Results_label = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold"))
+        dollar_amount_label_final = toga.Label(f"Total loan amount:     ${loan_amount}", style=Pack(font_size=18, text_align=CENTER))
+        interest_rate_label_final = toga.Label(f"Interest rate:     {interest_rate}%", style=Pack(font_size=18, text_align=CENTER))
+        months_label_final = toga.Label(f"Planned monthly payment:     ${payment}", style=Pack(font_size=18, text_align=CENTER))
+
+        monthly_interest_rate = interest_rate / 12 / 100
+        recommendation = (math.log(payment / (payment - loan_amount * monthly_interest_rate))) / (math.log(1 + monthly_interest_rate))
+        recommendation_label = toga.Label("Recommended payment duration:", style=Pack(font_size=24, text_align=CENTER))
+        recommendation_output = toga.Label(f"{recommendation:.0f} months", style=Pack(font_size=36, text_align=CENTER))
+
+        results_box.add(Results_label, dollar_amount_label_final, interest_rate_label_final, months_label_final, recommendation_label, recommendation_output)
+        grandparent_box.add(results_box)
+
 
     async def create_budget_view(self, widget): #New viewing screen for creating new budget
         budget_box = self.empty_box()
