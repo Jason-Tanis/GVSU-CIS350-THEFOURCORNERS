@@ -33,6 +33,7 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
     2. GNF2: All screens within the app shall be connected to one another (i.e., no screen shall be completely isolated).
     3. GNF3: The graphical user interface shall appear similarly across different platforms.
+    4. GNF4: Button labels shall be limited to 30 characters maximum.
        
 3. Create New Budget
     1. CBNF1: A remote database containing the user's saved budget information shall be associated with their account.
@@ -41,7 +42,6 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 4. Add Income/Expense
     1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
-    2. IENF2: Expenses shall be stored as negative numbers in the database.
 
 5. Transaction History
     1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in their database (i.e., they shall never be deleted).
