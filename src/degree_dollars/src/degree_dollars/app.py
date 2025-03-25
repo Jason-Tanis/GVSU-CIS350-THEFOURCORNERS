@@ -12,78 +12,89 @@ from functools import partial
 import math
 
 # MySQL Connection Settings
-config = {
+"""config = {
     "host": "degreedollars.cjomye0mu2mi.us-east-2.rds.amazonaws.com",
     "port": 3306,
     "user": "DegreeDollars350",
     "password": "DegreeDollars350!",
     "database": "degreedollars"
 }
+"""
 
-# def create_database(app):
-    # """Creates the MySQL database and necessary tables if they don’t exist."""
+config = {
+    "host": "4.tcp.ngrok.io",
+    "port": 17015,
+    "user": "DegreeDollarsApp",
+    "password": "DegreeDollars350!"
+}
+MYSQL_DATABASE = "DegreeDollars"
+
+
+def create_database(app):
+    """Creates the MySQL database and necessary tables if they don’t exist."""
     # Connect to MySQL Server
-    # conn = mysql.connector.connect(**config)
-    # cursor = conn.cursor()
+    conn = mysql.connector.connect(**config)
+    cursor = conn.cursor()
     
-    # try:
+    try:
         # Create Database if not exists
-        # cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
-        # cursor.execute(f"USE {MYSQL_DATABASE}")
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS profile (
-        # client_id INTEGER PRIMARY KEY,
-        # password VARCHAR(255) NOT NULL, -- hash the password before storing in db
-        # email VARCHAR(50) NOT NULL,
-        # first_name VARCHAR(50),
-        # last_name VARCHAR(50)
-        # )
-        # ''')
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}")
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS profile (
+        client_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        password VARCHAR(255) NOT NULL, -- hash the password before storing in db
+        first_name VARCHAR(50),
+        last_name VARCHAR(50),
+        username VARCHAR(50) NOT NULL UNIQUE
+        )
+        ''')
         
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS budgets (
-        # client_id INTEGER,
-        # section CHAR(50),
-        # subsection CHAR(50) PRIMARY KEY,
-        # budget_total NUMERIC,
-        # month INTEGER, -- 1 through 12 will be stored
-        # year INTEGER,
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS budgets (
+        budget_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        client_id INTEGER,
+        section CHAR(50),
+        subsection CHAR(50),
+        budget_total NUMERIC,
+        month INTEGER, -- 1 through 12 will be stored
+        year INTEGER,
         
-        # FOREIGN KEY (client_id)
-        #     REFERENCES profile(client_id)
-        #     ON DELETE CASCADE
-        # )
-        # ''')
+        FOREIGN KEY (client_id)
+            REFERENCES profile(client_id)
+            ON DELETE CASCADE
+        )
+        ''')
         
-        # cursor.execute('''
-        # CREATE TABLE IF NOT EXISTS transactions (
-        # transaction_id INTEGER PRIMARY KEY,
-        # client_id INTEGER,
-        # section CHAR(50),
-        # subsection CHAR(50),
-        # date DATE,
-        # amount NUMERIC,
-        # merchant CHAR(50),
-        # expense BOOL,
+        cursor.execute('''
+        CREATE TABLE IF NOT EXISTS transactions (
+        transaction_id INTEGER PRIMARY KEY AUTO_INCREMENT,
+        client_id INTEGER,
+        budget_id INTEGER,
+        date DATE,
+        amount NUMERIC,
+        merchant CHAR(50),
+        expense BOOL,
 
-        # FOREIGN KEY (client_id)
-        #     REFERENCES profile(client_id)
-        #     ON DELETE CASCADE,
-    
-    #     FOREIGN KEY (subsection)
-    #         REFERENCES budgets(subsection)
-    #         ON DELETE CASCADE
-    #     )
-    #     ''')
-    #     conn.commit()
-    #     print("Database and tables created successfully!")
+        FOREIGN KEY (client_id)
+            REFERENCES profile(client_id)
+            ON DELETE CASCADE,
+
+        FOREIGN KEY (budget_id)
+            REFERENCES budgets(budget_id)
+            ON DELETE CASCADE
+        )
+        ''')
+
+        conn.commit()
+        print("Database and tables created successfully!")
         
-    # except mysql.connector.Error as e:
-    #     print(f"MySQL Error: {e}")
-        
-    # finally:
-    #     cursor.close()
-    #     conn.close()
+    except mysql.connector.Error as e:
+        print(f"MySQL Error: {e}")
+      
+    finally:
+        cursor.close()
+        conn.close()
 
 class DegreeDollars(toga.App):
     def startup(self): #Define the app's behavior when it is initially opened
@@ -95,7 +106,7 @@ class DegreeDollars(toga.App):
         """
         
         # create database
-        # create_database(self)
+        create_database(self)
         
         self.main_window = toga.MainWindow(title=self.formal_name) #Window in which box is displayed
         self.startscreen()
@@ -115,7 +126,7 @@ class DegreeDollars(toga.App):
             "Create New Budget",
             on_press=self.create_budget_view,
             style=Pack(background_color="#62C54C", padding=(35, 0, 35),
-            width=300, height=55, font_weight="bold", font_size=18)
+            width=300, height=55, font_weight="bold", font_size=18,color="#000000")
         )
         create_budget_box.add(create_budget_button)
         home.add(create_budget_box)
@@ -127,7 +138,7 @@ class DegreeDollars(toga.App):
                     toga.OptionItem("Profile", profile, icon = toga.Icon("PTab")),
                     toga.OptionItem("Home", home, icon = toga.Icon("HTab")),
                     toga.OptionItem("Loan Planner", loan, icon = toga.Icon("LTab")),
-                    toga.OptionItem("Add Expense", addexp, icon = toga.Icon("ATab"))
+                    toga.OptionItem("History", addexp, icon = toga.Icon("ATab"))
                 ]
         )
 
@@ -135,71 +146,85 @@ class DegreeDollars(toga.App):
         navbar.current_tab = "Home"
         
         # Connect to MySQL Server
-        # conn = mysql.connector.connect(**config)
-        # cursor = conn.cursor()
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE `{MYSQL_DATABASE}`")
+        
+        #Find client_id
+        cursor.execute('''
+        SELECT client_id FROM profile WHERE username = %s AND password = %s
+        ''', (self.username, self.password))
+
+        result = cursor.fetchone()
+        
+        if result:
+            self.client_id = result[0]
+            
+        else:
+            print("Error: client_id not found")
+            return
 
         # Get all budgets for the latest month
-        # cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = 1 ORDER BY id DESC LIMIT 1")
-        # latest_month = cursor.fetchone()
-        # if latest_month:
-        #     latest_month = latest_month[0]
-        #     cursor.execute("SELECT category, subcategory, amount FROM budgets WHERE client_id = 1 AND month = ?", (latest_month,))
-        #     budget_data = cursor.fetchall()
-        # else:
-        #     budget_data = []
+        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = %s ORDER BY month DESC LIMIT 1", (self.client_id,))
+        latest_month = cursor.fetchone()
+        if latest_month:
+            latest_month = latest_month[0]
+            cursor.execute("SELECT section, subsection, budget_total FROM budgets WHERE client_id = %s AND month = %s", (self.client_id, latest_month))
+            budget_data = cursor.fetchall()
+        else:
+            budget_data = []
 
         # conn.close()
 
         # Display the budget
-        budget_data = [] # Remove when MySQL is figured out
         if budget_data:
             month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold"))
+            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
             home.add(budget_title)
 
-            current_category = None
-            category_box = None
+            current_section = None
+            section_box = None
 
-            for category, subcategory, amount in budget_data:
-                if category != current_category:
-                    current_category = category
-                    category_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-                    category_label = toga.Label(category, style=Pack(font_size=18, font_weight="bold"))
-                    category_box.add(category_label)
-                    home.add(category_box)
+            for section, subsection, budget_total in budget_data:
+                if section != current_section:
+                    current_section = section
+                    section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+                    section_label = toga.Label(section, style=Pack(font_size=18, font_weight="bold",color="#000000"))
+                    section_box.add(section_label)
+                    home.add(section_box)
 
                 sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
-                sub_label = toga.Label(subcategory, style=Pack(width=150))
-                amount_label = toga.Label(f"${amount:.2f}", style=Pack(width=100, text_align=RIGHT))
+                sub_label = toga.Label(subsection, style=Pack(width=150))
+                budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
 
-                sub_box.add(sub_label, amount_label)
-                category_box.add(sub_box)
+                sub_box.add(sub_label, budget_total_label)
+                section_box.add(sub_box)
     
         else:
-            home.add(toga.Label("No budget found. Create a new one!"))
+            home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
 
         # Loan Planner
 
-        loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10))
-        prompt_text_1 = toga.Label("Please enter the following information:", style=Pack(font_size=12, font_weight="bold", text_align=CENTER))
+        loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000"))
+        prompt_text_1 = toga.Label("Please enter the following information:", style=Pack(font_size=12, font_weight="bold", text_align=CENTER,color="#000000"))
         dollar_amount_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        dollar_amount_label = toga.Label("Total dollar amount of loan:", style=Pack(font_size=18, text_align=LEFT))
+        dollar_amount_label = toga.Label("Total dollar amount of loan:", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
         dollar_amount_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
         dollar_amount_box.add(dollar_amount_label, dollar_amount_input)
         interest_rate_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        interest_rate_label = toga.Label("Interest rate of loan (APR):", style=Pack(font_size=18, text_align=LEFT))
+        interest_rate_label = toga.Label("Interest rate of loan (APR):", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
         interest_rate_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
         interest_rate_box.add(interest_rate_label, interest_rate_input)
         buttons_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         calculate_payment_button = toga.Button(
             "Calculate Monthly Payment",
             on_press=self.calculate_payment,
-            style=Pack(font_size=18, width=400, height=40, padding=10)
+            style=Pack(font_size=18, width=400, height=40, padding=10,color="#000000")
         )
         calculate_timeline_button = toga.Button(
             "Calculate Timeline",
             on_press=self.calculate_timeline,
-            style=Pack(font_size=18, width=400, height=40, padding=10)
+            style=Pack(font_size=18, width=400, height=40, padding=10,color="#000000")
         )
         buttons_box.add(calculate_payment_button, calculate_timeline_button)
         loan.add(loan_planner_label, prompt_text_1, dollar_amount_box, interest_rate_box, buttons_box)
@@ -218,13 +243,13 @@ class DegreeDollars(toga.App):
         grandparent_box.clear()
         payment_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         timeline_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=18, text_align=LEFT))
+        timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
         timeline_input = toga.NumberInput(min=0.00, value=0.00, step=1, style=Pack(width=100, padding=(5, 5)))
         timeline_box.add(timeline_label, timeline_input)
         calculate_payment_button_final = toga.Button(
             "Compute!",
             on_press=partial(self.calculate_payment_math, loan_amount, interest_rate),
-            style=Pack(font_size=18, width=400, height=40, padding=10)
+            style=Pack(font_size=18, width=400, height=40, padding=10, color="#000000")
         )
         payment_calculator_box.add(timeline_box, calculate_payment_button_final)
         print(payment_calculator_box)
@@ -297,20 +322,26 @@ class DegreeDollars(toga.App):
         #Add a box in which the user can specify the current month
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
-        monthfield_label = toga.Label("'s Budget", style=Pack(color="#000000", font_size=18,padding_left=10))
+        year_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
+
+        monthfield_label = toga.Label("Month", style=Pack(color="#000000", font_size=18, padding_left=10))
+        yearfield_label = toga.Label("Year", style=Pack(color="#000000", font_size=18, padding_left=10))
         months = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
         current_month_index = datetime.datetime.now().month - 1
         self.month_selection = toga.Selection(items=months, value=months[current_month_index], style=Pack(width=250))
+        self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year, 
+                                               step=1, style=Pack(width=100, padding=(5, 5)))
     
         month_box.add(monthfield_label, self.month_selection)
-        spacer.add(month_box)
+        year_box.add(yearfield_label, self.year_selection)
+        spacer.add(month_box, year_box)
         budget_box.add(spacer)
 
-        #Predefined categories (just to fill in space)
-        categories = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
-        for category in categories:
-            section_box = self.create_budget_section(category)
+        #Predefined sections (just to fill in space)
+        sections = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
+        for section in sections:
+            section_box = self.create_budget_section(section)
             budget_box.add(section_box)
 
         #Box to contain "Add Section" and "Save Budget" buttons
@@ -319,7 +350,7 @@ class DegreeDollars(toga.App):
         # "Add Section" Button
         add_section_button = toga.Button(
             "Add Section +", on_press=self.add_budget_section,
-            style=Pack(font_size=18, width=200, height=40, padding=10)
+            style=Pack(font_size=18, width=200, height=40, padding=10,color="#000000")
         )
         add_save_box.add(add_section_button)
 
@@ -327,7 +358,7 @@ class DegreeDollars(toga.App):
         save_button = toga.Button(
             "Save Budget",
             on_press=self.save_budget,
-            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=18)
+            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=18,color="#000000")
         )
         add_save_box.add(save_button)
 
@@ -340,11 +371,11 @@ class DegreeDollars(toga.App):
         self.main_window.content = scroll_container
         self.main_window.show()
         
-    def create_budget_section(self, category):
+    def create_budget_section(self, section):
         section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
         
         # title
-        section_label = toga.Label(category, style=Pack(font_size=20, font_weight="bold"))
+        section_label = toga.Label(section, style=Pack(font_size=20, font_weight="bold",color="#000000"))
         print(section_label)
         section_box.add(section_label)
         
@@ -354,9 +385,7 @@ class DegreeDollars(toga.App):
             section_box.add(subsection_box)
             
         # add subsection button
-        add_subsection_button = toga.Button(
-                                            "Add Subsection +", on_press=self.add_budget_subsection,
-                                            style=Pack(padding=5, font_size=14)
+        add_subsection_button = toga.Button("Add Subsection +", on_press=self.add_budget_subsection, style=Pack(padding=5, font_size=14,color="#000000")
                                             )
         section_box.add(add_subsection_button)
         
@@ -367,15 +396,15 @@ class DegreeDollars(toga.App):
         subsection_box = toga.Box(style=Pack(direction=ROW, padding=5, alignment=CENTER))
 
         # Subsection Name
-        subcategory_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
+        subsection_input = toga.TextInput(placeholder="Subsection", style=Pack(width=150, padding=(5, 5)))
 
         # Budget Amount
         amount_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
 
         # Remaining Budget Label
-        remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10))
+        remaining_label = toga.Label("$0.00 left", style=Pack(font_size=14, padding_left=10,color="#000000"))
 
-        subsection_box.add(subcategory_input)
+        subsection_box.add(subsection_input)
         subsection_box.add(amount_input)
         subsection_box.add(remaining_label)
 
@@ -403,39 +432,64 @@ class DegreeDollars(toga.App):
     async def save_budget(self, widget):
         # Create database if one isn't already created
         create_database(self)
+        
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
 
         # Get selected month
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
         selected_month_index = self.month_names.index(selected_month)
-        current_year = datetime.datetime.now().year
+        year = self.year_selection.value
         
-        user_id = 1 # UPDATE THIS LATER FOR LOGIN
+        #Find client_id
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+        SELECT client_id FROM profile WHERE username = %s AND password = %s
+        ''', (self.username, self.password))
 
-        budget_we_on = 1 # To be changed when the budget and user ids are implemented
+        result = cursor.fetchone()
+        
+        if result:
+            self.client_id = result[0]
+            
+        else:
+            print("Error: client_id not found")
+            return
 
-        # Iterate through categories and save them
+        #Current Budget
+        cursor.execute('''
+        SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
+        ''', (self.client_id, year, selected_month_index))
+
+        budget_we_on = cursor.fetchone()
+
+        # Iterate through sections and save them
         for section in self.main_window.content.content.children[2:-1]:
             if isinstance(section, toga.Box):  # Ensure it's a section
-                category_name = section.children[0]  # First child is the category label
+                section_name = section.children[0]  # First child is the section label
+                section_text = section_name.text
 
-                for sub_box in section.children[1:-1]:  # Skip first (category label) and last (Add Subsection button)
+                for sub_box in section.children[1:-1]:  # Skip first (section label) and last (Add Subsection button)
                     if isinstance(sub_box, toga.Box) and sub_box.children[0].value != '':  # Ensure it's a subsection and exists
 
-                        subcategory_input = sub_box.children[0]  # First child: Subcategory input
+                        subsection_input = sub_box.children[0]  # First child: Subsection input
                         amount_input = sub_box.children[1]  # Second child: Amount input
 
-                        subcategory_name = subcategory_input.value
+                        subsection_name = subsection_input.value
                         amount = amount_input.value
                         
                         amount = amount_input.value if amount_input.value is not None else 0
                         
                         # Insert data into database
+                        cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
-                                       "VALUES (%s, %s, %s, %s, %s, %s)",
-                                       (user_id, category_name, subcategory_name, float(amount), selected_month_index, current_year)
-                                       )
+                            "VALUES (%s, %s, %s, %s, %s, %s)",
+                            (self.client_id, section_text, subsection_name, float(amount), selected_month_index, year)
+                            )
         conn.commit()
+        budget_id = cursor.lastrowid  # Fetch the inserted budget_id
         conn.close()
 
         # Redirect back to home screen
@@ -496,26 +550,26 @@ class DegreeDollars(toga.App):
         fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
         
         #Define user input fields for signing up and add them to the fields box
-        self.sign_log_field(fields, "First Name:", "First name here")
-        self.sign_log_field(fields, "Last Name:", "Last name here")
-        self.sign_log_field(fields, "Username:", "Username here")
-        self.sign_log_field(fields, "Password:", "Password here")
-        self.sign_log_field(fields, "Confirm Password:", "Password here")
+        self.first_name_input = self.sign_log_field(fields, "First Name:", "First name here")
+        self.last_name_input = self.sign_log_field(fields, "Last Name:", "Last name here")
+        self.username_input = self.sign_log_field(fields, "Username:", "Username here")
+        self.password_input = self.sign_log_field(fields, "Password:", "Password here")
+        self.password_confirmation_input = self.sign_log_field(fields, "Confirm Password:", "Password here")
 
         #"Sign Up" and "Cancel" buttons
-        buttons=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
-                                    padding=(15, 0, 0)))
+        buttons=toga.Box(style=Pack(background_color="#C0E4B8", color="#000000", direction=ROW, alignment=CENTER, padding=(15, 0, 0)))
+        
         sign_up=toga.Button(
             "Sign Up",
-            on_press=self.homescreen,
+            on_press=self.save_signup_data,
             style=Pack(background_color=("#F5F5F5"), width=160, height=50,
-                       font_weight="bold", font_size=16, padding_right=30)
+                        font_weight="bold", font_size=16, padding_right=30)
         )
         cancel=toga.Button(
             "Cancel",
             on_press=self.startscreen_button,
             style=Pack(background_color=("#F5F5F5"), width=160, height=50,
-                       font_weight="bold", font_size=16)
+                        font_weight="bold", font_size=16)
         )
         buttons.add(sign_up, cancel)
 
@@ -537,15 +591,15 @@ class DegreeDollars(toga.App):
         fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
         
         #Define user input fields for logging in and add them to the fields box
-        self.sign_log_field(fields, "Username:", "Username here")
-        self.sign_log_field(fields, "Password:", "Password here")
+        self.login_input = self.sign_log_field(fields, "Username:", "Username here")
+        self.password_input = self.sign_log_field(fields, "Password:", "Password here")
 
         #"Log In" and "Cancel" buttons
         buttons=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
                                     padding=(15, 0, 0)))
         log_in=toga.Button(
             "Log In",
-            on_press=self.homescreen,
+            on_press=self.check_login_credentials,
             style=Pack(background_color=("#F5F5F5"), width=160, height=50,
                        font_weight="bold", font_size=16, padding_right=30)
         )
@@ -567,16 +621,74 @@ class DegreeDollars(toga.App):
     def sign_log_field(self, parent_box, field_label, placeholder_text):
         field_box=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
                            padding=(15, 0, 0)))
-        field_label=toga.Label(field_label, style=Pack(background_color="#C0E4B8", color="#000000",
-                                                        font_size=14))
+        field_label=toga.Label(field_label, style=Pack(background_color="#C0E4B8", color="#000000", font_size=14))
+        
         if field_label=="Password:" or field_label == "Confirm Password:":
-            field_input=toga.PasswordInput(placeholder=placeholder_text, style=Pack(width=150,
-                                           background_color="#F5F5F5"))
-        else:                                                                    
-            field_input=toga.TextInput(placeholder=placeholder_text, style=Pack(width=150,
-                                                                             background_color="#F5F5F5"))
+            field_input=toga.PasswordInput(placeholder=placeholder_text, style=Pack(width=150, background_color="#F5F5F5", color="#000000"))
+        else:
+            field_input=toga.TextInput(placeholder=placeholder_text, style=Pack(width=150, background_color="#F5F5F5", color="#000000"))
+            
         field_box.add(field_label, field_input)
         parent_box.add(field_box)
-
+        return field_input
+        
+    #Save sign-up data to the database
+    async def save_signup_data(self, widget):
+        self.first_name = self.first_name_input.value
+        self.last_name = self.last_name_input.value
+        self.username = self.username_input.value
+        self.password = self.password_input.value
+        self.password_confirmation = self.password_confirmation_input.value
+        
+        #Password validation
+        if self.password != self.password_confirmation:
+            print("Passwords do not match.")
+            return
+                
+        #Connect to database
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+            INSERT INTO profile (first_name, last_name, username, password)
+            VALUES (%s, %s, %s, %s)
+            ''',
+                       (self.first_name, self.last_name, self.username, self.password))
+                       
+        conn.commit()
+        conn.close()
+        
+        print("Account created successfully.")
+        await self.homescreen(widget)
+        
+    async def check_login_credentials(self, widget):
+        username = self.login_input.value
+        password = self.password_input.value
+        
+        #Connect to database
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+            SELECT * FROM profile WHERE username = %s AND password = %s
+            ''',
+                       (username, password))
+                       
+        result = cursor.fetchone()
+        
+        if result:
+            print("Login successful.")
+            self.client_id = result[0]
+            self.username = username
+            self.password = password
+            await self.homescreen(widget)
+        
+        else:
+            print("Invalid username or password")
+            
+        conn.close()
+        
+        
 def main():
     return DegreeDollars()
