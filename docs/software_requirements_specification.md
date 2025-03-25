@@ -11,8 +11,8 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 2. Add Income/Expense
     1. IEF1: The "Add Income/Expense" button shall exist inside the window for viewing a previously saved budget.
     2. IEF2: The feature shall have the following input fields: "Income or Expense", "Date", "Amount", "Section (and subsection)", and "Merchant".
-    3. IEF3: When the user completes recording their transaction, a summary of their input shall be saved to their user-specific SQL database.
-    4. IEF4: When the user completes recording their transaction, the corresponding budget shall be updated in the user's database.
+    3. IEF3: When the user completes recording their transaction, a summary of their input shall be saved to the database.
+    4. IEF4: When the user completes recording their transaction, the corresponding budget shall be updated in the databased.
 
 3. Transaction History
     1. THF1: The "Transaction History" screen shall display a column of non-clickable summary boxes for each individual transaction made by the user.
@@ -29,22 +29,29 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     3. ACCF3: The "Log out" button on the "Profile" screen shall redirect the user to the opening screen when clicked.
 
 # Non-Functional Requirements
-1. Create New Budget
+1. General
+    1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
+    2. GNF2: All screens within the app shall be connected to one another (i.e., no screen shall be completely isolated).
+    3. GNF3: The graphical user interface shall appear similarly across different platforms.
+       
+3. Create New Budget
     1. CBNF1: A remote database containing the user's saved budget information shall be associated with their account.
     2. CBNF2: One active user shall not be able to intentionally or unintentionally modify the saved budget information of another user.
     3. CBNF3: To save storage space, a user shall not be able to have more than 12 monthly budgets at a time.
 
-2. Add Income/Expense
+4. Add Income/Expense
     1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
+    2. IENF2: Expenses shall be stored as negative numbers in the database.
 
-3. Transaction History
-    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in their database (i.e., they shall never be deleted)
+5. Transaction History
+    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in their database (i.e., they shall never be deleted).
 
-5. Loan Payment Planner
-    1. LPNF1: The feature shall not be integrated with the database of user accounts; all its functions can be performed locally.
+6. Loan Payment Planner
+    1. LPNF1: The feature shall not be integrated with the database of user accounts; all its functions shall be performed locally.
+    2. LPNF2: Computation shall take no longer than three (3) seconds to complete.
 
-6. Login
-    1. ACCNF1: The user account database shall not allow there to be more than one account with the same email address.
-    2. ACCNF2: The user account database shall be remote (i.e., not included in a local download of the application).
+7. Login
+    1. ACCNF1: The user account database shall not allow there to be more than one account with the same username.
+    2. ACCNF2: The user account database shall be remote (i.e., it shall not included in a local download of the application).
     3. ACCNF3: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
-
+    4. ACCNF4: User passwords shall be hashed when stored in the database.
