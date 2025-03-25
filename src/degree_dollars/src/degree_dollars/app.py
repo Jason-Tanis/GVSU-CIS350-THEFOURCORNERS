@@ -23,7 +23,7 @@ import math
 
 config = {
     "host": "4.tcp.ngrok.io",
-    "port": 17015,
+    "port": 18600,
     "user": "DegreeDollarsApp",
     "password": "DegreeDollars350!"
 }
