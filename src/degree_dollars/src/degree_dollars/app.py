@@ -24,7 +24,7 @@ import math
 config = {
     "host": "localhost",
     "port": 3306,
-    "user": "DegreeDollarsApp",
+    "user": "root",
     "password": "DegreeDollars350!"
 }
 MYSQL_DATABASE = "DegreeDollars"
