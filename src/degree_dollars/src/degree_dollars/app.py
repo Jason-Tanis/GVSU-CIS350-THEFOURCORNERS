@@ -12,15 +12,6 @@ from functools import partial
 import math
 
 # MySQL Connection Settings
-"""config = {
-    "host": "degreedollars.cjomye0mu2mi.us-east-2.rds.amazonaws.com",
-    "port": 3306,
-    "user": "DegreeDollars350",
-    "password": "DegreeDollars350!",
-    "database": "degreedollars"
-}
-"""
-
 config = {
     "host": "localhost",
     "port": 3306,
@@ -164,18 +155,62 @@ class DegreeDollars(toga.App):
             print("Error: client_id not found")
             return
 
-        # Get all budgets for the latest month
-        cursor.execute("SELECT DISTINCT month FROM budgets WHERE client_id = %s ORDER BY month DESC LIMIT 1", (self.client_id,))
-        latest_month = cursor.fetchone()
-        if latest_month:
-            latest_month = latest_month[0]
-            cursor.execute("SELECT section, subsection, budget_total FROM budgets WHERE client_id = %s AND month = %s", (self.client_id, latest_month))
-            budget_data = cursor.fetchall()
+        # Get all of the user's budgets
+        cursor.execute('''
+        SELECT DISTINCT month, year FROM budgets WHERE client_id = %s ORDER BY year DESC, month DESC
+        ''', (self.client_id,))
+        all_budgets = cursor.fetchall()
+
+        #List for displaying dropdown menu options (initially contains only a placeholder dictionary)
+        dropdown_options = [{"name": "Select Budget", "data": (-1, -1)}]
+
+        #List of month names
+        month_names = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"]
+        
+        #If the user has saved at least one budget,
+        #create and add a dropdown menu to select one of the saved budgets
+        if all_budgets:
+            for budget in all_budgets:
+                month_name = month_names[budget[0] - 1]
+                year = budget[1]
+                budget_title = f"{month_name} {year}"
+                tmp_dictionary = {"name": budget_title, "data": budget}
+                dropdown_options.append(tmp_dictionary)
+            print(dropdown_options)
+            selectbudget_label = toga.Label(
+                "View/Edit Budget",
+                style = Pack(
+                    font_size = 14,
+                    font_weight = "bold",
+                    color = "#000000",
+                    background_color = "#C0E4B8",
+                    text_align = "center"
+                )
+            )
+            budget_dropdown = toga.Selection(
+                items = dropdown_options, 
+                accessor = "name",
+                style = Pack(
+                    width = 300,
+                    padding = (15, 0, 0)
+                )
+            )
+            home.add(selectbudget_label, budget_dropdown)
         else:
-            budget_data = []
-
+            all_budgets = []
+            selectbudget_label = toga.Label(
+                "No saved budgets found. Create a new one!",
+                style = Pack(
+                    font_size = 12,
+                    color = "#000000",
+                    background_color = "#C0E4B8",
+                    text_align = "center"
+                )
+            )
+        
         # conn.close()
-
+        """
         # Display the budget
         if budget_data:
             month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
@@ -202,7 +237,7 @@ class DegreeDollars(toga.App):
     
         else:
             home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
-
+        """
         # Loan Planner
 
         loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000"))
@@ -437,10 +472,10 @@ class DegreeDollars(toga.App):
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
 
-        # Get selected month
+        # Get selected month and year
         self.month_names = ["January", "February", "March", "April", "May", "June", "July","August", "September", "October", "November", "December"]
         selected_month = self.month_selection.value
-        selected_month_index = self.month_names.index(selected_month)
+        selected_month_number = self.month_names.index(selected_month) + 1
         year = self.year_selection.value
         
         #Find client_id
@@ -461,7 +496,7 @@ class DegreeDollars(toga.App):
         #Current Budget
         cursor.execute('''
         SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
-        ''', (self.client_id, year, selected_month_index))
+        ''', (self.client_id, year, selected_month_number))
 
         budget_we_on = cursor.fetchone()
 
@@ -486,7 +521,7 @@ class DegreeDollars(toga.App):
                         cursor.execute(f"USE `{MYSQL_DATABASE}`")
                         cursor.execute("INSERT INTO budgets (client_id, section, subsection, budget_total, month, year) "
                             "VALUES (%s, %s, %s, %s, %s, %s)",
-                            (self.client_id, section_text, subsection_name, float(amount), selected_month_index, year)
+                            (self.client_id, section_text, subsection_name, float(amount), selected_month_number, year)
                             )
         conn.commit()
         budget_id = cursor.lastrowid  # Fetch the inserted budget_id
