@@ -110,6 +110,13 @@ class DegreeDollars(toga.App):
         addexp  = self.empty_box()
         home    = self.empty_box()
 
+        # Add username to Profile tab
+        username_label = toga.Label(
+        f"Hello, {self.username}! Welcome to your Profile!",
+        style=Pack(font_size=18, font_weight="bold", padding=(20, 0), background_color="#C0E4B8")
+        )
+        profile.add(username_label)
+
         # Homescreen
         # Create New Budget Button
         create_budget_box = self.empty_box()
