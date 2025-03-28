@@ -192,7 +192,7 @@ class DegreeDollars(toga.App):
                     font_weight = "bold",
                     color = "#000000",
                     background_color = "#C0E4B8",
-                    text_align = "center"
+                    text_align = CENTER
                 )
             )
             budget_dropdown = toga.Selection(
@@ -201,7 +201,8 @@ class DegreeDollars(toga.App):
                 style = Pack(
                     width = 300,
                     padding = (15, 0, 0)
-                )
+                ),
+                on_change = self.view_edit_budget
             )
             home.add(selectbudget_label, budget_dropdown)
         else:
@@ -212,39 +213,12 @@ class DegreeDollars(toga.App):
                     font_size = 12,
                     color = "#000000",
                     background_color = "#C0E4B8",
-                    text_align = "center"
+                    text_align = CENTER
                 )
             )
+            home.add(selectbudget_label)
         
         # conn.close()
-        """
-        # Display the budget
-        if budget_data:
-            month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
-            home.add(budget_title)
-
-            current_section = None
-            section_box = None
-
-            for section, subsection, budget_total in budget_data:
-                if section != current_section:
-                    current_section = section
-                    section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-                    section_label = toga.Label(section, style=Pack(font_size=18, font_weight="bold",color="#000000"))
-                    section_box.add(section_label)
-                    home.add(section_box)
-
-                sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
-                sub_label = toga.Label(subsection, style=Pack(width=150))
-                budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
-
-                sub_box.add(sub_label, budget_total_label)
-                section_box.add(sub_box)
-    
-        else:
-            home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
-        """
         # Loan Planner
 
         loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000"))
@@ -536,6 +510,65 @@ class DegreeDollars(toga.App):
 
         # Redirect back to home screen
         await self.homescreen(widget)
+
+    #Event handler: user selects a saved budget from the home screen to view/edit
+    async def view_edit_budget(self, widget):
+
+        #Retrieve the month and year of the budget
+        year = widget.value.data[1]
+        month = widget.value.data[0]
+
+        #Stop the function if the user pressed the "Select Budget" placeholder
+        if(year == -1 and month == -1):
+            return
+        
+        # Create database if one isn't already created
+        create_database(self)
+        
+        # Connect to MySQL Server
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+
+        #Define a new screen in which to display the specified budget
+        bg = self.empty_box()
+        budget_display = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
+
+        #Retrieve the budget data from the database
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+        SELECT * FROM budgets WHERE client_id = %s AND year = %s AND month = %s
+        ''', (self.client_id, year, month))
+        budget_info = cursor.fetchall()
+        print(budget_info)
+        conn.close()
+        """
+        # Display the budget
+        if budget_data:
+            month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
+            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
+            home.add(budget_title)
+
+            current_section = None
+            section_box = None
+
+            for section, subsection, budget_total in budget_data:
+                if section != current_section:
+                    current_section = section
+                    section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
+                    section_label = toga.Label(section, style=Pack(font_size=18, font_weight="bold",color="#000000"))
+                    section_box.add(section_label)
+                    home.add(section_box)
+
+                sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
+                sub_label = toga.Label(subsection, style=Pack(width=150))
+                budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
+
+                sub_box.add(sub_label, budget_total_label)
+                section_box.add(sub_box)
+    
+        else:
+            home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
+        """
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
