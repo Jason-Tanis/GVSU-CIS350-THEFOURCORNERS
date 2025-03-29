@@ -354,21 +354,12 @@ class DegreeDollars(toga.App):
         spacer.add(month_box, year_box)
         budget_box.add(spacer)
 
-        #Predefined sections (just to fill in space)
-        sections = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment"]
+        #Predefined sections
+        sections = ["Education", "Housing/Utilities", "Food", "Transportation", "Entertainment",
+                    "Medical", "Other"]
         for section in sections:
             section_box = self.create_budget_section(section)
             budget_box.add(section_box)
-
-        #Box to contain "Add Section" and "Save Budget" buttons
-        add_save_box = self.empty_box()
-
-        # "Add Section" Button
-        add_section_button = toga.Button(
-            "Add Section +", on_press=self.add_budget_section,
-            style=Pack(font_size=18, width=200, height=40, padding=10,color="#000000")
-        )
-        add_save_box.add(add_section_button)
 
         #Save Budget Button
         save_button = toga.Button(
@@ -376,10 +367,7 @@ class DegreeDollars(toga.App):
             on_press=self.save_budget,
             style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=18,color="#000000")
         )
-        add_save_box.add(save_button)
-
-        #Add the add_save_box to the background box
-        budget_box.add(add_save_box)
+        budget_box.add(save_button)
 
         #For Scrolling
         scroll_container = toga.ScrollContainer(content=budget_box, horizontal=False, style=Pack(padding=10))
@@ -425,18 +413,6 @@ class DegreeDollars(toga.App):
         subsection_box.add(remaining_label)
 
         return subsection_box
-            
-    # Event Handlers
-    async def add_budget_section(self, widget):
-
-        #Get the parent and grandparent boxes of the widget
-        parent_box = widget.parent
-        grandparent_box = parent_box.parent
-
-        grandparent_box.remove(parent_box) #Temporarily remove the parent box from the grandparent box
-        new_section = self.create_budget_section("New Section")
-        grandparent_box.add(new_section)
-        grandparent_box.add(parent_box) #Re-insert the parent box beneath the new section
 
     async def add_budget_subsection(self, widget):
         parent_box = widget.parent
@@ -531,7 +507,13 @@ class DegreeDollars(toga.App):
 
         #Define a new screen in which to display the specified budget
         bg = self.empty_box()
-        budget_display = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
+        budget_display = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = COLUMN,
+                padding = (0, 10)
+            )
+        )
 
         #Retrieve the budget data from the database
         cursor.execute(f"USE {MYSQL_DATABASE}")
@@ -541,38 +523,128 @@ class DegreeDollars(toga.App):
         budget_info = cursor.fetchall()
         print(budget_info)
         conn.close()
-        """
-        # Display the budget
-        if budget_data:
-            month_names = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"]
-            budget_title = toga.Label(f"{month_names[latest_month-1]}'s Budget", style=Pack(font_size=20, font_weight="bold",color="#000000"))
-            home.add(budget_title)
 
-            current_section = None
-            section_box = None
+        # Display the budget title
+        month_names = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"]
+        budget_title = toga.Label(f"{month_names[month - 1]} {year}'s Budget", 
+            style = Pack(
+                font_size = 20, 
+                font_weight = "bold",
+                color = "#000000",
+                background_color = "#C0E4B8"
+            )
+        )
+        budget_display.add(budget_title)
 
-            for section, subsection, budget_total in budget_data:
-                if section != current_section:
-                    current_section = section
-                    section_box = toga.Box(style=Pack(direction=COLUMN, padding=10))
-                    section_label = toga.Label(section, style=Pack(font_size=18, font_weight="bold",color="#000000"))
-                    section_box.add(section_label)
-                    home.add(section_box)
+        #Retrieve the first section name and make a section box
+        prev_section = budget_info[0][2]
+        section_box = self.section_display(prev_section)
 
-                sub_box = toga.Box(style=Pack(direction=ROW, padding=5))
-                sub_label = toga.Label(subsection, style=Pack(width=150))
-                budget_total_label = toga.Label(f"${budget_total:.2f}", style=Pack(width=100, text_align=RIGHT,color="#000000"))
+        #Display the remaining budget information
+        for subcat in budget_info:
+            section = subcat[2] #Get section heading
 
-                sub_box.add(sub_label, budget_total_label)
-                section_box.add(sub_box)
-    
-        else:
-            home.add(toga.Label("No budget found. Create a new one!", style=Pack(width=100, text_align=CENTER,color="#000000")))
-        """
+            #If the current section is still the previous section:
+            if(section == prev_section):
+                
+                #Add the subsection to the display
+                subcat_box = self.subsection_display(subcat)
+                section_box.add(subcat_box)
+            
+            #Otherwise, if we have hit a new section:
+            else:
+
+                #Add the previous section box to budget_display
+                budget_display.add(section_box)
+
+                #Retrieve the section name and make a new section box
+                prev_section = section
+                section_box = self.section_display(prev_section)
+
+                #Add the subsection to the display
+                subcat_box = self.subsection_display(subcat)
+                section_box.add(subcat_box)
+
+        #Add the latest section box to budget_display
+        budget_display.add(section_box)
+
+        #Add budget_display to the background box and make a scroll container
+        bg.add(budget_display)
+        scroll_container = toga.ScrollContainer(
+            content = bg,
+            horizontal = False,
+            style = Pack(
+                padding = 10
+            )
+        )
+        
+        #Make the scroll container the main content of the app
+        self.main_window.content = scroll_container
+        self.main_window.show()
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
+    #Helper function for making section boxes and labels
+    def section_display(self, title):
+
+        #Set up a box for the section
+        section_box = toga.Box(
+            style = Pack(
+                background_color = "#F5F5F5",
+                direction = COLUMN,
+                padding = 10
+            )
+        )
+
+        #Make a label to add to the box
+        section_label = toga.Label(
+            title,
+            style = Pack(
+                font_size = 18,
+                font_weight = "bold",
+                color = "#000000",
+                background_color = "#C0E4B8"
+            )
+        )
+        section_box.add(section_label)
+        return section_box
+
+    
+    #Helper function for making subsection boxes and labels
+    def subsection_display(self, subcat):
+        #Make a box for the subsection
+        subcat_box = toga.Box(
+            style = Pack(
+                background_color = "#F5F5F5",
+                direction = ROW,
+                alignment = CENTER,
+                padding = 5
+            )
+        )
+
+        #Add labels for the subsection title and dollar amount
+        subcat_label = toga.Label(
+            subcat[3],
+            style = Pack(
+                width = 100,
+                color = "#000000",
+                background_color = "#F5F5F5"
+            )
+        )
+        amount_label = toga.Label(
+            f"${subcat[4]:.2f}",
+            style = Pack(
+                width = 100,
+                text_align = RIGHT,
+                color = "#000000",
+                background_color = "#F5F5F5"
+            )
+        )
+        subcat_box.add(subcat_label, amount_label)
+        return subcat_box
+    
     #Helper function to define startup screen
     def startscreen(self):
         main_box = self.empty_box() #Create a box for the background
