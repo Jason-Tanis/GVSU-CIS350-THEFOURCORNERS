@@ -520,8 +520,8 @@ class DegreeDollars(toga.App):
         cursor.execute('''
         SELECT * FROM budgets WHERE client_id = %s AND year = %s AND month = %s
         ''', (self.client_id, year, month))
-        budget_info = cursor.fetchall()
-        print(budget_info)
+        self.budget_info = cursor.fetchall()
+        print(self.budget_info)
         conn.close()
 
         # Display the budget title
@@ -538,11 +538,11 @@ class DegreeDollars(toga.App):
         budget_display.add(budget_title)
 
         #Retrieve the first section name and make a section box
-        prev_section = budget_info[0][2]
+        prev_section = self.budget_info[0][2]
         section_box = self.section_display(prev_section)
 
         #Display the remaining budget information
-        for subcat in budget_info:
+        for subcat in self.budget_info:
             section = subcat[2] #Get section heading
 
             #If the current section is still the previous section:
@@ -569,8 +569,26 @@ class DegreeDollars(toga.App):
         #Add the latest section box to budget_display
         budget_display.add(section_box)
 
-        #Add budget_display to the background box and make a scroll container
+        #Add budget_display to the background box
         bg.add(budget_display)
+
+        #Add a home button
+        home_button = toga.Button(
+            "Home",
+            on_press=self.homescreen,
+            style=Pack(
+                background_color="#62C54C",
+                padding=(10, 0, 0),
+                width=150, 
+                height=50, 
+                font_weight="bold", 
+                font_size=14, 
+                color="#000000"
+            )
+        )
+        bg.add(home_button)
+
+        #Make the background a scroll container 
         scroll_container = toga.ScrollContainer(
             content = bg,
             horizontal = False,
@@ -582,6 +600,187 @@ class DegreeDollars(toga.App):
         #Make the scroll container the main content of the app
         self.main_window.content = scroll_container
         self.main_window.show()
+    
+    #Event handler to open the "Add Expense/Income" screen
+    async def exp_income(self, widget, *, budget_row, **kwargs):
+
+        #Create the background box for the input fields to go inside of
+        bg = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8", 
+                direction = COLUMN
+            )
+        )
+        fields = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8", 
+                direction = COLUMN, 
+                width = 350, 
+                padding= (15, 10)
+            )
+        )
+
+        #Add a title
+        #Note: budget_row[0] = budget_id of subcategory
+        #      budget_row[1] = client_id
+        #      budget_row[2] = category
+        #      budget_row[3] = subcategory
+        #      budget_row[4] = amount
+        #      budget_row[5] = month
+        #      budget_row[6] = year
+        #All seven values are needed to save a transaction and 
+        #update the appropriate row in the "budgets" table accordingly
+        budget_title = toga.Label(f"Add Transaction to {budget_row[3]} ({budget_row[2]})", 
+            style = Pack(
+                font_size = 15, 
+                font_weight = "bold",
+                color = "#000000",
+                background_color = "#C0E4B8"
+            )
+        )
+        fields.add(budget_title)
+        
+        #Define user input fields for making a transaction and add them
+
+        #Income/Expense selection
+        ie_box = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = ROW,
+                alignment = CENTER,
+                padding = (15, 0, 0)
+            )
+        )
+        ie_label = toga.Label(
+            "Income or Expense:",
+            style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=14
+            )
+        )
+        self.ie_dropdown = toga.Selection(
+            items = ["Income", "Expense"],
+            style = Pack(width = 100)
+        )
+        ie_box.add(ie_label, self.ie_dropdown)
+        fields.add(ie_box)
+
+        #Date input fields
+        date_box = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = ROW,
+                alignment = CENTER,
+                padding = (15, 0, 0)
+            )
+        )
+        month_label = toga.Label(
+            "Month:",
+             style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=12
+            )           
+        )
+        self.month_input = toga.NumberInput(
+            min = 1,
+            max = 12,
+            value = datetime.datetime.now().month,
+            step = 1,
+            style=Pack(width=50)
+        )
+        day_label = toga.Label(
+            "Day:",
+             style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=12
+            )           
+        )
+        #TODO: currently, the user can input invalid dates because the max
+        #does not account for months with only 30 days, or February/leap years...
+        #how do we prevent these invalid values from being saved? Can we use datetime in Python?
+        self.day_input = toga.NumberInput(
+            min = 1,
+            max = 31,
+            value = datetime.datetime.now().day,
+            step = 1,
+            style=Pack(width=50)
+        ) 
+        year_label = toga.Label(
+            "Year:",
+             style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=12
+            )           
+        )
+        #User can go back to previous year if need be
+        self.year_input = toga.NumberInput(
+            min = datetime.datetime.now().year - 1,
+            value = datetime.datetime.now().year,
+            step = 1,
+            style=Pack(width=75)
+        ) 
+        date_box.add(month_label, self.month_input,
+                     day_label, self.day_input, 
+                     year_label, self.year_input)
+        fields.add(date_box)
+
+        #Amount input field
+        amount_box = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = ROW,
+                alignment = CENTER,
+                padding = (15, 0, 0)
+            )
+        )
+        amount_label = toga.Label(
+            "Amount:",
+             style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=14
+            )           
+        )
+        self.amount_input = toga.NumberInput(
+            min = 0,
+            value = 0,
+            step = 0.01,
+            style=Pack(width=100)
+        )
+        amount_box.add(amount_label, self.amount_input)
+        fields.add(amount_box)   
+
+        #Merchant input field
+        self.merchant_input = self.user_text_input(fields, "Merchant:", "Merchant here")
+
+        #Save button
+        save_button = toga.Button(
+            "Save Transaction",
+            on_press = None,
+            style = Pack(
+                background_color = "#62C54C",
+                padding = (10, 0, 0),
+                width = 250, 
+                height = 50, 
+                font_weight = "bold", 
+                font_size = 14,
+                color = "#000000"
+            )
+        )
+        fields.add(save_button)
+        bg.add(fields)
+
+        #Show the input fields in a new window
+        ie_window = toga.Window(
+            title = "Add Income/Expense",
+            content = bg
+        )
+
+        ie_window.show()
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
@@ -614,6 +813,7 @@ class DegreeDollars(toga.App):
     
     #Helper function for making subsection boxes and labels
     def subsection_display(self, subcat):
+
         #Make a box for the subsection
         subcat_box = toga.Box(
             style = Pack(
@@ -624,7 +824,7 @@ class DegreeDollars(toga.App):
             )
         )
 
-        #Add labels for the subsection title and dollar amount
+        #Make labels for the subsection title and dollar amount
         subcat_label = toga.Label(
             subcat[3],
             style = Pack(
@@ -642,7 +842,17 @@ class DegreeDollars(toga.App):
                 background_color = "#F5F5F5"
             )
         )
-        subcat_box.add(subcat_label, amount_label)
+
+        #Make the income/expense button
+        in_ex = toga.Button(
+            "+/-",
+            on_press = partial(self.exp_income, budget_row = subcat),
+            style = Pack(
+                background_color="#62C54C",
+                width=40, height=25, font_weight="bold", color="#000000"
+            )
+        )
+        subcat_box.add(subcat_label, amount_label, in_ex)
         return subcat_box
     
     #Helper function to define startup screen
@@ -697,11 +907,11 @@ class DegreeDollars(toga.App):
         fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
         
         #Define user input fields for signing up and add them to the fields box
-        self.first_name_input = self.sign_log_field(fields, "First Name:", "First name here")
-        self.last_name_input = self.sign_log_field(fields, "Last Name:", "Last name here")
-        self.username_input = self.sign_log_field(fields, "Username:", "Username here")
-        self.password_input = self.sign_log_field(fields, "Password:", "Password here")
-        self.password_confirmation_input = self.sign_log_field(fields, "Confirm Password:", "Password here")
+        self.first_name_input = self.user_text_input(fields, "First Name:", "First name here")
+        self.last_name_input = self.user_text_input(fields, "Last Name:", "Last name here")
+        self.username_input = self.user_text_input(fields, "Username:", "Username here")
+        self.password_input = self.user_text_input(fields, "Password:", "Password here")
+        self.password_confirmation_input = self.user_text_input(fields, "Confirm Password:", "Password here")
 
         #"Sign Up" and "Cancel" buttons
         buttons=toga.Box(style=Pack(background_color="#C0E4B8", color="#000000", direction=ROW, alignment=CENTER, padding=(15, 0, 0)))
@@ -738,8 +948,8 @@ class DegreeDollars(toga.App):
         fields=toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, width=350))
         
         #Define user input fields for logging in and add them to the fields box
-        self.login_input = self.sign_log_field(fields, "Username:", "Username here")
-        self.password_input = self.sign_log_field(fields, "Password:", "Password here")
+        self.login_input = self.user_text_input(fields, "Username:", "Username here")
+        self.password_input = self.user_text_input(fields, "Password:", "Password here")
 
         #"Log In" and "Cancel" buttons
         buttons=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
@@ -765,12 +975,13 @@ class DegreeDollars(toga.App):
         grandparent_box.add(fields)       
 
     #Helper function to make a signup/login field
-    def sign_log_field(self, parent_box, field_label, placeholder_text):
+    def user_text_input(self, parent_box, field_label, placeholder_text):
         field_box=toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER,
                            padding=(15, 0, 0)))
         field_label=toga.Label(field_label, style=Pack(background_color="#C0E4B8", color="#000000", font_size=14))
         
-        if field_label=="Password:" or field_label == "Confirm Password:":
+        #TODO: Why is the password field not displaying text as dots?
+        if field_label == "Password:" or field_label == "Confirm Password:":
             field_input=toga.PasswordInput(placeholder=placeholder_text, style=Pack(width=150, background_color="#F5F5F5", color="#000000"))
         else:
             field_input=toga.TextInput(placeholder=placeholder_text, style=Pack(width=150, background_color="#F5F5F5", color="#000000"))
