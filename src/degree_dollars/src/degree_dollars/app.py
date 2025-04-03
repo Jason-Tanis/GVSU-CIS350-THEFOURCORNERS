@@ -168,8 +168,8 @@ class DegreeDollars(toga.App):
         ''', (self.client_id,))
         all_budgets = cursor.fetchall()
 
-        #List for displaying dropdown menu options (initially contains only a placeholder dictionary)
-        dropdown_options = [{"name": "Select Budget", "data": (-1, -1)}]
+        #List for displaying dropdown menu options
+        dropdown_options = []
 
         #List of month names
         month_names = ["January", "February", "March", "April", "May", "June", 
@@ -184,7 +184,6 @@ class DegreeDollars(toga.App):
                 budget_title = f"{month_name} {year}"
                 tmp_dictionary = {"name": budget_title, "data": budget}
                 dropdown_options.append(tmp_dictionary)
-            print(dropdown_options)
             selectbudget_label = toga.Label(
                 "View/Edit Budget",
                 style = Pack(
@@ -491,15 +490,14 @@ class DegreeDollars(toga.App):
     async def view_edit_budget(self, widget):
 
         #Retrieve the month and year of the budget
-        year = widget.value.data[1]
         month = widget.value.data[0]
-
-        #Stop the function if the user pressed the "Select Budget" placeholder
-        if(year == -1 and month == -1):
-            return
+        year = widget.value.data[1]
         
-        # Create database if one isn't already created
-        create_database(self)
+        #Display the budget
+        self.display_budget(month, year)
+
+    #Helper function to display a saved budget
+    def display_budget(self, month, year):
         
         # Connect to MySQL Server
         conn = mysql.connector.connect(**config)
@@ -521,7 +519,6 @@ class DegreeDollars(toga.App):
         SELECT * FROM budgets WHERE client_id = %s AND year = %s AND month = %s
         ''', (self.client_id, year, month))
         self.budget_info = cursor.fetchall()
-        print(self.budget_info)
         conn.close()
 
         # Display the budget title
@@ -572,7 +569,22 @@ class DegreeDollars(toga.App):
         #Add budget_display to the background box
         bg.add(budget_display)
 
-        #Add a home button
+        #Make the income/expense button
+        in_ex = toga.Button(
+            "Income/Expense +/-",
+            on_press = partial(self.exp_income, month = month, year = year),
+            style = Pack(
+                background_color="#62C54C",
+                padding=(10, 0, 0),
+                width=250, 
+                height=50, 
+                font_weight="bold", 
+                font_size=14, 
+                color="#000000"
+            )
+        )
+
+        #Make a home button
         home_button = toga.Button(
             "Home",
             on_press=self.homescreen,
@@ -586,7 +598,7 @@ class DegreeDollars(toga.App):
                 color="#000000"
             )
         )
-        bg.add(home_button)
+        bg.add(in_ex, home_button)
 
         #Make the background a scroll container 
         scroll_container = toga.ScrollContainer(
@@ -602,7 +614,11 @@ class DegreeDollars(toga.App):
         self.main_window.show()
     
     #Event handler to open the "Add Expense/Income" screen
-    async def exp_income(self, widget, *, budget_row, **kwargs):
+    async def exp_income(self, widget, *, month, year, **kwargs):
+
+        month_names = ["January", "February", "March", "April", "May", "June", 
+                       "July", "August", "September", "October", "November", "December"]
+        month_name = month_names[month - 1]
 
         #Create the background box for the input fields to go inside of
         bg = toga.Box(
@@ -621,16 +637,7 @@ class DegreeDollars(toga.App):
         )
 
         #Add a title
-        #Note: budget_row[0] = budget_id of subcategory
-        #      budget_row[1] = client_id
-        #      budget_row[2] = category
-        #      budget_row[3] = subcategory
-        #      budget_row[4] = amount
-        #      budget_row[5] = month
-        #      budget_row[6] = year
-        #All seven values are needed to save a transaction and 
-        #update the appropriate row in the "budgets" table accordingly
-        budget_title = toga.Label(f"Add Transaction to {budget_row[3]} ({budget_row[2]})", 
+        budget_title = toga.Label(f"Add Transaction to {month_name} {year}'s Budget", 
             style = Pack(
                 font_size = 15, 
                 font_weight = "bold",
@@ -688,22 +695,22 @@ class DegreeDollars(toga.App):
         
         cursor.execute(f"USE {MYSQL_DATABASE}")
         
-        cursor.execute(f'''SELECT * FROM budgets WHERE client_id = %s
+        cursor.execute('''SELECT DISTINCT section FROM budgets 
+            WHERE client_id = %s AND month = %s AND year = %s
             ''',
-                       (self.client_id,))
+                       (self.client_id, month, year))
         result = cursor.fetchall()
         if result:
-            section_selection = [row[2] for row in result]
+            section_selection = result
         else:
             print("Could not find section.")
             return
                        
         self.section_dropdown = toga.Selection(
             items = section_selection,
-            style = Pack(width = 100)
+            style = Pack(width = 100),
+            on_change = partial(self.update_subsections, month = month, year = year),
         )
-        self.section_dropdown.on_select = self.update_subsections
-        
         section_box.add(section_label, self.section_dropdown)
         fields.add(section_box)
         
@@ -725,12 +732,12 @@ class DegreeDollars(toga.App):
             )
         )
         
-        cursor.execute(f'''SELECT * FROM budgets WHERE client_id = %s AND section = %s
-            ''',
-                       (self.client_id,self.section_dropdown.value))
+        cursor.execute('''SELECT subsection FROM budgets WHERE client_id = %s AND section = %s
+        AND month = %s AND year = %s''',
+                       (self.client_id, self.section_dropdown.value, month, year))
         result = cursor.fetchall()
         if result:
-            subsection_selection = [row[3] for row in result]
+            subsection_selection = result
         else:
             print("Could not find subsection.")
             return
@@ -775,9 +782,7 @@ class DegreeDollars(toga.App):
                 font_size=12
             )           
         )
-        #TODO: currently, the user can input invalid dates because the max
-        #does not account for months with only 30 days, or February/leap years...
-        #how do we prevent these invalid values from being saved? Can we use datetime in Python?
+
         self.day_input = toga.NumberInput(
             min = 1,
             max = 31,
@@ -837,7 +842,7 @@ class DegreeDollars(toga.App):
         #Save button
         save_button = toga.Button(
             "Save Transaction",
-            on_press = self.save_transaction,
+            on_press = partial(self.save_transaction, month = month, year = year),
             style = Pack(
                 background_color = "#62C54C",
                 padding = (10, 0, 0),
@@ -859,7 +864,7 @@ class DegreeDollars(toga.App):
 
         ie_window.show()
         
-    async def save_transaction(self, widget):
+    async def save_transaction(self, widget, *, month, year, **kwargs):
         
         #Connect to database
         conn = mysql.connector.connect(**config)
@@ -867,8 +872,11 @@ class DegreeDollars(toga.App):
         
         cursor.execute(f"USE {MYSQL_DATABASE}")
         
-        cursor.execute(f"SELECT * FROM budgets WHERE client_id = %s AND section = %s AND subsection = %s",
-                        (self.client_id, self.section_dropdown.value, self.subsection_dropdown.value))
+        cursor.execute('''
+        SELECT * FROM budgets WHERE client_id = %s AND section = %s AND subsection = %s
+        AND month = %s AND year = %s''',
+                        (self.client_id, self.section_dropdown.value, self.subsection_dropdown.value,
+                        month, year))
         result = cursor.fetchone()
         if result:
             budget_id = result[0]
@@ -911,18 +919,22 @@ class DegreeDollars(toga.App):
         conn.close()
         
         print("Transaction saved successfully.")
-        await self.homescreen(widget)
 
-    async def update_subsections(self, widget):
+        #Close the transaction window and return to homescreen
+        widget.parent.parent.window.close()
+        self.display_budget(month, year)
+
+    async def update_subsections(self, widget, *, month, year, **kwargs):
         selected_section = widget.value
 
         conn = mysql.connector.connect(**config)
         cursor = conn.cursor()
         cursor.execute(f"USE {MYSQL_DATABASE}")
     
-        cursor.execute(
-            "SELECT subsection FROM budgets WHERE client_id = %s AND section = %s",
-            (self.client_id, selected_section)
+        cursor.execute('''
+            SELECT subsection FROM budgets WHERE client_id = %s AND section = %s
+            AND month = %s AND year = %s''',
+            (self.client_id, selected_section, month, year)
         )
         results = cursor.fetchall()
         conn.close()
@@ -995,17 +1007,7 @@ class DegreeDollars(toga.App):
                 background_color = "#F5F5F5"
             )
         )
-
-        #Make the income/expense button
-        in_ex = toga.Button(
-            "+/-",
-            on_press = partial(self.exp_income, budget_row = subcat),
-            style = Pack(
-                background_color="#62C54C",
-                width=40, height=25, font_weight="bold", color="#000000"
-            )
-        )
-        subcat_box.add(subcat_label, amount_label, in_ex)
+        subcat_box.add(subcat_label, amount_label)
         return subcat_box
     
     #Helper function to define startup screen
