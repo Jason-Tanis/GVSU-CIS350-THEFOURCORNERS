@@ -702,6 +702,8 @@ class DegreeDollars(toga.App):
             items = section_selection,
             style = Pack(width = 100)
         )
+        self.section_dropdown.on_select = self.update_subsections
+        
         section_box.add(section_label, self.section_dropdown)
         fields.add(section_box)
         
@@ -910,6 +912,28 @@ class DegreeDollars(toga.App):
         
         print("Transaction saved successfully.")
         await self.homescreen(widget)
+
+    async def update_subsections(self, widget):
+        selected_section = widget.value
+
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+    
+        cursor.execute(
+            "SELECT subsection FROM budgets WHERE client_id = %s AND section = %s",
+            (self.client_id, selected_section)
+        )
+        results = cursor.fetchall()
+        conn.close()
+
+        if results:
+            subsections = [row[0] for row in results]
+            self.subsection_dropdown.items = subsections
+        else:
+            self.subsection_dropdown.items = []
+            print("No subsections found.")
+
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
