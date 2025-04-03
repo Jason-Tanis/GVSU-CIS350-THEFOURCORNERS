@@ -665,6 +665,81 @@ class DegreeDollars(toga.App):
         )
         ie_box.add(ie_label, self.ie_dropdown)
         fields.add(ie_box)
+        
+        #Section Selection
+        section_box = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = ROW,
+                alignment = CENTER,
+                padding = (15, 0, 0)
+            )
+        )
+        section_label = toga.Label(
+            "Section:",
+            style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=14
+            )
+        )
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        
+        cursor.execute(f'''SELECT * FROM budgets WHERE client_id = %s
+            ''',
+                       (self.client_id,))
+        result = cursor.fetchall()
+        if result:
+            section_selection = [row[2] for row in result]
+        else:
+            print("Could not find section.")
+            return
+                       
+        self.section_dropdown = toga.Selection(
+            items = section_selection,
+            style = Pack(width = 100)
+        )
+        section_box.add(section_label, self.section_dropdown)
+        fields.add(section_box)
+        
+        #Subsection Selection
+        subsection_box = toga.Box(
+            style = Pack(
+                background_color = "#C0E4B8",
+                direction = ROW,
+                alignment = CENTER,
+                padding = (15, 0, 0)
+            )
+        )
+        subsection_label = toga.Label(
+            "Subsection:",
+            style=Pack(
+                background_color="#C0E4B8",
+                color="#000000",
+                font_size=14
+            )
+        )
+        
+        cursor.execute(f'''SELECT * FROM budgets WHERE client_id = %s AND section = %s
+            ''',
+                       (self.client_id,self.section_dropdown.value))
+        result = cursor.fetchall()
+        if result:
+            subsection_selection = [row[3] for row in result]
+        else:
+            print("Could not find subsection.")
+            return
+                       
+        self.subsection_dropdown = toga.Selection(
+            items = subsection_selection,
+            style = Pack(width = 100)
+        )
+        subsection_box.add(subsection_label, self.subsection_dropdown)
+        fields.add(subsection_box)
+
 
         #Date input fields
         date_box = toga.Box(
@@ -760,7 +835,7 @@ class DegreeDollars(toga.App):
         #Save button
         save_button = toga.Button(
             "Save Transaction",
-            on_press = None,
+            on_press = self.save_transaction,
             style = Pack(
                 background_color = "#62C54C",
                 padding = (10, 0, 0),
@@ -781,6 +856,60 @@ class DegreeDollars(toga.App):
         )
 
         ie_window.show()
+        
+    async def save_transaction(self, widget):
+        
+        #Connect to database
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        
+        cursor.execute(f"SELECT * FROM budgets WHERE client_id = %s AND section = %s AND subsection = %s",
+                        (self.client_id, self.section_dropdown.value, self.subsection_dropdown.value))
+        result = cursor.fetchone()
+        if result:
+            budget_id = result[0]
+        else:
+            print("Could not find budget_id.")
+            return
+        
+        try:
+            date_object = datetime.date(
+                int(self.year_input.value),
+                int(self.month_input.value),
+                int(self.day_input.value)
+            )
+        except ValueError:
+            print("Invalid date.")
+            return
+        
+        amount = float(self.amount_input.value)
+        
+        cursor.execute('''
+            INSERT INTO transactions (client_id, budget_id, date, amount, merchant, expense)
+            VALUES (%s, %s, %s, %s, %s, %s)
+            ''',
+                       (self.client_id, budget_id, date_object, amount, self.merchant_input.value, True if self.ie_dropdown.value == "Expense" else False))
+                       
+        #Update Budget Totals
+        if self.ie_dropdown.value == "Expense":
+            # Subtract from total for expenses
+            cursor.execute(
+            "UPDATE budgets SET budget_total = budget_total - %s WHERE budget_id = %s",
+            (amount, budget_id)
+            )
+        else:
+            # Add to total for incomes
+            cursor.execute(
+                "UPDATE budgets SET budget_total = budget_total + %s WHERE budget_id = %s",
+                (amount, budget_id)
+            )
+        conn.commit()
+        conn.close()
+        
+        print("Transaction saved successfully.")
+        await self.homescreen(widget)
 
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
