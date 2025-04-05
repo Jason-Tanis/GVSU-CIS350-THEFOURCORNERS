@@ -1152,10 +1152,21 @@ class DegreeDollars(toga.App):
         self.username = self.username_input.value
         self.password = self.password_input.value
         self.password_confirmation = self.password_confirmation_input.value
+
+        signup_info = [self.first_name, self.last_name, self.username, self.password,
+                       self.password_confirmation]
+
+        #Display a dialog box if the user does not provide text in all input fields
+        for value in signup_info:
+            if value.replace(" ", "") == "":
+                invalid = toga.InfoDialog("Sign Up Failed", "Please complete all fields")
+                await self.main_window.dialog(invalid)
+                return
         
-        #Password validation
+        #Display a dialog box if the two password fields to not match
         if self.password != self.password_confirmation:
-            print("Passwords do not match.")
+            invalid = toga.InfoDialog("Sign Up Failed", "Passwords do not match")
+            await self.main_window.dialog(invalid)
             return
                 
         #Connect to database
@@ -1163,6 +1174,19 @@ class DegreeDollars(toga.App):
         cursor = conn.cursor()
         
         cursor.execute(f"USE {MYSQL_DATABASE}")
+
+        #Display a dialog box if the username or password already exist
+        cursor.execute('''
+            SELECT username, password FROM profile WHERE username = %s or password = %s
+            ''',
+                        (self.username, self.password))
+        result = cursor.fetchall()
+        if result:
+            invalid = toga.InfoDialog("Sign Up Failed", "Username or password already exist")
+            await self.main_window.dialog(invalid)
+            return
+
+        #If none of the above errors are caught, save the account info
         cursor.execute('''
             INSERT INTO profile (first_name, last_name, username, password)
             VALUES (%s, %s, %s, %s)
@@ -1198,7 +1222,8 @@ class DegreeDollars(toga.App):
             await self.homescreen(widget)
         
         else:
-            print("Invalid username or password")
+            invalid = toga.InfoDialog("Login Failed", "Invalid username or password")
+            await self.main_window.dialog(invalid)
             
         conn.close()
         
