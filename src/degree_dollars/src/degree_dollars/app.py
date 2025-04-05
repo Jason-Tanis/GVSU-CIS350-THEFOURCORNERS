@@ -334,13 +334,13 @@ class DegreeDollars(toga.App):
         title = toga.Label("Create New Budget", style=Pack(background_color="#C0E4B8", color="#000000", font_size=24, font_weight="bold", padding=(10, 0)))
         budget_box.add(title)
 
-        #Add a box in which the user can specify the current month
+        #Add a box in which the user can specify the current month and year
         spacer = toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, padding=(0,10)))
         month_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
         year_box = toga.Box(style=Pack(background_color="#C0E4B8", direction=ROW, alignment=CENTER))
 
-        monthfield_label = toga.Label("Month", style=Pack(color="#000000", font_size=18, padding_left=10))
-        yearfield_label = toga.Label("Year", style=Pack(color="#000000", font_size=18, padding_left=10))
+        monthfield_label = toga.Label("Month", style=Pack(background_color="#C0E4B8", color="#000000", font_size=18, padding_left=10))
+        yearfield_label = toga.Label("Year", style=Pack(background_color="#C0E4B8", color="#000000", font_size=18, padding_left=10))
         months = ["January", "February", "March", "April", "May", "June", "July",
           "August", "September", "October", "November", "December"]
         current_month_index = datetime.datetime.now().month - 1
@@ -364,9 +364,31 @@ class DegreeDollars(toga.App):
         save_button = toga.Button(
             "Save Budget",
             on_press=self.save_budget,
-            style=Pack(background_color="#62C54C", padding=(10, 0, 10), width=200, height=50, font_weight="bold", font_size=18,color="#000000")
+            style=Pack(
+                background_color="#62C54C", 
+                padding=(10, 0, 10), 
+                width=150, 
+                height=50, 
+                font_weight="bold", 
+                font_size=14,
+                color="#000000"
+            )
         )
-        budget_box.add(save_button)
+        #Home button
+        home_button = toga.Button(
+            "Home",
+            on_press=self.homescreen,
+            style=Pack(
+                background_color="#62C54C",
+                padding=(0, 0, 10),
+                width=150, 
+                height=50, 
+                font_weight="bold", 
+                font_size=14, 
+                color="#000000"
+            )
+        )
+        budget_box.add(save_button, home_button)
 
         #For Scrolling
         scroll_container = toga.ScrollContainer(content=budget_box, horizontal=False, style=Pack(padding=10))
@@ -379,7 +401,6 @@ class DegreeDollars(toga.App):
         
         # title
         section_label = toga.Label(section, style=Pack(font_size=20, font_weight="bold",color="#000000"))
-        print(section_label)
         section_box.add(section_label)
         
         # default subsections
@@ -421,6 +442,7 @@ class DegreeDollars(toga.App):
         parent_box.add(widget) #Re-insert the "Add Subsection +" button
         
     async def save_budget(self, widget):
+
         # Create database if one isn't already created
         create_database(self)
         
@@ -449,6 +471,16 @@ class DegreeDollars(toga.App):
             print("Error: client_id not found")
             return
 
+        #Display a dialog box if the user has already saved a budget for the same month and year
+        cursor.execute('''
+        SELECT month, year FROM budgets WHERE client_id = %s AND month = %s AND year = %s
+        ''', (self.client_id, selected_month_number, year))
+        result = cursor.fetchone()
+        if result:
+            invalid = toga.InfoDialog("Duplicate budget", f"You have already saved a budget for {selected_month} {year}")
+            await self.main_window.dialog(invalid)
+            return           
+
         #Current Budget
         cursor.execute('''
         SELECT budget_id FROM budgets WHERE client_id = %s AND year = %s AND month = %s
@@ -457,7 +489,7 @@ class DegreeDollars(toga.App):
         budget_we_on = cursor.fetchone()
 
         # Iterate through sections and save them
-        for section in self.main_window.content.content.children[2:-1]:
+        for section in self.main_window.content.content.children[2:-2]:
             if isinstance(section, toga.Box):  # Ensure it's a section
                 section_name = section.children[0]  # First child is the section label
                 section_text = section_name.text
@@ -590,7 +622,7 @@ class DegreeDollars(toga.App):
             on_press=self.homescreen,
             style=Pack(
                 background_color="#62C54C",
-                padding=(10, 0, 0),
+                padding=(10, 0, 10),
                 width=150, 
                 height=50, 
                 font_weight="bold", 
