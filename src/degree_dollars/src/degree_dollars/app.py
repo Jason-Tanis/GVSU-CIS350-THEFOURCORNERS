@@ -648,6 +648,11 @@ class DegreeDollars(toga.App):
     #Event handler to open the "Add Expense/Income" screen
     async def exp_income(self, widget, *, month, year, **kwargs):
 
+        #Temporarily remove the "Income/Expense +/-" and "Home" buttons
+        parent_box = widget.parent
+        home_button = parent_box.children[parent_box.index(widget) + 1]
+        parent_box.remove(home_button, widget)
+
         month_names = ["January", "February", "March", "April", "May", "June", 
                        "July", "August", "September", "October", "November", "December"]
         month_name = month_names[month - 1]
@@ -885,16 +890,36 @@ class DegreeDollars(toga.App):
                 color = "#000000"
             )
         )
-        fields.add(save_button)
+
+        #Cancel button
+        cancel_button = toga.Button(
+            "Cancel",
+            on_press = partial(self.close_transaction, month = month, year = year),
+            style = Pack(
+                background_color = "#62C54C",
+                padding = (10, 0, 0),
+                width = 150, 
+                height = 50, 
+                font_weight = "bold", 
+                font_size = 14,
+                color = "#000000"
+            )
+        )
+        fields.add(save_button, cancel_button)
         bg.add(fields)
 
         #Show the input fields in a new window
         ie_window = toga.Window(
             title = "Add Income/Expense",
-            content = bg
+            content = bg,
+            closable = False
         )
 
         ie_window.show()
+
+    async def close_transaction(self, widget, *, month, year, **kwargs):
+        widget.parent.parent.window.close()
+        self.display_budget(month, year)
         
     async def save_transaction(self, widget, *, month, year, **kwargs):
         
