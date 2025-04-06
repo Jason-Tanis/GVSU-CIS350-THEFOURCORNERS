@@ -785,6 +785,7 @@ class DegreeDollars(toga.App):
         )
         subsection_box.add(subsection_label, self.subsection_dropdown)
         fields.add(subsection_box)
+        conn.close()
 
 
         #Date input fields
@@ -910,7 +911,7 @@ class DegreeDollars(toga.App):
 
         #Show the input fields in a new window
         ie_window = toga.Window(
-            title = "Add Income/Expense",
+            title = "Add Transaction",
             content = bg,
             closable = False
         )
@@ -922,6 +923,20 @@ class DegreeDollars(toga.App):
         self.display_budget(month, year)
         
     async def save_transaction(self, widget, *, month, year, **kwargs):
+
+        #Do not save the transaction if the amount is $0.00
+        amount = float(self.amount_input.value)
+
+        if amount == 0:
+            invalid = toga.InfoDialog("Transaction Failed", "Please enter a non-zero dollar amount")
+            await self.main_window.dialog(invalid)
+            return
+
+        #Do not save the transaction if no merchant is provided
+        if self.merchant_input.value.replace(" ", "") == "":
+            invalid = toga.InfoDialog("Transaction Failed", "Please enter a merchant name")
+            await self.main_window.dialog(invalid)
+            return
         
         #Connect to database
         conn = mysql.connector.connect(**config)
@@ -948,10 +963,9 @@ class DegreeDollars(toga.App):
                 int(self.day_input.value)
             )
         except ValueError:
-            print("Invalid date.")
+            invalid = toga.InfoDialog("Transaction Failed", "Invalid date")
+            await self.main_window.dialog(invalid)
             return
-        
-        amount = float(self.amount_input.value)
         
         cursor.execute('''
             INSERT INTO transactions (client_id, budget_id, date, amount, merchant, expense)
@@ -1003,7 +1017,6 @@ class DegreeDollars(toga.App):
             self.subsection_dropdown.items = []
             print("No subsections found.")
 
-
     def empty_box(self):
         return toga.Box(style=Pack(background_color="#C0E4B8", direction=COLUMN, alignment=CENTER))
 
@@ -1050,7 +1063,7 @@ class DegreeDollars(toga.App):
         subcat_label = toga.Label(
             subcat[3],
             style = Pack(
-                width = 100,
+                width = 150,
                 color = "#000000",
                 background_color = "#F5F5F5"
             )
