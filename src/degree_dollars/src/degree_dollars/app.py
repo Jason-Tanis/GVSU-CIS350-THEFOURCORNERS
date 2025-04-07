@@ -1363,8 +1363,9 @@ class DegreeDollars(toga.App):
         
         #Build UI
         history_box = self.empty_box()
+        month_name = datetime.date(1900, month, 1).strftime('%B') # converts the number to the month
         title = toga.Label(
-            f"Transaction History — {month_name} {year}"",
+            f"Transaction History — {month_name} {year}",
             style=Pack(font_size=24, font_weight="bold", color="#000000", padding=(10, 0))
                            )
         history_box.add(title)
