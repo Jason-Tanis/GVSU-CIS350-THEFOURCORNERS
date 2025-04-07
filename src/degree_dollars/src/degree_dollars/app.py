@@ -107,7 +107,7 @@ class DegreeDollars(toga.App):
         #Create boxes for each navigation bar tab (currently, they are all empty boxes except for home content)
         profile = self.empty_box()
         loan    = self.empty_box()
-        addexp  = self.empty_box()
+        history = self.empty_box()
         home    = self.empty_box()
 
         # Add username to Profile tab
@@ -119,24 +119,22 @@ class DegreeDollars(toga.App):
 
         # Homescreen
         # Create New Budget Button
-        create_budget_box = self.empty_box()
         create_budget_button = toga.Button(
             "Create New Budget",
             on_press=self.create_budget_view,
-            style=Pack(background_color="#62C54C", padding=(35, 0, 35),
+            style=Pack(background_color="#62C54C", padding=(35, 0, 0),
             width=300, height=55, font_weight="bold", font_size=18,color="#000000")
         )
-        create_budget_box.add(create_budget_button)
-        home.add(create_budget_box)
+        home.add(create_budget_button)
 
         #Create navigation bar as an OptionContainer
         navbar = toga.OptionContainer(
                 style = Pack(background_color = ("#62C54C")),
                 content = [
-                    toga.OptionItem("Profile", profile, icon = toga.Icon("PTab")),
-                    toga.OptionItem("Home", home, icon = toga.Icon("HTab")),
-                    toga.OptionItem("Loan Planner", loan, icon = toga.Icon("LTab")),
-                    toga.OptionItem("History", addexp, icon = toga.Icon("ATab"))
+                    toga.OptionItem("Profile", profile),
+                    toga.OptionItem("Home", home),
+                    toga.OptionItem("Loan Planner", loan),
+                    toga.OptionItem("History", history)
                 ]
         )
 
@@ -176,7 +174,8 @@ class DegreeDollars(toga.App):
                        "July", "August", "September", "October", "November", "December"]
         
         #If the user has saved at least one budget,
-        #create and add a dropdown menu to select one of the saved budgets
+        #create and add a dropdown menu to select one of the saved budgets to view/edit
+        #(these widgets will appear on the Home screen)
         if all_budgets:
             for budget in all_budgets:
                 month_name = month_names[budget[0] - 1]
@@ -191,7 +190,8 @@ class DegreeDollars(toga.App):
                     font_weight = "bold",
                     color = "#000000",
                     background_color = "#C0E4B8",
-                    text_align = CENTER
+                    text_align = CENTER,
+                    padding = (35, 0, 0)
                 )
             )
             budget_dropdown = toga.Selection(
@@ -212,11 +212,50 @@ class DegreeDollars(toga.App):
                     font_size = 12,
                     color = "#000000",
                     background_color = "#C0E4B8",
-                    text_align = CENTER
+                    text_align = CENTER,
+                    padding = (35, 0, 0)
                 )
             )
             home.add(selectbudget_label)
-        
+
+        #If the user has saved at least one budget,
+        #create and add a dropdown menu to select one of the saved budgets to view transaction history for
+        #(these widgets will appear on the History screen) 
+        if all_budgets:
+            history_label = toga.Label(
+                "View Transaction History for a Saved Budget",
+                style = Pack(
+                    font_size = 14,
+                    font_weight = "bold",
+                    color = "#000000",
+                    background_color = "#C0E4B8",
+                    padding = (35, 0, 0),
+                    text_align = CENTER
+                )
+            )
+            history_dropdown = toga.Selection(
+                items = dropdown_options, 
+                accessor = "name",
+                style = Pack(
+                    width = 300,
+                    padding = (15, 0, 0)
+                )#,
+                #on_change = self.see_my_history
+            )
+            history.add(history_label, history_dropdown)
+        else:
+            history_label = toga.Label(
+                "No saved budgets found. Create a new one!",
+                style = Pack(
+                    font_size = 12,
+                    color = "#000000",
+                    background_color = "#C0E4B8",
+                    text_align = CENTER,
+                    padding = (35, 0, 0)
+                )
+            )
+            history.add(history_label)
+
         # conn.close()
         # Loan Planner
 
