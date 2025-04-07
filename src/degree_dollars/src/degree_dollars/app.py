@@ -137,6 +137,8 @@ class DegreeDollars(toga.App):
                     toga.OptionItem("History", history)
                 ]
         )
+        
+        self.history_box = history
 
         #Make "Home" the currently open tab
         navbar.current_tab = "Home"
@@ -239,8 +241,8 @@ class DegreeDollars(toga.App):
                 style = Pack(
                     width = 300,
                     padding = (15, 0, 0)
-                )#,
-                #on_change = self.see_my_history
+                ),
+                on_change = self.see_my_history
             )
             history.add(history_label, history_dropdown)
         else:
@@ -1335,7 +1337,109 @@ class DegreeDollars(toga.App):
             await self.main_window.dialog(invalid)
             
         conn.close()
+    
+    #Create See My History feature
+    async def see_my_history(self, widget):
+        month, year = widget.value.data
         
+        await self.display_transaction_history(month, year)
+        
+    async def display_transaction_history(self, month, year):
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+    
+        # Get transaction info for this month/year for this user
+        cursor.execute('''
+            SELECT t.date, b.section, b.subsection, t.amount, t.merchant, t.expense
+            FROM transactions t
+            JOIN budgets b ON t.budget_id = b.budget_id
+            WHERE t.client_id = %s AND MONTH(t.date) = %s AND YEAR(t.date) = %s
+            ORDER BY t.date ASC
+        ''', (self.client_id, month, year))
+
+        transactions = cursor.fetchall()
+        conn.close()
+        
+        #Build UI
+        history_box = self.empty_box()
+        title = toga.Label(
+            f"Transaction History",
+            style=Pack(font_size=24, font_weight="bold", color="#000000", padding=(10, 0))
+                           )
+        history_box.add(title)
+        
+        if transactions:
+            for trans in transactions:
+                date, section, subsec, amount, merchant, is_expense = trans
+                color = "#d9534f" if is_expense else "#5cb85c"
+                sign = "-" if is_expense else "+"
+                
+                #Style of each transaction
+                card = toga.Box(
+                    style=Pack(
+                        direction=ROW,
+                        padding=10,
+                        background_color="#F5F5F5",
+                        width=350,
+                        alignment=CENTER
+                    )
+                )
+                
+                #Amount Box
+                amount_label = toga.Label(
+                    f"{sign}${amount:.2f}",
+                    style=Pack(font_size=18, color=color, padding_bottom=5)
+                )
+                
+                amount_box = toga.Box(
+                    style=Pack(direction=COLUMN, alignment=LEFT, width=80)
+                )
+                
+                amount_box.add(amount_label)
+                
+                #Text Box
+                merchant_label = toga.Label(
+                    merchant,
+                    style=Pack(font_size=16, color="#000000", padding_bottom=3)
+                )
+                subsection_label = toga.Label(
+                    subsec.capitalize(),
+                    style=Pack(font_size=18, font_weight="bold", color="#000000", padding_bottom=5)
+                )
+                
+                text_box = toga.Box(
+                    style=Pack(direction=COLUMN, width=160)
+                )
+                text_box.add(subsection_label, merchant_label)
+                
+                #Date Box
+                month_label = toga.Label(
+                    date.strftime('%b'),
+                    style=Pack(font_size=14, font_weight="bold", color="#000000", text_align=CENTER)
+                )
+                day_label = toga.Label(
+                    str(date.day),
+                    style=Pack(font_size=14, color="#000000", text_align=CENTER)
+                )
+                
+                date_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, width=50, padding_right=10))
+                date_box.add(month_label, day_label)
+
+                card.add(date_box, text_box, amount_box)
+                history_box.add(card)
+                
+        else:
+            history_box.add(toga.Label("No transactions found.", style=Pack(font_size=14, color="#000000", padding=10)))
+            
+        history_box.add(title)
+
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        history_box.add(back_btn)
+            
+        scroll = toga.ScrollContainer(content=history_box, horizontal=False, style=Pack(padding=10))
+        self.main_window.content = scroll
+        self.main_window.show()
         
 def main():
     return DegreeDollars()
