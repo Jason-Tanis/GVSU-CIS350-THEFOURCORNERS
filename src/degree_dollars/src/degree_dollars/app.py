@@ -137,6 +137,8 @@ class DegreeDollars(toga.App):
                     toga.OptionItem("History", history)
                 ]
         )
+        
+        self.history_box = history
 
         #Make "Home" the currently open tab
         navbar.current_tab = "Home"
@@ -1335,7 +1337,7 @@ class DegreeDollars(toga.App):
             await self.main_window.dialog(invalid)
             
         conn.close()
-        
+    
     #Create See My History feature
     async def see_my_history(self, widget):
         month, year = widget.value.data
