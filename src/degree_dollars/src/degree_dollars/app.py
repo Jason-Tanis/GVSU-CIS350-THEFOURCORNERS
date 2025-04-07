@@ -1364,7 +1364,7 @@ class DegreeDollars(toga.App):
         #Build UI
         history_box = self.empty_box()
         title = toga.Label(
-            f"Transaction History",
+            f"Transaction History — {month_name} {year}"",
             style=Pack(font_size=24, font_weight="bold", color="#000000", padding=(10, 0))
                            )
         history_box.add(title)
