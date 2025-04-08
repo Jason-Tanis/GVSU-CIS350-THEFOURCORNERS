@@ -345,7 +345,7 @@ class DegreeDollars(toga.App):
         #Principle
         principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
-        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         principle_box.add(principle_label, principle_input)
         
         #Interest Rate
@@ -357,7 +357,7 @@ class DegreeDollars(toga.App):
         #Selected Months
         timeline_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
-        timeline_input = toga.NumberInput(min=0.00, value=0.00, step=1, style=Pack(width=100, padding=(5, 5)))
+        timeline_input = toga.NumberInput(min=1.00, value=1.00, step=1, style=Pack(width=100, padding=(5, 5)))
         timeline_box.add(timeline_label, timeline_input)
         
         #Save values for computation
@@ -445,7 +445,7 @@ class DegreeDollars(toga.App):
         #Principle
         principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
-        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         principle_box.add(principle_label, principle_input)
         
         #Interest Rate
@@ -458,7 +458,7 @@ class DegreeDollars(toga.App):
         timeline_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         payment_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         payment_label = toga.Label("Amount of monthly payment:", style=Pack(font_size=12, text_align=LEFT))
-        payment_input = toga.NumberInput(min=0.00, value=0.00, step=10, style=Pack(width=100, padding=(5, 5)))
+        payment_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         payment_box.add(payment_label, payment_input)
         
         #Save values for computation
@@ -508,14 +508,20 @@ class DegreeDollars(toga.App):
         #Recommended Payment Section
         monthly_interest_rate = self.interest / 12 / 100
         if monthly_interest_rate == 0:
-            recommendation = self.principle / self.months
+            recommendation = self.principle / self.monthly_payment
+        elif self.principle * monthly_interest_rate >= self.monthly_payment:
+            recommendation = -1
         else:
             recommendation = (math.log(self.monthly_payment / (self.monthly_payment - self.principle * monthly_interest_rate))) / (math.log(1 + monthly_interest_rate))
         
         rec_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=325))
-            
-        recommendation_label = toga.Label("Recommended payment duration:", style=Pack(font_size=24, text_align=CENTER))
-        recommendation_output = toga.Label(f"{recommendation:.0f} months", style=Pack(font_size=36, text_align=CENTER))
+        
+        if recommendation == -1:
+            recommendation_label = toga.Label("Your plan is not recommended:", style=Pack(font_size=16, text_align=CENTER))
+            recommendation_output = toga.Label(f"try a larger monthly payment", style=Pack(font_size=16, text_align=CENTER))
+        else:
+            recommendation_label = toga.Label("Recommended payment duration:", style=Pack(font_size=16, text_align=CENTER))
+            recommendation_output = toga.Label(f"{recommendation:.0f} months", style=Pack(font_size=24, text_align=CENTER))
         
         rec_container.add(recommendation_label, recommendation_output)
 
