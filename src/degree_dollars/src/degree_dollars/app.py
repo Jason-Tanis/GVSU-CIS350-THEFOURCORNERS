@@ -304,7 +304,7 @@ class DegreeDollars(toga.App):
         #Principle
         principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
-        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         principle_box.add(principle_label, principle_input)
         
         #Interest Rate
@@ -404,7 +404,7 @@ class DegreeDollars(toga.App):
         #Principle
         principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
-        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         principle_box.add(principle_label, principle_input)
         
         #Interest Rate
@@ -417,7 +417,7 @@ class DegreeDollars(toga.App):
         timeline_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         payment_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
         payment_label = toga.Label("Amount of monthly payment:", style=Pack(font_size=12, text_align=LEFT))
-        payment_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        payment_input = toga.NumberInput(min=0.01, value=1.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
         payment_box.add(payment_label, payment_input)
         
         #Save values for computation
@@ -467,7 +467,7 @@ class DegreeDollars(toga.App):
         #Recommended Payment Section
         monthly_interest_rate = self.interest / 12 / 100
         if monthly_interest_rate == 0:
-            recommendation = self.principle / self.months
+            recommendation = self.principle / self.monthly_payment
         elif self.principle * monthly_interest_rate >= self.monthly_payment:
             recommendation = -1
         else:
