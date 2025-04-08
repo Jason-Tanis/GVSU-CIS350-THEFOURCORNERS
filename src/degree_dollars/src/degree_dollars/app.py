@@ -1648,11 +1648,10 @@ class DegreeDollars(toga.App):
             result = cursor.fetchall()
             
             if (new_username.value,) in result:
-                not_possible = toga.Label("That username is already in use.")
+                not_possible = toga.Label("That username is already in use.", style=Pack(color="red", padding_top=10))
                 change_username_container.add(not_possible)
-                
                 await asyncio.sleep(1.5)
-                change_password_container.remove(not_possible)
+                change_username_container.remove(not_possible)
             else:
                 # Update username in profile table
                 cursor.execute('''
