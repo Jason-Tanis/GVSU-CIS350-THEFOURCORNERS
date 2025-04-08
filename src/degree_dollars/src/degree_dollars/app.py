@@ -10,6 +10,7 @@ import mysql.connector
 import datetime
 from functools import partial
 import math
+import asyncio
 
 # MySQL Connection Settings
 config = {
@@ -110,12 +111,52 @@ class DegreeDollars(toga.App):
         history = self.empty_box()
         home    = self.empty_box()
 
-        # Add username to Profile tab
-        username_label = toga.Label(
-        f"Hello, {self.username}! Welcome to your Profile!",
-        style=Pack(font_size=18, font_weight="bold", padding=(20, 0), background_color="#C0E4B8")
+        #Profile
+        #Connect to database
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        cursor.execute('''
+            SELECT * FROM profile WHERE username = %s AND password = %s
+            ''',
+                       (self.username, self.password))
+                       
+        result = cursor.fetchone()
+        
+        self.first_name = result[2]
+        self.last_name = result[3]
+            
+        conn.close()
+    
+        #Greeting
+        greeting_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+
+        greeting_label = toga.Label(
+        f"Hello, {self.first_name} {self.last_name[0]}.! Welcome to your Profile!",
+        style=Pack(font_size=18, font_weight="bold", padding=(20, 0), background_color="white", text_align=CENTER)
         )
-        profile.add(username_label)
+        greeting_container.add(greeting_label)
+        
+        #Change username
+        change_username_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+        username_label = toga.Button(
+            "Change Username",
+            on_press=self.change_username,
+            style=Pack(background_color="#FFFFFF", alignment=CENTER, padding=(35,0,0), width=500, height=40))
+        change_username_container.add(username_label)
+        change_username_container.add(toga.Box(style=Pack(height=40)))
+        
+        #Change password
+        change_password_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+        password_label = toga.Button(
+            "Change Password",
+            on_press=self.change_password,
+            style=Pack(background_color="#FFFFFF", alignment=CENTER, padding=(35,0,0), width=500, height=40))
+        change_password_container.add(password_label)
+        change_password_container.add(toga.Box(style=Pack(height=40)))
+        
+        profile.add(greeting_container, change_username_container, change_password_container)
+
 
         # Homescreen
         # Create New Budget Button
@@ -1559,6 +1600,150 @@ class DegreeDollars(toga.App):
         scroll = toga.ScrollContainer(content=history_box, horizontal=False, style=Pack(padding=10))
         self.main_window.content = scroll
         self.main_window.show()
+        
+    async def change_username(self, widget):
+        parent_box = widget.parent
+        grandparent_box = parent_box.parent
+        grandparent_box.clear()
+        
+        #Establish SQL connection
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        
+        #Title
+        
+        #Greeting
+        greeting_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+
+        greeting_label = toga.Label(
+        f"Change Username",
+        style=Pack(font_size=18, font_weight="bold", padding=(20, 0), background_color="white")
+        )
+        greeting_container.add(greeting_label)
+        
+        #Change username
+        change_username_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+        
+        new_username = self.user_text_input(change_username_container, "New Username:", "New username here")
+        
+        async def submit_username_change(button):
+            #Establish SQL connection
+            conn = mysql.connector.connect(**config)
+            cursor = conn.cursor()
+            cursor.execute(f"USE {MYSQL_DATABASE}")
+            
+            # Update password in profile table
+            cursor.execute('''
+                SELECT username
+                FROM profile
+            ''')
+        
+            result = cursor.fetchall()
+            
+            if (new_username.value,) in result:
+                not_possible = toga.Label("That username is already in use.")
+                change_username_container.add(not_possible)
+                
+                await asyncio.sleep(1.5)
+                change_password_container.remove(not_possible)
+            else:
+                # Update username in profile table
+                cursor.execute('''
+                    UPDATE profile
+                    SET username = %s
+                    WHERE client_id = %s
+                ''', (new_username.value, self.client_id))
+                conn.commit()
+                
+                self.username = new_username.value
+                
+                success_msg = toga.Label("Username changed successfully!", style=Pack(color="#5cb85c", padding_top=10))
+                change_username_container.add(success_msg)
+
+                await asyncio.sleep(1.5)
+                await self.homescreen(widget)
+        
+        submit_btn = toga.Button("Submit", on_press=submit_username_change, style=Pack(padding=10))
+        change_username_container.add(submit_btn)
+
+        grandparent_box.add(greeting_container, change_username_container)
+
+        cursor.close()
+    
+        conn.close()
+
+    async def change_password(self, widget):
+        parent_box = widget.parent
+        grandparent_box = parent_box.parent
+        grandparent_box.clear()
+        
+        #Establish SQL connection
+        conn = mysql.connector.connect(**config)
+        cursor = conn.cursor()
+        cursor.execute(f"USE {MYSQL_DATABASE}")
+        
+        #Title
+        
+        #Greeting
+        greeting_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+
+        greeting_label = toga.Label(
+        f"Change Password",
+        style=Pack(font_size=18, font_weight="bold", padding=(20, 0), background_color="white")
+        )
+        greeting_container.add(greeting_label)
+        
+        #Change username
+        change_password_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+        
+        new_password = self.user_text_input(change_password_container, "New Password:", "New password here")
+        
+        async def submit_password_change(button):
+            #Establish SQL connection
+            conn = mysql.connector.connect(**config)
+            cursor = conn.cursor()
+            cursor.execute(f"USE {MYSQL_DATABASE}")
+            
+            # Update password in profile table
+            cursor.execute('''
+                SELECT password
+                FROM profile
+            ''')
+        
+            result = cursor.fetchall()
+            
+            if (new_password.value,) in result:
+                not_possible = toga.Label("That password is already in use.", style=Pack(color="red", padding_top=10))
+                change_password_container.add(not_possible)
+                await asyncio.sleep(1.5)
+                change_password_container.remove(not_possible)
+
+            else:
+                # Update password in profile table
+                cursor.execute('''
+                    UPDATE profile
+                    SET password = %s
+                    WHERE client_id = %s
+                ''', (new_password.value, self.client_id))
+                conn.commit()
+                
+                self.password = new_password.value
+                
+                success_msg = toga.Label("Password changed successfully!", style=Pack(color="#5cb85c", padding_top=10))
+                change_password_container.add(success_msg)
+
+                await asyncio.sleep(1.5)
+                await self.homescreen(widget)
+        
+        submit_btn = toga.Button("Submit", on_press=submit_password_change, style=Pack(padding=10))
+        change_password_container.add(submit_btn)
+
+        grandparent_box.add(greeting_container, change_password_container)
+
+        cursor.close()
+    
+        conn.close()
         
 def main():
     return DegreeDollars()
