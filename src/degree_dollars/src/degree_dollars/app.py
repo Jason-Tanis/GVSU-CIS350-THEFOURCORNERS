@@ -357,21 +357,21 @@ class DegreeDollars(toga.App):
         info_container = toga.Box(style=Pack(direction=COLUMN, background_color="white", padding=20, width=325))
         
         #Principle
-        principle_container = toga.Box(style=Pack(direction=ROW, width = 160))
+        principle_container = toga.Box(style=Pack(direction=ROW, width = 325))
         principle_text = toga.Label("Total loan amount:", style=Pack(font_size=16, flex=1, text_align=LEFT))
         principle_amount = toga.Label(f"${self.principle}", style=Pack(font_size=16, text_align=RIGHT))
         principle_container.add(principle_text, principle_amount)
         
         
         #Interest
-        interest_container = toga.Box(style=Pack(direction=ROW, width = 160))
-        interest_text = toga.Label(f"Interest rate:", style=Pack(font_size=16, text_align=CENTER))
+        interest_container = toga.Box(style=Pack(direction=ROW, width = 325))
+        interest_text = toga.Label(f"Interest rate:", style=Pack(font_size=16, flex=1, text_align=LEFT))
         interest_amount = toga.Label(f"{self.interest}%", style=Pack(font_size=16, text_align=RIGHT))
         interest_container.add(interest_text, interest_amount)
 
         #Month
-        month_container = toga.Box(style=Pack(direction=ROW, width = 160))
-        month_text = toga.Label(f"Planned duration:", style=Pack(font_size=16, text_align=CENTER))
+        month_container = toga.Box(style=Pack(direction=ROW, width = 325))
+        month_text = toga.Label(f"Planned duration:", style=Pack(font_size=16, flex=1, text_align=LEFT))
         month_amount = toga.Label(f"{self.months} months", style=Pack(font_size=16, text_align=RIGHT))
         month_container.add(month_text, month_amount)
 
