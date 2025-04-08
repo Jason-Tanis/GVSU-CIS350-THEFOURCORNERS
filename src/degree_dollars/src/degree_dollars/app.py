@@ -260,18 +260,17 @@ class DegreeDollars(toga.App):
 
         # conn.close()
         # Loan Planner
-
-        loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000"))
-        prompt_text_1 = toga.Label("Please enter the following information:", style=Pack(font_size=12, font_weight="bold", text_align=CENTER,color="#000000"))
-        dollar_amount_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        dollar_amount_label = toga.Label("Total dollar amount of loan:", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
-        dollar_amount_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
-        dollar_amount_box.add(dollar_amount_label, dollar_amount_input)
-        interest_rate_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        interest_rate_label = toga.Label("Interest rate of loan (APR):", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
-        interest_rate_input = toga.NumberInput(min=0.00, value=0.00, step=5, style=Pack(width=100, padding=(5, 5)))
-        interest_rate_box.add(interest_rate_label, interest_rate_input)
         buttons_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        
+        #Titles
+        loan_planner_label = toga.Label("Loan Payment Planner", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000"))
+        
+        info_label = toga.Label("Choose one of the options below:", style=Pack(font_size=12, font_weight="bold", padding=10,color="#000000", text_align=CENTER))
+
+        info_label_month = toga.Label("(Must know the number of monthly payments you plan to make)", style=Pack(font_size=12, padding=10,color="#000000", text_align=CENTER))
+        
+        info_label_payment = toga.Label("(Must know the monthly payment amount (in dollars) you plan to make)", style=Pack(font_size=12, padding=10,color="#000000", text_align=CENTER))
+        
         calculate_payment_button = toga.Button(
             "Calculate Monthly Payment",
             on_press=self.calculate_payment,
@@ -282,8 +281,8 @@ class DegreeDollars(toga.App):
             on_press=self.calculate_timeline,
             style=Pack(font_size=18, width=400, height=40, padding=10,color="#000000")
         )
-        buttons_box.add(calculate_payment_button, calculate_timeline_button)
-        loan.add(loan_planner_label, prompt_text_1, dollar_amount_box, interest_rate_box, buttons_box)
+        buttons_box.add(calculate_payment_button, info_label_month, calculate_timeline_button, info_label_payment)
+        loan.add(loan_planner_label, info_label, buttons_box)
 
         #Display the homescreen contents
         self.main_window.content = navbar
@@ -291,81 +290,200 @@ class DegreeDollars(toga.App):
 
 
     async def calculate_payment(self, widget): # Calculate the payment required for the timeline
-
         parent_box = widget.parent # buttons box
         grandparent_box = parent_box.parent # loan
-        loan_amount = grandparent_box.children[2].children[1].value
-        interest_rate = grandparent_box.children[3].children[1].value
         grandparent_box.clear()
+        
+        #Titles
+        title = toga.Label("Compute Monthly Payment", style=Pack(font_size=18, font_weight="bold", padding=10,color="#000000", text_align=CENTER))
+        
+        info_label = toga.Label("Please enter the following information:", style=Pack(font_size=12, font_weight="bold", padding=10,color="#000000", text_align=CENTER))
+
         payment_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
+        
+        #Principle
+        principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
+        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_box.add(principle_label, principle_input)
+        
+        #Interest Rate
+        interest_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        interest_label = toga.Label("Annual Interest Rate (% APR):", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
+        interest_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        interest_box.add(interest_label, interest_input)
+        
+        #Selected Months
         timeline_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=18, text_align=LEFT,color="#000000"))
+        timeline_label = toga.Label("Months to pay off:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
         timeline_input = toga.NumberInput(min=0.00, value=0.00, step=1, style=Pack(width=100, padding=(5, 5)))
         timeline_box.add(timeline_label, timeline_input)
+        
+        #Save values for computation
+        self.principle = principle_input
+        self.interest = interest_input
+        self.months = timeline_input
+        
         calculate_payment_button_final = toga.Button(
             "Compute!",
-            on_press=partial(self.calculate_payment_math, loan_amount, interest_rate),
+            on_press=partial(self.calculate_payment_math),
             style=Pack(font_size=18, width=400, height=40, padding=10, color="#000000")
         )
-        payment_calculator_box.add(timeline_box, calculate_payment_button_final)
+        
+        #Back to Homescreen
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        
+        payment_calculator_box.add(title, info_label, principle_box, interest_box, timeline_box, calculate_payment_button_final, back_btn)
+        
         print(payment_calculator_box)
         grandparent_box.add(payment_calculator_box)
     
-    async def calculate_payment_math(self, loan_amount, interest_rate, widget):
-        parent_box = widget.parent # payment_calculator_box
+    async def calculate_payment_math(self, widget):
+        parent_box = widget.parent # buttons box
         grandparent_box = parent_box.parent # loan
-        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
-        months = parent_box.children[0].children[1].value
-        Results_label = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold"))
-        dollar_amount_label_final = toga.Label(f"Total loan amount: ${loan_amount}", style=Pack(font_size=18, text_align=LEFT))
-        interest_rate_label_final = toga.Label(f"Interest rate: {interest_rate}%", style=Pack(font_size=18, text_align=LEFT))
-        months_label_final = toga.Label(f"Planned duration: {months} months", style=Pack(font_size=18, text_align=LEFT))
+        grandparent_box.clear()
+        
+        self.principle = self.principle.value
+        self.interest = self.interest.value
+        self.months = self.months.value
+    
+        #Result box
+        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER,background_color="#62C54C", padding=20, width=350))
+        
+        #Header
+        results_title = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold", padding=(0,0,10)))
+        
+        #Inner box
+        info_container = toga.Box(style=Pack(direction=COLUMN, background_color="white", padding=20, width=325))
+        
+        #Principle
+        principle_container = toga.Box(style=Pack(direction=ROW, width = 160))
+        principle_text = toga.Label("Total loan amount:", style=Pack(font_size=16, flex=1, text_align=LEFT))
+        principle_amount = toga.Label(f"${self.principle}", style=Pack(font_size=16, text_align=RIGHT))
+        principle_container.add(principle_text, principle_amount)
+        
+        
+        #Interest
+        interest_container = toga.Box(style=Pack(direction=ROW, width = 160))
+        interest_text = toga.Label(f"Interest rate:", style=Pack(font_size=16, text_align=CENTER))
+        interest_amount = toga.Label(f"{self.interest}%", style=Pack(font_size=16, text_align=RIGHT))
+        interest_container.add(interest_text, interest_amount)
 
-        monthly_interest_rate = interest_rate / 12 / 100
-        recommendation = (loan_amount * monthly_interest_rate * (1 + monthly_interest_rate)**months) / ((1 + monthly_interest_rate)**months - 1)
-        recommendation_label = toga.Label("Recommended monthly payment:", style=Pack(font_size=24, text_align=CENTER))
-        recommendation_output = toga.Label(f"${recommendation:.2f} per month", style=Pack(font_size=36, text_align=CENTER))
+        #Month
+        month_container = toga.Box(style=Pack(direction=ROW, width = 160))
+        month_text = toga.Label(f"Planned duration:", style=Pack(font_size=16, text_align=CENTER))
+        month_amount = toga.Label(f"{self.months} months", style=Pack(font_size=16, text_align=RIGHT))
+        month_container.add(month_text, month_amount)
 
-        results_box.add(Results_label, dollar_amount_label_final, interest_rate_label_final, months_label_final, recommendation_label, recommendation_output)
-        grandparent_box.add(results_box)
+        monthly_interest_rate = self.interest / 12 / 100
+        if monthly_interest_rate == 0:
+            recommendation = self.principle / self.months
+        else:
+            recommendation = (self.principle * monthly_interest_rate * (1 + monthly_interest_rate)**self.months) / ((1 + monthly_interest_rate)**self.months - 1)
+            
+        rec_container = toga.Box(style=Pack(direction=COLUMN, background_color="white", padding=20, width=325))
+        recommendation_label = toga.Label("Recommended monthly payment:", style=Pack(font_size=16, text_align=CENTER))
+        recommendation_output = toga.Label(f"${recommendation:.2f} per month", style=Pack(font_size=24, text_align=CENTER))
+        rec_container.add(recommendation_label, recommendation_output)
+
+        info_container.add(principle_container, interest_container, month_container)
+
+        results_box.add(results_title, info_container, rec_container)
+        
+        #Back to Homescreen
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        
+        grandparent_box.add(results_box, back_btn)
 
         
     async def calculate_timeline(self, widget): # Calculate the timeline from data
         parent_box = widget.parent # buttons box
         grandparent_box = parent_box.parent # loan
-        loan_amount = grandparent_box.children[2].children[1].value
-        interest_rate = grandparent_box.children[3].children[1].value
         grandparent_box.clear()
+        
+        #Principle
+        principle_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        principle_label = toga.Label("Principle:", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
+        principle_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        principle_box.add(principle_label, principle_input)
+        
+        #Interest Rate
+        interest_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
+        interest_label = toga.Label("Interest Rate (%):", style=Pack(font_size=12, text_align=LEFT,color="#000000"))
+        interest_input = toga.NumberInput(min=0.00, value=0.00, step=0.01, style=Pack(width=100, padding=(5, 5)))
+        interest_box.add(interest_label, interest_input)
+        
+        #Selected Payment
         timeline_calculator_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
         payment_box = toga.Box(style=Pack(padding=(5, 5), direction=ROW, alignment=LEFT))
-        payment_label = toga.Label("Amount of monthly payment:", style=Pack(font_size=18, text_align=LEFT))
+        payment_label = toga.Label("Amount of monthly payment:", style=Pack(font_size=12, text_align=LEFT))
         payment_input = toga.NumberInput(min=0.00, value=0.00, step=10, style=Pack(width=100, padding=(5, 5)))
         payment_box.add(payment_label, payment_input)
+        
+        #Save values for computation
+        self.principle = principle_input
+        self.interest = interest_input
+        self.monthly_payment = payment_input
+        
         calculate_timeline_button_final = toga.Button(
             "Compute!",
-            on_press=partial(self.calculate_timeline_math, loan_amount, interest_rate),
+            on_press=partial(self.calculate_timeline_math),
             style=Pack(font_size=18, width=400, height=40, padding=10)
         )
-        timeline_calculator_box.add(payment_box, calculate_timeline_button_final)
+                
+        #Back to Homescreen
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        
+        timeline_calculator_box.add(principle_box, interest_box, payment_box, calculate_timeline_button_final, back_btn)
+        
         grandparent_box.add(timeline_calculator_box)
 
-    async def calculate_timeline_math(self, loan_amount, interest_rate, widget):
-        parent_box = widget.parent # payment_calculator_box
+    async def calculate_timeline_math(self, widget):
+        parent_box = widget.parent # buttons box
         grandparent_box = parent_box.parent # loan
-        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER))
-        payment = parent_box.children[0].children[1].value
-        Results_label = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold"))
-        dollar_amount_label_final = toga.Label(f"Total loan amount:     ${loan_amount}", style=Pack(font_size=18, text_align=CENTER))
-        interest_rate_label_final = toga.Label(f"Interest rate:     {interest_rate}%", style=Pack(font_size=18, text_align=CENTER))
-        months_label_final = toga.Label(f"Planned monthly payment:     ${payment}", style=Pack(font_size=18, text_align=CENTER))
-
-        monthly_interest_rate = interest_rate / 12 / 100
-        recommendation = (math.log(payment / (payment - loan_amount * monthly_interest_rate))) / (math.log(1 + monthly_interest_rate))
+        grandparent_box.clear()
+        
+        self.principle = self.principle.value
+        self.interest = self.interest.value
+        self.monthly_payment = self.monthly_payment.value
+        
+        #Result box
+        results_box = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER,background_color="#62C54C", padding=20, width=350))
+        
+        #Header
+        results_title = toga.Label("Results", style=Pack(font_size=24, text_align=LEFT, font_weight="bold", padding=(0,0,10)))
+        
+        #Inner box
+        info_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=325))
+        
+        info_loan = toga.Label(f"Total loan amount:     ${self.principle}", style=Pack(font_size=16, text_align=CENTER))
+        
+        info_interest = toga.Label(f"Interest rate:     {self.interest}%", style=Pack(font_size=16, text_align=CENTER))
+        
+        info_months = toga.Label(f"Planned monthly payment:     ${self.monthly_payment}", style=Pack(font_size=16, text_align=CENTER))
+        
+        info_container.add(info_loan, info_interest, info_months)
+        
+        #Recommended Payment Section
+        monthly_interest_rate = self.interest / 12 / 100
+        if monthly_interest_rate == 0:
+            recommendation = self.principle / self.months
+        else:
+            recommendation = (math.log(self.monthly_payment / (self.monthly_payment - self.principle * monthly_interest_rate))) / (math.log(1 + monthly_interest_rate))
+        
+        rec_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=325))
+            
         recommendation_label = toga.Label("Recommended payment duration:", style=Pack(font_size=24, text_align=CENTER))
         recommendation_output = toga.Label(f"{recommendation:.0f} months", style=Pack(font_size=36, text_align=CENTER))
+        
+        rec_container.add(recommendation_label, recommendation_output)
 
-        results_box.add(Results_label, dollar_amount_label_final, interest_rate_label_final, months_label_final, recommendation_label, recommendation_output)
-        grandparent_box.add(results_box)
+        results_box.add(results_title, info_container, rec_container)
+        
+        #Back to Homescreen
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        
+        grandparent_box.add(results_box, back_btn)
 
 
     async def create_budget_view(self, widget): #New viewing screen for creating new budget
