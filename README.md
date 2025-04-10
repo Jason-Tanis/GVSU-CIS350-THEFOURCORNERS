@@ -10,13 +10,13 @@ Degree Dollars is a cross-platform budgeting application designed for college st
   _Project Manager, Python Developer, Android Tester_
 
 - [**Sam Bergman**](https://github.com/bergmasa/CIS350-HW2-Bergman.git)  
-  _Python Developer, Assistant Database Manager_
+  _Python Developer_
 
 - [**Tony Choummanivong**](https://github.com/TonyCyber6/CIS350-HW2--Choummanivong-.git)  
   _Python Developer, Unit Tester_
 
 - [**Kelsey Tedford**](https://github.com/kelseytedford/CIS350-HW2-Tedford)  
-  _Prototype Developer, Database Manager, iOS Tester_
+  _Prototype Developer, Python Developer, Database Manager, iOS Tester_
 
 ---
 
