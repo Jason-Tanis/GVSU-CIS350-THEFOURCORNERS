@@ -32,9 +32,39 @@ To run Degree Dollars locally, ensure you have the following installed:
   - `mysql-connector-python`
   - `httpx`
 
-You can install dependencies with:
+## Run Instructions
 
-```bash
-pip install toga mysql-connector-python httpx
+1. **Clone the Repository**
 
-# Run Instuctions
+   ```bash
+   git clone https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS.git
+   cd GVSU-CIS350-THEFOURCORNERS
+   ```
+
+2. **Install Dependencies**
+
+   Make sure Python 3.10+ is installed. Then run:
+
+   ```bash
+   pip install toga mysql-connector-python httpx
+   ```
+
+3. **Start MySQL Server**
+
+   Ensure your MySQL server is running locally with the following credentials:
+
+   - **Host**: `localhost`
+   - **Port**: `3306`
+   - **User**: `root`
+   - **Password**: `DegreeDollars350!`
+
+4. **Run the App**
+
+   ```bash
+   python src/degree_dollars/app.py
+   ```
+
+   The app will create the required database (`DegreeDollars`) and all necessary tables on first launch.
+
+> **Note:** If you're new to MySQL or encounter connection issues, ensure the server is running and accessible via your configured credentials.
+
