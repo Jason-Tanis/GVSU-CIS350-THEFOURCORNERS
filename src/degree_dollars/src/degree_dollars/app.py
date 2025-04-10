@@ -155,7 +155,7 @@ class DegreeDollars(toga.App):
             on_press=self.logout,
             style=Pack(background_color="#F5F5F5", alignment=CENTER, padding=(35,0,0), width=500, height=40)
         )
-        
+
         profile.add(greeting_container, username_label, password_label, logout_button)
 
 
@@ -1623,8 +1623,7 @@ class DegreeDollars(toga.App):
         
     async def change_username(self, widget):
         parent_box = widget.parent
-        grandparent_box = parent_box.parent
-        grandparent_box.clear()
+        parent_box.clear()
         
         #Establish SQL connection
         conn = mysql.connector.connect(**config)
@@ -1687,7 +1686,7 @@ class DegreeDollars(toga.App):
         back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
         change_username_container.add(submit_btn, back_btn)
 
-        grandparent_box.add(greeting_container, change_username_container)
+        parent_box.add(greeting_container, change_username_container)
 
         cursor.close()
     
@@ -1695,8 +1694,7 @@ class DegreeDollars(toga.App):
 
     async def change_password(self, widget):
         parent_box = widget.parent
-        grandparent_box = parent_box.parent
-        grandparent_box.clear()
+        parent_box.clear()
         
         #Establish SQL connection
         conn = mysql.connector.connect(**config)
@@ -1760,7 +1758,7 @@ class DegreeDollars(toga.App):
         back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
         change_password_container.add(submit_btn, back_btn)
 
-        grandparent_box.add(greeting_container, change_password_container)
+        parent_box.add(greeting_container, change_password_container)
 
         cursor.close()
     
