@@ -138,33 +138,25 @@ class DegreeDollars(toga.App):
         greeting_container.add(greeting_label)
         
         #Change username
-        change_username_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
         username_label = toga.Button(
             "Change Username",
             on_press=self.change_username,
             style=Pack(background_color="#FFFFFF", alignment=CENTER, padding=(35,0,0), width=500, height=40))
-        change_username_container.add(username_label)
-        change_username_container.add(toga.Box(style=Pack(height=40)))
         
         #Change password
-        change_password_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
         password_label = toga.Button(
             "Change Password",
             on_press=self.change_password,
             style=Pack(background_color="#FFFFFF", alignment=CENTER, padding=(35,0,0), width=500, height=40))
-        change_password_container.add(password_label)
-        change_password_container.add(toga.Box(style=Pack(height=40)))
         
         # Log Out
-        logout_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
         logout_button = toga.Button(
             "Log Out",
             on_press=self.logout,
             style=Pack(background_color="#F5F5F5", alignment=CENTER, padding=(35,0,0), width=500, height=40)
         )
-        logout_container.add(logout_button)
         
-        profile.add(greeting_container, change_username_container, change_password_container, logout_container)
+        profile.add(greeting_container, username_label, password_label, logout_button)
 
 
         # Homescreen
