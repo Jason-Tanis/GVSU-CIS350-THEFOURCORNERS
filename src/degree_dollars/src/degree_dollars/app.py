@@ -155,7 +155,16 @@ class DegreeDollars(toga.App):
         change_password_container.add(password_label)
         change_password_container.add(toga.Box(style=Pack(height=40)))
         
-        profile.add(greeting_container, change_username_container, change_password_container)
+        # Log Out
+        logout_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=500))
+        logout_button = toga.Button(
+            "Log Out",
+            on_press=self.logout,
+            style=Pack(background_color="#F5F5F5", alignment=CENTER, padding=(35,0,0), width=500, height=40)
+        )
+        logout_container.add(logout_button)
+        
+        profile.add(greeting_container, change_username_container, change_password_container, logout_container)
 
 
         # Homescreen
@@ -497,14 +506,27 @@ class DegreeDollars(toga.App):
         #Inner box
         info_container = toga.Box(style=Pack(direction=COLUMN, alignment=CENTER, background_color="white", padding=20, width=325))
         
-        info_loan = toga.Label(f"Total loan amount:     ${self.principle}", style=Pack(font_size=16, text_align=CENTER))
+        #Principle
+        principle_container = toga.Box(style=Pack(direction=ROW, width = 325))
+        principle_text = toga.Label("Total loan amount:", style=Pack(font_size=16, flex=1, text_align=LEFT))
+        principle_amount = toga.Label(f"${self.principle}", style=Pack(font_size=16, text_align=RIGHT))
+        principle_container.add(principle_text, principle_amount)
         
-        info_interest = toga.Label(f"Interest rate:     {self.interest}%", style=Pack(font_size=16, text_align=CENTER))
         
-        info_months = toga.Label(f"Planned monthly payment:     ${self.monthly_payment}", style=Pack(font_size=16, text_align=CENTER))
+        #Interest
+        interest_container = toga.Box(style=Pack(direction=ROW, width = 325))
+        interest_text = toga.Label(f"Interest rate:", style=Pack(font_size=16, flex=1, text_align=LEFT))
+        interest_amount = toga.Label(f"{self.interest}%", style=Pack(font_size=16, text_align=RIGHT))
+        interest_container.add(interest_text, interest_amount)
         
-        info_container.add(info_loan, info_interest, info_months)
+        #Interest
+        months_container = toga.Box(style=Pack(direction=ROW, width = 325))
+        months_text = toga.Label(f"Planned monthly payment:", style=Pack(font_size=16, flex=1, text_align=LEFT))
+        months_amount = toga.Label(f"${self.monthly_payment}", style=Pack(font_size=16, text_align=RIGHT))
+        months_container.add(interest_text, months_amount)
         
+        info_container.add(principle_container, interest_container, month_container)
+
         #Recommended Payment Section
         monthly_interest_rate = self.interest / 12 / 100
         if monthly_interest_rate == 0:
@@ -1670,7 +1692,8 @@ class DegreeDollars(toga.App):
                 await self.homescreen(widget)
         
         submit_btn = toga.Button("Submit", on_press=submit_username_change, style=Pack(padding=10))
-        change_username_container.add(submit_btn)
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        change_username_container.add(submit_btn, back_btn)
 
         grandparent_box.add(greeting_container, change_username_container)
 
@@ -1742,13 +1765,24 @@ class DegreeDollars(toga.App):
                 await self.homescreen(widget)
         
         submit_btn = toga.Button("Submit", on_press=submit_password_change, style=Pack(padding=10))
-        change_password_container.add(submit_btn)
+        back_btn = toga.Button("Back to Home", on_press=self.homescreen, style=Pack(padding=10, width=150))
+        change_password_container.add(submit_btn, back_btn)
 
         grandparent_box.add(greeting_container, change_password_container)
 
         cursor.close()
     
         conn.close()
+        
+    async def logout(self, widget):
+        # Clear login info
+        self.username = None
+        self.password = None
+        self.client_id = None
+
+        # Redirect to start screen
+        self.startscreen()
+
         
 def main():
     return DegreeDollars()
