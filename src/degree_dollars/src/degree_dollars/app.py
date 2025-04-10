@@ -214,7 +214,7 @@ class DegreeDollars(toga.App):
         dropdown_options = []
 
         #List of month names
-        month_names = ["January", "February", "March", "April", "May", "June", 
+        month_names = ["January", "February", "March", "April", "May", "June",
                        "July", "August", "September", "October", "November", "December"]
         
         #If the user has saved at least one budget,
@@ -239,7 +239,7 @@ class DegreeDollars(toga.App):
                 )
             )
             budget_dropdown = toga.Selection(
-                items = dropdown_options, 
+                items = dropdown_options,
                 accessor = "name",
                 style = Pack(
                     width = 300,
@@ -264,7 +264,7 @@ class DegreeDollars(toga.App):
 
         #If the user has saved at least one budget,
         #create and add a dropdown menu to select one of the saved months to view transaction history for
-        #(these widgets will appear on the History screen) 
+        #(these widgets will appear on the History screen)
         if all_budgets:
             history_label = toga.Label(
                 "View Transaction History for:",
@@ -278,7 +278,7 @@ class DegreeDollars(toga.App):
                 )
             )
             history_dropdown = toga.Selection(
-                items = dropdown_options, 
+                items = dropdown_options,
                 accessor = "name",
                 style = Pack(
                     width = 300,
@@ -565,7 +565,7 @@ class DegreeDollars(toga.App):
           "August", "September", "October", "November", "December"]
         current_month_index = datetime.datetime.now().month - 1
         self.month_selection = toga.Selection(items=months, value=months[current_month_index], style=Pack(width=250))
-        self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year, 
+        self.year_selection = toga.NumberInput(min=datetime.datetime.now().year, value=datetime.datetime.now().year,
                                                step=1, style=Pack(width=100, padding=(5, 5)))
     
         month_box.add(monthfield_label, self.month_selection)
@@ -585,11 +585,11 @@ class DegreeDollars(toga.App):
             "Save Budget",
             on_press=self.save_budget,
             style=Pack(
-                background_color="#62C54C", 
-                padding=(10, 0, 10), 
-                width=150, 
-                height=50, 
-                font_weight="bold", 
+                background_color="#62C54C",
+                padding=(10, 0, 10),
+                width=150,
+                height=50,
+                font_weight="bold",
                 font_size=14,
                 color="#000000"
             )
@@ -601,10 +601,10 @@ class DegreeDollars(toga.App):
             style=Pack(
                 background_color="#62C54C",
                 padding=(0, 0, 10),
-                width=150, 
-                height=50, 
-                font_weight="bold", 
-                font_size=14, 
+                width=150,
+                height=50,
+                font_weight="bold",
+                font_size=14,
                 color="#000000"
             )
         )
@@ -699,7 +699,7 @@ class DegreeDollars(toga.App):
         if result:
             invalid = toga.InfoDialog("Duplicate budget", f"You have already saved a budget for {selected_month} {year}")
             await self.main_window.dialog(invalid)
-            return           
+            return
 
         #Current Budget
         cursor.execute('''
@@ -774,11 +774,11 @@ class DegreeDollars(toga.App):
         conn.close()
 
         # Display the budget title
-        month_names = ["January", "February", "March", "April", "May", "June", 
+        month_names = ["January", "February", "March", "April", "May", "June",
                        "July", "August", "September", "October", "November", "December"]
-        budget_title = toga.Label(f"{month_names[month - 1]} {year}'s Budget", 
+        budget_title = toga.Label(f"{month_names[month - 1]} {year}'s Budget",
             style = Pack(
-                font_size = 20, 
+                font_size = 20,
                 font_weight = "bold",
                 color = "#000000",
                 background_color = "#C0E4B8"
@@ -828,10 +828,10 @@ class DegreeDollars(toga.App):
             style = Pack(
                 background_color="#62C54C",
                 padding=(10, 0, 0),
-                width=250, 
-                height=50, 
-                font_weight="bold", 
-                font_size=14, 
+                width=250,
+                height=50,
+                font_weight="bold",
+                font_size=14,
                 color="#000000"
             )
         )
@@ -843,16 +843,16 @@ class DegreeDollars(toga.App):
             style=Pack(
                 background_color="#62C54C",
                 padding=(10, 0, 10),
-                width=150, 
-                height=50, 
-                font_weight="bold", 
-                font_size=14, 
+                width=150,
+                height=50,
+                font_weight="bold",
+                font_size=14,
                 color="#000000"
             )
         )
         bg.add(in_ex, home_button)
 
-        #Make the background a scroll container 
+        #Make the background a scroll container
         scroll_container = toga.ScrollContainer(
             content = bg,
             horizontal = False,
@@ -873,30 +873,30 @@ class DegreeDollars(toga.App):
         home_button = parent_box.children[parent_box.index(widget) + 1]
         parent_box.remove(home_button, widget)
 
-        month_names = ["January", "February", "March", "April", "May", "June", 
+        month_names = ["January", "February", "March", "April", "May", "June",
                        "July", "August", "September", "October", "November", "December"]
         month_name = month_names[month - 1]
 
         #Create the background box for the input fields to go inside of
         bg = toga.Box(
             style = Pack(
-                background_color = "#C0E4B8", 
+                background_color = "#C0E4B8",
                 direction = COLUMN
             )
         )
         fields = toga.Box(
             style = Pack(
-                background_color = "#C0E4B8", 
-                direction = COLUMN, 
-                width = 350, 
+                background_color = "#C0E4B8",
+                direction = COLUMN,
+                width = 350,
                 padding= (15, 10)
             )
         )
 
         #Add a title
-        budget_title = toga.Label(f"Add Transaction to {month_name} {year}'s Budget", 
+        budget_title = toga.Label(f"Add Transaction to {month_name} {year}'s Budget",
             style = Pack(
-                font_size = 15, 
+                font_size = 15,
                 font_weight = "bold",
                 color = "#000000",
                 background_color = "#C0E4B8"
@@ -1022,7 +1022,7 @@ class DegreeDollars(toga.App):
                 background_color="#C0E4B8",
                 color="#000000",
                 font_size=12
-            )           
+            )
         )
         self.month_input = toga.NumberInput(
             min = 1,
@@ -1037,7 +1037,7 @@ class DegreeDollars(toga.App):
                 background_color="#C0E4B8",
                 color="#000000",
                 font_size=12
-            )           
+            )
         )
 
         self.day_input = toga.NumberInput(
@@ -1046,14 +1046,14 @@ class DegreeDollars(toga.App):
             value = datetime.datetime.now().day,
             step = 1,
             style=Pack(width=50)
-        ) 
+        )
         year_label = toga.Label(
             "Year:",
              style=Pack(
                 background_color="#C0E4B8",
                 color="#000000",
                 font_size=12
-            )           
+            )
         )
         #User can go back to previous year if need be
         self.year_input = toga.NumberInput(
@@ -1061,9 +1061,9 @@ class DegreeDollars(toga.App):
             value = datetime.datetime.now().year,
             step = 1,
             style=Pack(width=75)
-        ) 
+        )
         date_box.add(month_label, self.month_input,
-                     day_label, self.day_input, 
+                     day_label, self.day_input,
                      year_label, self.year_input)
         fields.add(date_box)
 
@@ -1082,7 +1082,7 @@ class DegreeDollars(toga.App):
                 background_color="#C0E4B8",
                 color="#000000",
                 font_size=14
-            )           
+            )
         )
         self.amount_input = toga.NumberInput(
             min = 0,
@@ -1091,7 +1091,7 @@ class DegreeDollars(toga.App):
             style=Pack(width=100)
         )
         amount_box.add(amount_label, self.amount_input)
-        fields.add(amount_box)   
+        fields.add(amount_box)
 
         #Merchant input field
         self.merchant_input = self.user_text_input(fields, "Merchant:", "Merchant here")
@@ -1103,9 +1103,9 @@ class DegreeDollars(toga.App):
             style = Pack(
                 background_color = "#62C54C",
                 padding = (10, 0, 0),
-                width = 250, 
-                height = 50, 
-                font_weight = "bold", 
+                width = 250,
+                height = 50,
+                font_weight = "bold",
                 font_size = 14,
                 color = "#000000"
             )
@@ -1118,9 +1118,9 @@ class DegreeDollars(toga.App):
             style = Pack(
                 background_color = "#62C54C",
                 padding = (10, 0, 0),
-                width = 150, 
-                height = 50, 
-                font_weight = "bold", 
+                width = 150,
+                height = 50,
+                font_weight = "bold",
                 font_size = 14,
                 color = "#000000"
             )
@@ -1417,7 +1417,7 @@ class DegreeDollars(toga.App):
         fields.add(buttons)
 
         #Add the "fields" box to the grandparent box
-        grandparent_box.add(fields)       
+        grandparent_box.add(fields)
 
     #Helper function to make a signup/login field
     def user_text_input(self, parent_box, field_label, placeholder_text):
