@@ -31,6 +31,7 @@ To run Degree Dollars locally, ensure you have the following installed:
   - `toga`
   - `mysql-connector-python`
   - `httpx`
+  - `briefcase`
 
 ## Run Instructions
 
@@ -46,7 +47,7 @@ To run Degree Dollars locally, ensure you have the following installed:
    Make sure Python 3.10+ is installed. Then run:
 
    ```bash
-   pip install toga mysql-connector-python httpx
+   pip install toga mysql-connector-python httpx briefcase
    ```
 
 3. **Start MySQL Server**
@@ -61,7 +62,7 @@ To run Degree Dollars locally, ensure you have the following installed:
 4. **Run the App**
 
    ```bash
-   python src/degree_dollars/app.py
+   briefcase run -u
    ```
 
    The app will create the required database (`DegreeDollars`) and all necessary tables on first launch.
