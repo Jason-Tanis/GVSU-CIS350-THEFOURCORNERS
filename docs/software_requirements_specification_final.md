@@ -20,9 +20,9 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 3. History
     1. HF1: The "History" screen shall contain a dropdown menu identical to that of the "Home" screen from which the user can select a previously saved budget to view the transaction history for.
     2. HF2: After a budget is selected from the dropdown menu, a new screen shall open displaying a single column of non-clickable summaries of each transaction saved for the budget.
-    3. HF3: The transaction summaries shall be displayed in descending order by date (i.e., the most recent transaction shall appear at the top).
-    4. HF4: The following information shall be displayed in each transaction summary: month and day, the subsection to which the transaction was applied, merchant, and amount (positive for income and negative for expenses).
-    5. HF5: The subsections for each transaction shall be queried from the MySQL "Budgets" table while the remaining transaction information shall be queried from the "Transactions" table.
+    3. HF3: The following information shall be displayed in each transaction summary: month and day, the subsection to which the transaction was applied, merchant, and amount (positive for income and negative for expenses).
+    4. HF4: The subsections for each transaction shall be queried from the MySQL "Budgets" table while the remaining transaction information shall be queried from the "Transactions" table.
+    5. HF5: The history viewing screen shall include a "Back to Home" button at the bottom of the transaction list that redirects the user to the "Home" screen (i.e., the screen containing the "Create New Budget" button).
 
 4. Loan Planner
     1. LPF1: The "Loan Planner" screen shall contain two buttons: "Calculate Monthly Payment" and "Calculate Timeline".
@@ -53,8 +53,12 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     4. IENF4: The dialog message "Please enter a non-zero dollar amount" shall appear if a user attempts to save a transaction of $0.00 (such a transaction will not be saved to the MySQL database).
     5. IENF5: The dialog message "Please enter a merchant name" shall appear if a user attempts to save a transaction without providing a merchant (such a transaction will not be saved to the MySQL database). 
 
-5. Transaction History
-    1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in the database (i.e., they shall never be deleted).
+5. History
+    1. HNF1: None of a user's transactions shall under any circumstances be deleted from the MySQL "Transactions" table.
+    2. HNF2: The dates of the transactions from the selected month shall be displayed as the first three letters of the month followed by a number representing the day.
+    3. HNF3: The transaction summaries shall be displayed in descending order by date (i.e., the most recent transaction shall appear at the top of the list).
+    4. HNF4: The dollar amounts for transactions of type "Income" shall appear as green numbers preceded by a "+" sign.
+    5. HNF5: The dollar amounts for transactions of type "Expense" shall appear as red numbers preceded by a "-" sign.
 
 6. Loan Payment Planner
     1. LPNF1: The loan payment planner feature shall not interact with the database.
