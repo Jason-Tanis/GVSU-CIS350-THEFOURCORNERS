@@ -68,16 +68,9 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     5. LPNF5: The input fields for interest rate shall not accept negative numbers, but zero (0) will be permitted.
     6. LPNF6: The Loan Planner feature shall not interact with the MySQL database.
 
-7. Login
-    1. ACCNF1: One user shall not be able to deliberately sign in to a separate user's account.
-    2. ACCNF2: One user shall not be able to unintentionally access a separate user's account.
-    3. ACCNF3: The user account database shall not allow there to be more than one account with the same username.
-    4. ACCNF4: The user account database shall be remote (i.e., it shall not included in a local download of the application).
-    5. ACCNF5: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
-    6. ACCNF6: User passwords shall be hashed when stored in the database.
-
-1. General (i.e., the app as a whole)
-    1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
-    2. GNF2: If a screen in the application is either broken or under development, the user shall receive an error message and be allowed to return to the previous screen.
-    3. GNF3: The color scheme of the app shall appear similarly across different platforms.
-    4. GNF4: Button labels shall contain a maximum of two words.
+5. Profile
+    1. ACCNF1: One user shall not be allowed to have the same username as another user.
+    2. ACCNF2: One user shall not be allowed to have the same password as another user.
+    3. ACCNF3: If a user attempts to sign up without providing text to all five input fields, the dialog message "Please complete all fields" shall appear (the sign up will be prevented).
+    4. ACCNF4: If a user attempts to sign up and the fields "Password" and "Confirm Password" do not contain identical, non-empty text, the dialog message "Passwords do not match" shall appear (the sign up will be prevented).
+    5. ACCNF5: If a user attempts to log in with a username and/or password that do not exist in the MySQL "Profile" table, the dialog message "Invalid username or password" shall appear (the log in will be prevented).
