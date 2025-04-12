@@ -27,9 +27,9 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 4. Loan Planner
     1. LPF1: The "Loan Planner" screen shall contain two buttons: "Calculate Monthly Payment" and "Calculate Timeline".
     2. LPF2: If the "Calculate Monthly Payment" button is selected, a new screen shall open containing the following input fields: "Principle", "Annual Interest Rate (% APR)", and "Months to pay off".
-    3. LPF3: The Loan Planner shall perform the computation (Principle*I((1+I)^months))/(((1+I)^months)-1) with the user-provided values when the "Compute!" button on the "Calculate Monthly Payment" screen is pressed (where I is APR/12/100).
+    3. LPF3: The Loan Planner shall perform the computation "(Principle*I((1+I)^months))/(((1+I)^months)-1)" with the user-provided values when the "Compute!" button on the "Calculate Monthly Payment" screen is pressed (where I is the quotient "APR/12/100").
     4. LPF4: If the "Calculate Timeline" button is selected, a new screen shall open containing the following input fields: "Principle", "Interest Rate (%)", and "Amount of monthly payment".
-    5. LPF5: The Loan Planner shall perform the computation (log(Amt/(Amt-(Principle*I)))/(log(1+I)) with the user-provided values when the "Compute!" button on the "Calculate Timeline" screen is pressed (where Amt is the amount of monthly payment and I is APR/12/100).
+    5. LPF5: The Loan Planner shall perform the computation "(log(Amt/(Amt-(Principle*I)))/(log(1+I))" with the user-provided values when the "Compute!" button on the "Calculate Timeline" screen is pressed (where Amt is the amount of monthly payment and I is the quotient "APR/12/100").
 
 5. Profile
     1. ACCF1: When creating a new account via the "Sign Up" feature, the user shall provide their first and last name, username, and password.
@@ -53,16 +53,20 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     4. IENF4: The dialog message "Please enter a non-zero dollar amount" shall appear if a user attempts to save a transaction of $0.00 (such a transaction will not be saved to the MySQL database).
     5. IENF5: The dialog message "Please enter a merchant name" shall appear if a user attempts to save a transaction without providing a merchant (such a transaction will not be saved to the MySQL database). 
 
-5. History
+3. History
     1. HNF1: None of a user's transactions shall under any circumstances be deleted from the MySQL "Transactions" table.
     2. HNF2: The dates of the transactions from the selected month shall be displayed as the first three letters of the month followed by a number representing the day.
     3. HNF3: The transaction summaries shall be displayed in descending order by date (i.e., the most recent transaction shall appear at the top of the list).
     4. HNF4: The dollar amounts for transactions of type "Income" shall appear as green numbers preceded by a "+" sign.
     5. HNF5: The dollar amounts for transactions of type "Expense" shall appear as red numbers preceded by a "-" sign.
 
-6. Loan Payment Planner
-    1. LPNF1: The loan payment planner feature shall not interact with the database.
-    2. LPNF2: Computation shall take no longer than three (3) seconds to complete.
+4. Loan Planner
+    1. LPNF1: If the interest rate provided to "Calculate Monthly Payment" is zero (0), the monthly payment shall simply be computed as "Principle/months".
+    2. LPNF2: If the interest rate provided to "Calculate Timeline" is zero (0), the number of months to pay off the loan shall simply be computed as "Principle/Amt" (where Amt is the amount of monthly payment).
+    3. LPNF3: In "Calculate Timeline", if the product between Principle and the monthly interest rate (i.e., the quotient "APR/12/100") is greater than or equal to the provided monthly payment amount, the message "Your plan is not recommended: try a larger monthly payment" shall be displayed in the results screen.
+    4. LPNF4: The input fields for "Principle", "Months to pay off" and "Amount of monthly payment" shall not accept numbers less than or equal to zero (0).
+    5. LPNF5: The input fields for interest rate shall not accept negative numbers, but zero (0) will be permitted.
+    6. LPNF6: The Loan Planner feature shall not interact with the MySQL database.
 
 7. Login
     1. ACCNF1: One user shall not be able to deliberately sign in to a separate user's account.
