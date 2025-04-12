@@ -41,19 +41,17 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 # Non-Functional Requirements
 1. Create New Budget
     1. CBNF1: A user shall not have the ability to save more than one budget for the same month (e.g., two budgets for April 2025).
-    2. CBNF2: If a user does does not provide any input on the "Create New Budget" menu, no rows shall be added to the MySQL "Budgets" table when the user selects "Save Budget".
+    2. CBNF2: If a user does does not provide any input to the "Create New Budget" menu, no rows shall be added to the MySQL "Budgets" table when the user selects "Save Budget".
     3. CBNF3: If a user provides a dollar amount for a subsection but no subsection name, no row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget".
     4. CBNF4: If a user provides a name for a subsection but no dollar amount, a row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget" with the default dollar amount $0.00.
     5. CBNF5: All budget subsections created by a user shall be saved to the MySQL "Budgets" table under their unique client ID (so they cannot be impacted by other users' activity).
-
-1. General (i.e., the app as a whole)
-    1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
-    2. GNF2: If a screen in the application is either broken or under development, the user shall receive an error message and be allowed to return to the previous screen.
-    3. GNF3: The color scheme of the app shall appear similarly across different platforms.
-    4. GNF4: Button labels shall contain a maximum of two words.
   
-4. Add Income/Expense
-    1. IENF1: The "Date" input field shall be formatted in such a way that the values it receives can be accurately represented across various platforms (e.g., Android, iOS, Windows, Mac).
+2. Income/Expense
+    1. IENF1: A user shall not be able to open more than one "Add Transaction" window at once.
+    2. IENF2: Transactions saved by a user shall be saved to the MySQL "Transactions" table under their unique client ID (similarly to how budget subsections are saved).
+    3. IENF3: The dialog message "Invalid date" shall appear if a user attempts to save a transaction with a non-real date (e.g., 02/29/2025; 02/30/2025; 04/31/2025) (such a transaction will not be saved to the MySQL database).
+    4. IENF4: The dialog message "Please enter a non-zero dollar amount" shall appear if a user attempts to save a transaction of $0.00 (such a transaction will not be saved to the MySQL database).
+    5. IENF5: The dialog message "Please enter a merchant name" shall appear if a user attempts to save a transaction without providing a merchant (such a transaction will not be saved to the MySQL database). 
 
 5. Transaction History
     1. THNF1: All of a user's transactions (i.e., income/expenses) shall be preserved in the database (i.e., they shall never be deleted).
@@ -69,3 +67,9 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
     4. ACCNF4: The user account database shall be remote (i.e., it shall not included in a local download of the application).
     5. ACCNF5: The user account database shall allow users to access their budget information via multiple devices (e.g., an iPhone and a Windows computer).
     6. ACCNF6: User passwords shall be hashed when stored in the database.
+
+1. General (i.e., the app as a whole)
+    1. GNF1: Database interactions (e.g., logging in; saving a budget) shall take no longer than 10 seconds.
+    2. GNF2: If a screen in the application is either broken or under development, the user shall receive an error message and be allowed to return to the previous screen.
+    3. GNF3: The color scheme of the app shall appear similarly across different platforms.
+    4. GNF4: Button labels shall contain a maximum of two words.
