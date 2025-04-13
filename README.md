@@ -35,11 +35,13 @@ To run Degree Dollars locally, ensure you have the following installed:
 
 ## Run Instructions
 
+Open your terminal and follow the directions below.
+
 1. **Clone the Repository**
 
    ```bash
    git clone https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS.git
-   cd GVSU-CIS350-THEFOURCORNERS
+   cd GVSU-CIS350-THEFOURCORNERS/src/degree_dollars
    ```
 
 2. **Install Dependencies**
@@ -59,13 +61,18 @@ To run Degree Dollars locally, ensure you have the following installed:
    - **User**: `root`
    - **Password**: `DegreeDollars350!`
 
-4. **Run the App**
+4. **Package the App**
 
    ```bash
-   briefcase run -u
+   briefcase create
+   briefcase build
    ```
 
-   The app will create the required database (`DegreeDollars`) and all necessary tables on first launch.
+5. **Run the App**
+
+   ```bash
+   briefcase run
+
+The app will create the required database (`DegreeDollars`) and all necessary tables on the first launch. On all subsequent runs, you need not run `briefcase create` and `briefcase build` again. Simply ensure you are in the directory `GVSU-CIS350-THEFOURCORNERS/src/degree_dollars` and execute the command `briefcase run`.
 
 > **Note:** If you're new to MySQL or encounter connection issues, ensure the server is running and accessible via your configured credentials.
-
