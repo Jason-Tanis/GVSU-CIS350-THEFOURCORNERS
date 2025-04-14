@@ -82,6 +82,6 @@ The app will create the required database (`DegreeDollars`) and all necessary ta
 ## Use Instructions
 ### Signing Up/Logging In
 
-![App Opening Screen](https://github.com/user-attachments/assets/755f79c3-baf8-49ff-a110-5763e451a5d7) ![App Sign Up Screen](https://github.com/user-attachments/assets/48b90018-d927-4440-912a-32fe52fb3f19) ![App Log In Screen](https://github.com/user-attachments/assets/77121036-4846-47a6-bee2-e5dcb6b716c4)
+![App Sign Up Screen](https://github.com/user-attachments/assets/48b90018-d927-4440-912a-32fe52fb3f19) ![App Log In Screen](https://github.com/user-attachments/assets/77121036-4846-47a6-bee2-e5dcb6b716c4)
 
 Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
