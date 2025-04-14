@@ -1,5 +1,7 @@
 # Degree Dollars — The Four Corners 
-![App Icon](https://github.com/user-attachments/assets/5ba433bf-78d5-4de8-8b7b-fbc28a937095)
+
+![DegreeDollarsLogo](https://github.com/user-attachments/assets/e5210f21-5eef-44f1-845b-a035d83ab7d8)
+
 Degree Dollars is a desktop budgeting application designed for college students to better manage their money. Built with BeeWare’s Toga framework and a MySQL backend, the app allows users to plan monthly budgets, record real-time income and expenses, and visualize their financial activity. It also features a student loan planner that calculates either the required monthly payment or the time needed to pay off a loan. With student-friendly UI design and modular features, Degree Dollars is supported on both macOS and Windows.
 
 ---
@@ -79,5 +81,7 @@ The app will create the required database (`DegreeDollars`) and all necessary ta
 
 ## Use Instructions
 ### Signing Up/Logging In
-![Opening Screen](https://github.com/user-attachments/assets/75f9aedd-e773-49bd-86fe-2702855cc390) ![Sign Up Screen](https://github.com/user-attachments/assets/19189e09-37f5-465b-99ae-541e55dc5c9d) ![Log In Screen](https://github.com/user-attachments/assets/4ce32f1a-a11e-4226-87a1-1f944d59e101)
+
+![App Opening Screen](https://github.com/user-attachments/assets/755f79c3-baf8-49ff-a110-5763e451a5d7) ![App Sign Up Screen](https://github.com/user-attachments/assets/48b90018-d927-4440-912a-32fe52fb3f19) ![App Log In Screen](https://github.com/user-attachments/assets/77121036-4846-47a6-bee2-e5dcb6b716c4)
+
 Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
