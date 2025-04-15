@@ -107,7 +107,6 @@ In the "Profile" menu, you are provided the option to log out of your currently 
   <img width="250" src="https://github.com/user-attachments/assets/52889688-6d5f-48e9-bebb-739e4995f377" />
   <img width="250" src="https://github.com/user-attachments/assets/430f9b61-acc7-4be8-bc72-2301ed6fbabc" />
   <img width="250" src="https://github.com/user-attachments/assets/a407fc6a-4525-425a-9f4d-b8a7ce1a58a5" />
-  <img width="250" src="https://github.com/user-attachments/assets/d05b30a9-6b3f-457e-92a5-aeb4811f82be" />
   <img width="250" src="https://github.com/user-attachments/assets/643b31b5-ad39-4c55-97e0-ed2b44f4bac7" />
   <img width="250" src="https://github.com/user-attachments/assets/d0ec8b06-866b-40aa-8313-5d62ad1df857" />
   <img width="250" src="https://github.com/user-attachments/assets/654d7935-b5a4-4354-b553-85eb516cf83c" />
