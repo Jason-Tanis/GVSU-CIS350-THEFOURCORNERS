@@ -18,35 +18,43 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 ### Income/Expense
 
-    1. IEF1: The "Income/Expense" feature shall be accessible via an "Income/Expense" button on the viewing screen for a previously saved budget
-    2. IEF2: The "Income/Expense" button shall open a new window named "Add Transaction" (separate from the main window) when pressed.
-    3. IEF3: The "Add Transaction" window shall contain the following input fields: "Income or Expense", "Section", "Subsection", "Month", "Day", "Year", "Amount", and "Merchant".
-    4. IEF4: When the user presses the "Save Transaction" button in the "Add Transaction" window, a summary of their input shall be added to the "Transactions" table in the MySQL database (one row per transaction).
-    5. IEF5: When the user presses the "Save Transaction" button in the "Add Transaction" window, the amount previously saved for the selected subsection shall be updated in the MySQL "Budgets" table accordingly.
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| IEF1 | The "Income/Expense" feature shall be accessible via an "Income/Expense" button on the viewing screen for a previously saved budget. | 
+| IEF2 | The "Income/Expense" button shall open a new window named "Add Transaction" (separate from the main window) when pressed. | 
+| IEF3 | The "Add Transaction" window shall contain the following input fields: "Income or Expense", "Section", "Subsection", "Day of Month", "Amount", and "Merchant". | 
+| IEF4 | When the user presses the "Save Transaction" button in the "Add Transaction" window, a summary of their input shall be added to the "Transactions" table in the MySQL database (one row per transaction). |
+| IEF5 | When the user presses the "Save Transaction" button in the "Add Transaction" window, the amount previously saved for the selected subsection shall be updated in the MySQL "Budgets" table accordingly. |
 
 ### History
 
-    1. HF1: The "History" screen shall contain a dropdown menu identical to that of the "Home" screen from which the user can select a previously saved budget to view the transaction history for.
-    2. HF2: After a budget is selected from the dropdown menu, a new screen shall open displaying a single column of non-clickable summaries of each transaction saved for the budget.
-    3. HF3: The following information shall be displayed in each transaction summary: month and day, the subsection to which the transaction was applied, merchant, and amount (positive for income and negative for expenses).
-    4. HF4: The subsections for each transaction shall be queried from the MySQL "Budgets" table while the remaining transaction information shall be queried from the "Transactions" table.
-    5. HF5: The history viewing screen shall include a "Back to Home" button at the bottom of the transaction list that redirects the user to the "Home" screen (i.e., the screen containing the "Create New Budget" button).
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| HF1 | The "History" screen shall contain a dropdown menu identical to that of the "Home" screen from which the user can select a previously saved budget to view the transaction history for. | 
+| HF2 | After a budget is selected from the dropdown menu, a new screen shall open displaying a single column of non-clickable summaries of each transaction saved for the budget. | 
+| HF3 | The following information shall be displayed in each transaction summary: month and day, the subsection to which the transaction was applied, merchant, and amount (positive for income and negative for expenses). | 
+| HF4 | The subsections for each transaction shall be queried from the MySQL "Budgets" table while the remaining transaction information shall be queried from the "Transactions" table. |
+| HF5 | The history viewing screen shall include a "Back to Home" button at the bottom of the transaction list that redirects the user to the "Home" screen (i.e., the screen containing the "Create New Budget" button). |
 
 ### Loan Planner
 
-    1. LPF1: The "Loan Planner" screen shall contain two buttons: "Calculate Monthly Payment" and "Calculate Timeline".
-    2. LPF2: If the "Calculate Monthly Payment" button is selected, a new screen shall open containing the following input fields: "Principle", "Annual Interest Rate (% APR)", and "Months to pay off".
-    3. LPF3: The Loan Planner shall perform the computation "(Principle*I((1+I)^months))/(((1+I)^months)-1)" with the user-provided values when the "Compute!" button on the "Calculate Monthly Payment" screen is pressed (where I is the quotient "APR/12/100").
-    4. LPF4: If the "Calculate Timeline" button is selected, a new screen shall open containing the following input fields: "Principle", "Interest Rate (%)", and "Amount of monthly payment".
-    5. LPF5: The Loan Planner shall perform the computation "(log(Amt/(Amt-(Principle*I)))/(log(1+I))" with the user-provided values when the "Compute!" button on the "Calculate Timeline" screen is pressed (where Amt is the amount of monthly payment and I is the quotient "APR/12/100").
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| LPF1 | The "Loan Planner" screen shall contain two buttons: "Calculate Monthly Payment" and "Calculate Timeline". | 
+| LPF2 | If the "Calculate Monthly Payment" button is selected, a new screen shall open containing the following input fields: "Principle", "Annual Interest Rate (% APR)", and "Months to pay off". | 
+| LPF3 | The Loan Planner shall perform the computation ```(Principle x I((1 + I)^months)) / (((1 + I)^months) - 1)``` with the user-provided values when the "Compute!" button on the "Calculate Monthly Payment" screen is pressed (where I is the quotient ```APR / 12 / 100```). | 
+| LPF4 | If the "Calculate Timeline" button is selected, a new screen shall open containing the following input fields: "Principle", "Interest Rate (%)", and "Amount of monthly payment". |
+| LPF5 | The Loan Planner shall perform the computation ```(log(Amt / (Amt - (Principle x I))) / (log(1 + I))``` with the user-provided values when the "Compute!" button on the "Calculate Timeline" screen is pressed (where Amt is the amount of monthly payment and I is the quotient ```APR / 12 / 100```). |
 
 ### Profile
 
-    1. ACCF1: When creating a new account via the "Sign Up" feature, the user shall provide their first and last name, username, and password.
-    2. ACCF2: When a new account is created, it shall be added as a row to the "Profile" table in the MySQL database.
-    3. ACCF3: When logging into an existing account via the "Log In" feature, the user shall provide their username and password.
-    4. ACCF4: From the "Profile" screen, the user shall be able to change their username and/or password (the MySQL "Profile" table shall be updated accordingly).
-    5. ACCF5: The "Profile" screen shall include a "Log Out" button that sets the currently active username, password, and client ID (the primary key of the MySQL "Profile" table) to "None" and redirects the user to the app's opening screen.
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| ACCF1 | When creating a new account via the "Sign Up" feature, the user shall provide their first and last name, username, and password. | 
+| ACCF2 | When a new account is created, it shall be added as a row to the "Profile" table in the MySQL database. | 
+| ACCF3 | When logging into an existing account via the "Log In" feature, the user shall provide their username and password. | 
+| ACCF4 | From the "Profile" screen, the user shall be able to change their username and/or password (the MySQL "Profile" table shall be updated accordingly). |
+| ACCF5 | The "Profile" screen shall include a "Log Out" button that sets the currently active username, password, and client ID (the primary key of the MySQL "Profile" table) to "None" and redirects the user to the app's opening screen. |
 
 ## Non-Functional Requirements
 
