@@ -109,9 +109,29 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 | ACCNF4 | If a user attempts to sign up and the fields "Password" and "Confirm Password" do not contain identical, non-empty text, the dialog message "Passwords do not match" shall appear (the sign up will be prevented). |
 | ACCNF5 | If a user attempts to log in with a username and/or password that do not exist in the MySQL "Profile" table, the dialog message "Invalid username or password" shall appear (the log in will be prevented). |
 
+# Test Specification
+
+As the implementation of Degree Dollars neared its end in late March/early April, manual test cases were written and executed to ensure that the features of the app were operating as expected.
+
+## Unit tests
+
+(copy/paste the below table a minimum of 4 times)
+
+| ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
+| :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
+| TC1 | <TC1 description> | <steps to execute TC1> | <input values to this test case> | <expected output as a result of test case> | <actual output of test case> | <did it pass or fail?> | <requirement IDs this test case is linked to> |
+
+## Integration tests
+
+(copy/paste the above table a minimum of 3 times)
+
+## System tests
+
+(copy/paste the above table a minimum of 3 times)
+
 # Software Artifacts
 
-Describe the purpose of this section
+The artifacts linked below reflect our team's progress on Degree Dollars over the past four months. They additionally showcase our initial plans for the software, and how they changed as the software development cycle progressed.
 
 ### Initial Proposal and Midterm Progress
 * [Initial Project Proposal](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/proposal-template.md)
@@ -120,12 +140,12 @@ Describe the purpose of this section
 ### Software Structure Diagrams
 * [Use Case Description and Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/8d3ffafb65417b45a8cf8489ce96fb1b7b8cc52d/artifacts/use_case_diagram/use_case_description.md)
 * [Sequence Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/c442e40b191b2a9bf7fcf7843f34ef1fc217d6b7/artifacts/Sequence%20Diagram.pdf)
+* [ER Diagram (for MySQL Database)](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/31d1bdb65044709f7d00b8dbafa1f695ea8fadf3/artifacts/ER%20Diagram%20(for%20MySQL%20Database).pdf)
 
 ### Figma Prototype and Jira KANBAN Board
 * [Figma](https://www.figma.com/design/HDd8jz5dyU2HxmyIv10URN/CIS-350---Budgeting-App?node-id=24-209&t=IzIFoiUU6yUbWZUX-1)
 * [Jira](https://kelsey-jason-tony-sam-cis350.atlassian.net/jira/software/projects/ECS/boards/1?atlOrigin=eyJpIjoiNTk5NjBkNmVlM2Y5NGVjNThhNDBkMzg5MmQzZmZjN2MiLCJwIjoiaiJ9)
 
-### Project Tasks and Progress Charts
+### Project Tasks and Gantt Chart
 * [Detailed Tasks List](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/project-tasks.md)
 * [Gantt Chart](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/gantt-chart.pdf)
-* 
