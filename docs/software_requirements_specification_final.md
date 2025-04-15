@@ -60,41 +60,51 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 ### Create New Budget
 
-    1. CBNF1: A user shall not have the ability to save more than one budget for the same month (e.g., two budgets for April 2025).
-    2. CBNF2: If a user does does not provide any input to the "Create New Budget" menu, no rows shall be added to the MySQL "Budgets" table when the user selects "Save Budget".
-    3. CBNF3: If a user provides a dollar amount for a subsection but no subsection name, no row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget".
-    4. CBNF4: If a user provides a name for a subsection but no dollar amount, a row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget" with the default dollar amount $0.00.
-    5. CBNF5: All budget subsections created by a user shall be saved to the MySQL "Budgets" table under their unique client ID (so they cannot be impacted by other users' activity).
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| CBNF1 | A user shall not have the ability to save more than one budget for the same month (e.g., two budgets for April 2025). | 
+| CBNF2 | If a user does does not provide any input to the "Create New Budget" menu, no rows shall be added to the MySQL "Budgets" table when the user selects "Save Budget". | 
+| CBNF3 | If a user provides a dollar amount for a subsection but no subsection name, no row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget". | 
+| CBNF4 | If a user provides a name for a subsection but no dollar amount, a row for the subsection shall be added to the MySQL "Budgets" table when the user selects "Save Budget" with the default dollar amount $0.00. |
+| CBNF5 | All budget subsections created by a user shall be saved to the MySQL "Budgets" table under their unique client ID (so they cannot be impacted by other users' activity). |
   
 ### Income/Expense
 
-    1. IENF1: A user shall not be able to open more than one "Add Transaction" window at once.
-    2. IENF2: Transactions saved by a user shall be saved to the MySQL "Transactions" table under their unique client ID (similarly to how budget subsections are saved).
-    3. IENF3: The dialog message "Invalid date" shall appear if a user attempts to save a transaction with a non-real date (e.g., 02/29/2025; 02/30/2025; 04/31/2025) (such a transaction will not be saved to the MySQL database).
-    4. IENF4: The dialog message "Please enter a non-zero dollar amount" shall appear if a user attempts to save a transaction of $0.00 (such a transaction will not be saved to the MySQL database).
-    5. IENF5: The dialog message "Please enter a merchant name" shall appear if a user attempts to save a transaction without providing a merchant (such a transaction will not be saved to the MySQL database). 
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| IENF1 | A user shall not be able to open more than one "Add Transaction" window at once. | 
+| IENF2 | Transactions saved by a user shall be saved to the MySQL "Transactions" table under their unique client ID (similarly to how budget subsections are saved). | 
+| IENF3 | The dialog message "Invalid date" shall appear if a user attempts to save a transaction with a non-real date (e.g., 02/29/2025; 02/30/2025; 04/31/2025) (such a transaction will not be saved to the MySQL database). | 
+| IENF4 | The dialog message "Please enter a non-zero dollar amount" shall appear if a user attempts to save a transaction of $0.00 (such a transaction will not be saved to the MySQL database). |
+| IENF5 | The dialog message "Please enter a merchant name" shall appear if a user attempts to save a transaction without providing a merchant (such a transaction will not be saved to the MySQL database). |  
 
 ### History
 
-    1. HNF1: None of a user's transactions shall under any circumstances be deleted from the MySQL "Transactions" table.
-    2. HNF2: The dates of the transactions from the selected month shall be displayed as the first three letters of the month followed by a number representing the day.
-    3. HNF3: The transaction summaries shall be displayed in descending order by date (i.e., the most recent transaction shall appear at the top of the list).
-    4. HNF4: The dollar amounts for transactions of type "Income" shall appear as green numbers preceded by a "+" sign.
-    5. HNF5: The dollar amounts for transactions of type "Expense" shall appear as red numbers preceded by a "-" sign.
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| HNF1 | None of a user's transactions shall under any circumstances be deleted from the MySQL "Transactions" table. | 
+| HNF2 | The dates of the transactions from the selected month shall be displayed as the first three letters of the month followed by a number representing the day. | 
+| HNF3 | The transaction summaries shall be displayed in descending order by date (i.e., the most recent transaction shall appear at the top of the list). | 
+| HNF4 | The dollar amounts for transactions of type "Income" shall appear as green numbers preceded by a "+" sign. |
+| HNF5 | The dollar amounts for transactions of type "Expense" shall appear as red numbers preceded by a "-" sign. |
 
 ### Loan Planner
 
-    1. LPNF1: If the interest rate provided to "Calculate Monthly Payment" is zero (0), the monthly payment shall simply be computed as "Principle/months".
-    2. LPNF2: If the interest rate provided to "Calculate Timeline" is zero (0), the number of months to pay off the loan shall simply be computed as "Principle/Amt" (where Amt is the amount of monthly payment).
-    3. LPNF3: In "Calculate Timeline", if the product between Principle and the monthly interest rate (i.e., the quotient "APR/12/100") is greater than or equal to the provided monthly payment amount, the message "Your plan is not recommended: try a larger monthly payment" shall be displayed in the results screen.
-    4. LPNF4: The input fields for "Principle", "Months to pay off" and "Amount of monthly payment" shall not accept numbers less than or equal to zero (0).
-    5. LPNF5: The input fields for interest rate shall not accept negative numbers, but zero (0) will be permitted.
-    6. LPNF6: The Loan Planner feature shall not interact with the MySQL database.
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| LPNF1 | If the interest rate provided to "Calculate Monthly Payment" is zero (0), the monthly payment shall simply be computed as "Principle/months". | 
+| LPNF2 | If the interest rate provided to "Calculate Timeline" is zero (0), the number of months to pay off the loan shall simply be computed as "Principle/Amt" (where Amt is the amount of monthly payment). | 
+| LPNF3 | In "Calculate Timeline", if the product between Principle and the monthly interest rate (i.e., the quotient "APR/12/100") is greater than or equal to the provided monthly payment amount, the message "Your plan is not recommended: try a larger monthly payment" shall be displayed in the results screen. | 
+| LPNF4 | The input fields for "Principle", "Months to pay off" and "Amount of monthly payment" shall not accept numbers less than or equal to zero (0). |
+| LPNF5 | The input fields for interest rate shall not accept negative numbers, but zero (0) will be permitted. |
+| LPNF6 | The Loan Planner feature shall not interact with the MySQL database. |
 
 ### Profile
 
-    1. ACCNF1: One user shall not be allowed to have the same username as another user.
-    2. ACCNF2: One user shall not be allowed to have the same password as another user.
-    3. ACCNF3: If a user attempts to sign up without providing text to all five input fields, the dialog message "Please complete all fields" shall appear (the sign up will be prevented).
-    4. ACCNF4: If a user attempts to sign up and the fields "Password" and "Confirm Password" do not contain identical, non-empty text, the dialog message "Passwords do not match" shall appear (the sign up will be prevented).
-    5. ACCNF5: If a user attempts to log in with a username and/or password that do not exist in the MySQL "Profile" table, the dialog message "Invalid username or password" shall appear (the log in will be prevented).
+| ID  | Requirement     | 
+| :-------------: | :----------: | 
+| ACCNF1 | One user shall not be allowed to have the same username as another user. | 
+| ACCNF2 | One user shall not be allowed to have the same password as another user. | 
+| ACCNF3 | If a user attempts to sign up without providing text to all five input fields, the dialog message "Please complete all fields" shall appear (the sign up will be prevented). | 
+| ACCNF4 | If a user attempts to sign up and the fields "Password" and "Confirm Password" do not contain identical, non-empty text, the dialog message "Passwords do not match" shall appear (the sign up will be prevented). |
+| ACCNF5 | If a user attempts to log in with a username and/or password that do not exist in the MySQL "Profile" table, the dialog message "Invalid username or password" shall appear (the log in will be prevented). |
