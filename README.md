@@ -1,22 +1,24 @@
-# Degree Dollars — The Four Corners
+# Degree Dollars — The Four Corners 
 
-Degree Dollars is a cross-platform budgeting application designed for college students to better manage their money. Built with BeeWare’s Toga framework and a MySQL backend, the app allows users to plan monthly budgets, record real-time income and expenses, and visualize their financial activity. It also features a student loan planner that calculates either the required monthly payment or the time needed to pay off a loan. With student-friendly UI design and modular features, Degree Dollars supports all major platforms — desktop, mobile, and web.
+![DegreeDollarsLogo](https://github.com/user-attachments/assets/e5210f21-5eef-44f1-845b-a035d83ab7d8)
+
+Degree Dollars is a desktop budgeting application designed for college students to better manage their money. Built with BeeWare’s Toga framework and a MySQL backend, the app allows users to plan monthly budgets, record real-time income and expenses, and visualize their financial activity. It also features a student loan planner that calculates either the required monthly payment or the time needed to pay off a loan. With student-friendly UI design and modular features, Degree Dollars is supported on both macOS and Windows.
 
 ---
 
 ## Team Members and Roles
 
 - [**Jason Tanis**](https://github.com/Jason-Tanis/CIS350-HW2-Tanis.git)  
-  _Project Manager, Python Developer, Android Tester_
+  _Project Manager, Python Developer_
 
 - [**Sam Bergman**](https://github.com/bergmasa/CIS350-HW2-Bergman.git)  
   _Python Developer_
 
 - [**Tony Choummanivong**](https://github.com/TonyCyber6/CIS350-HW2--Choummanivong-.git)  
-  _Python Developer, Unit Tester_
+  _Python Developer, Software Tester_
 
 - [**Kelsey Tedford**](https://github.com/kelseytedford/CIS350-HW2-Tedford)  
-  _Prototype Developer, Python Developer, Database Manager, iOS Tester_
+  _Prototype Developer, Python Developer, Database Manager_
 
 ---
 
@@ -33,13 +35,15 @@ To run Degree Dollars locally, ensure you have the following installed:
   - `httpx`
   - `briefcase`
 
-## Run Instructions
+## Installation/Run Instructions
+
+Open your terminal and follow the directions below.
 
 1. **Clone the Repository**
 
    ```bash
    git clone https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS.git
-   cd GVSU-CIS350-THEFOURCORNERS
+   cd GVSU-CIS350-THEFOURCORNERS/src/degree_dollars
    ```
 
 2. **Install Dependencies**
@@ -59,13 +63,55 @@ To run Degree Dollars locally, ensure you have the following installed:
    - **User**: `root`
    - **Password**: `DegreeDollars350!`
 
-4. **Run the App**
+4. **Package the App**
 
    ```bash
-   briefcase run -u
+   briefcase create
+   briefcase build
    ```
 
-   The app will create the required database (`DegreeDollars`) and all necessary tables on first launch.
+5. **Run the App**
+
+   ```bash
+   briefcase run
+
+The app will create the required database (`DegreeDollars`) and all necessary tables on the first launch. On all subsequent runs, you need not run `briefcase create` and `briefcase build` again. Simply ensure you are in the directory `GVSU-CIS350-THEFOURCORNERS/src/degree_dollars` and execute the command `briefcase run`.
 
 > **Note:** If you're new to MySQL or encounter connection issues, ensure the server is running and accessible via your configured credentials.
+
+## Use Instructions
+### Signing Up/Logging In
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/17539eb7-ff2e-4432-aa56-a36483642b3b" width="250"/>
+  <img src="https://github.com/user-attachments/assets/02ffae07-919d-46fd-9c5c-f9d65e0d11c9" width="250"/>
+  <img src="https://github.com/user-attachments/assets/ab94c827-2de9-45da-bb15-cf44ce0c5133" width="250"/>
+</p>
+
+
+Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
+
+### Changing your Account Credentials
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0f5da08b-2d54-4e92-825a-ec7e916615bf" width="250"/>
+  <img src="https://github.com/user-attachments/assets/1ab4ec00-a2a6-4525-9ccd-3195e1c658d5" width="250"/>
+  <img src="https://github.com/user-attachments/assets/49dcffc6-f220-4368-9558-a80290d2a2c2" width="250"/>
+</p>
+
+In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
+
+### Create Budget
+
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/52889688-6d5f-48e9-bebb-739e4995f377" />
+  <img width="250" src="https://github.com/user-attachments/assets/430f9b61-acc7-4be8-bc72-2301ed6fbabc" />
+  <img width="250" src="https://github.com/user-attachments/assets/a407fc6a-4525-425a-9f4d-b8a7ce1a58a5" />
+  <img width="250" src="https://github.com/user-attachments/assets/643b31b5-ad39-4c55-97e0-ed2b44f4bac7" />
+  <img width="250" src="https://github.com/user-attachments/assets/d0ec8b06-866b-40aa-8313-5d62ad1df857" />
+  <img width="250" src="https://github.com/user-attachments/assets/654d7935-b5a4-4354-b553-85eb516cf83c" />
+</p>
+
+In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
+
 
