@@ -101,17 +101,32 @@ Upon opening the app, you will be prompted to either sign up or log in. If you h
 
 In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
 
-### Create Budget
+### Create Monthly Budget
 
 <p align="center">
   <img width="250" src="https://github.com/user-attachments/assets/52889688-6d5f-48e9-bebb-739e4995f377" />
   <img width="250" src="https://github.com/user-attachments/assets/430f9b61-acc7-4be8-bc72-2301ed6fbabc" />
   <img width="250" src="https://github.com/user-attachments/assets/a407fc6a-4525-425a-9f4d-b8a7ce1a58a5" />
+</p>
+
+In the "Homescreen" page, if the account is new or has no budgets then the only option is to select "Create New Budget". This will prompt the user to select the desired month and year. Additionally, there are seven predefined sections: "Education", "Housing/Utilities", "Food", "Transportation", "Entertainment", "Medical", "Other". The user can enter custom subsections with no limit for the budget. At the bottom of the page, the user will select "Save Budget" to store the budget in the database.
+
+<p align="center">
   <img width="250" src="https://github.com/user-attachments/assets/643b31b5-ad39-4c55-97e0-ed2b44f4bac7" />
   <img width="250" src="https://github.com/user-attachments/assets/d0ec8b06-866b-40aa-8313-5d62ad1df857" />
   <img width="250" src="https://github.com/user-attachments/assets/654d7935-b5a4-4354-b553-85eb516cf83c" />
 </p>
 
-In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
+In the "Homescreen" page, if there is already one or more budgets create, the user can select the month that they would like to view. Here are two examples of what budgets can look like.
+
+### Income & Expenses
+
+While viewing a specific month's budget, the user can log financial activity by using the "Add Transaction" button. The user must select whether it is an income or expense, the section then subsection to be stored under, the date of the transaction, and the merchant. Then the user will select "Save Transaction" to store the transaction to the database and update the budget for the month accordingly.
+
+### Transaction History
+
+In the "Transaction History" page, the user will be prompted to choose from the months that budgets have been created for. Once selected, a scrollable list of non-clickable transaction summaries will be viewable sorted by date (newest to oldest). Each summary will show the date, subsection, merchant, and amount (red text for expense, green text for income).
+
+### Student Loan Planner
 
 
