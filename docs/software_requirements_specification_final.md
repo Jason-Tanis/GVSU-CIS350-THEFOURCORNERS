@@ -54,7 +54,7 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 | ACCF2 | When a new account is created, it shall be added as a row to the "Profile" table in the MySQL database. | 
 | ACCF3 | When logging into an existing account via the "Log In" feature, the user shall provide their username and password. | 
 | ACCF4 | From the "Profile" screen, the user shall be able to change their username and/or password (the MySQL "Profile" table shall be updated accordingly). |
-| ACCF5 | The "Profile" screen shall include a "Log Out" button that sets the currently active username, password, and client ID (the primary key of the MySQL "Profile" table) to "None" and redirects the user to the app's opening screen. |
+| ACCF5 | The "Profile" screen shall include a "Log Out" button that sets the currently active username, password, and client ID (the primary key of the MySQL "Profile" table) to ```None``` and redirects the user to the app's opening screen. |
 
 ## Non-Functional Requirements
 
