@@ -9,16 +9,16 @@ Degree Dollars is a desktop budgeting application designed for college students 
 ## Team Members and Roles
 
 - [**Jason Tanis**](https://github.com/Jason-Tanis/CIS350-HW2-Tanis.git)  
-  _Project Manager, Python Developer, Android Tester_
+  _Project Manager, Python Developer_
 
 - [**Sam Bergman**](https://github.com/bergmasa/CIS350-HW2-Bergman.git)  
   _Python Developer_
 
 - [**Tony Choummanivong**](https://github.com/TonyCyber6/CIS350-HW2--Choummanivong-.git)  
-  _Python Developer, Unit Tester_
+  _Python Developer, Software Tester_
 
 - [**Kelsey Tedford**](https://github.com/kelseytedford/CIS350-HW2-Tedford)  
-  _Prototype Developer, Python Developer, Database Manager, iOS Tester_
+  _Prototype Developer, Python Developer, Database Manager_
 
 ---
 
