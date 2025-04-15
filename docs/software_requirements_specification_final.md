@@ -108,3 +108,24 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 | ACCNF3 | If a user attempts to sign up without providing text to all five input fields, the dialog message "Please complete all fields" shall appear (the sign up will be prevented). | 
 | ACCNF4 | If a user attempts to sign up and the fields "Password" and "Confirm Password" do not contain identical, non-empty text, the dialog message "Passwords do not match" shall appear (the sign up will be prevented). |
 | ACCNF5 | If a user attempts to log in with a username and/or password that do not exist in the MySQL "Profile" table, the dialog message "Invalid username or password" shall appear (the log in will be prevented). |
+
+# Software Artifacts
+
+Describe the purpose of this section
+
+### Initial Proposal and Midterm Progress
+* [Initial Project Proposal](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/proposal-template.md)
+* [Midterm Presentation of Project Progress](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/CIS%20350%20-%20Midterm%20Presentation.pdf)
+
+### Software Structure Diagrams
+* [Use Case Description and Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/8d3ffafb65417b45a8cf8489ce96fb1b7b8cc52d/artifacts/use_case_diagram/use_case_description.md)
+* [Sequence Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/c442e40b191b2a9bf7fcf7843f34ef1fc217d6b7/artifacts/Sequence%20Diagram.pdf)
+
+### Figma Prototype and Jira KANBAN Board
+* [Figma](https://www.figma.com/design/HDd8jz5dyU2HxmyIv10URN/CIS-350---Budgeting-App?node-id=24-209&t=IzIFoiUU6yUbWZUX-1)
+* [Jira](https://kelsey-jason-tony-sam-cis350.atlassian.net/jira/software/projects/ECS/boards/1?atlOrigin=eyJpIjoiNTk5NjBkNmVlM2Y5NGVjNThhNDBkMzg5MmQzZmZjN2MiLCJwIjoiaiJ9)
+
+### Project Tasks and Progress Charts
+* [Detailed Tasks List](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/project-tasks.md)
+* [Gantt Chart](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/0f3748cfe000f917c173b431a1e26cddf73d7964/docs/gantt-chart.pdf)
+* 
