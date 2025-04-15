@@ -82,7 +82,7 @@ The app will create the required database (`DegreeDollars`) and all necessary ta
 ## Use Instructions
 ### Signing Up/Logging In
 
-![App Sign Up Screen](https://github.com/user-attachments/assets/48b90018-d927-4440-912a-32fe52fb3f19) ![App Log In Screen](https://github.com/user-attachments/assets/77121036-4846-47a6-bee2-e5dcb6b716c4)
+![App Sign Up/Login Screen](https://github.com/user-attachments/assets/17539eb7-ff2e-4432-aa56-a36483642b3b) ![App Sign Up Screen](https://github.com/user-attachments/assets/02ffae07-919d-46fd-9c5c-f9d65e0d11c9) ![App Log In Screen](https://github.com/user-attachments/assets/ab94c827-2de9-45da-bb15-cf44ce0c5133)
 
 Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
 
@@ -91,3 +91,7 @@ Upon opening the app, you will be prompted to either sign up or log in. If you h
 ![Change Username](https://github.com/user-attachments/assets/f411da78-fc5f-4f3e-99be-18fd0852880d) ![Change Password](https://github.com/user-attachments/assets/cc2426a1-58dc-41b3-ab6e-3cc8d2096f41)
 
 In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
+
+
+
+
