@@ -139,6 +139,14 @@ In the "Homescreen" page, if there is already one or more budgets create, the us
 
 ### Income & Expenses
 
+<p align="center">
+  <img width="200" src="https://github.com/user-attachments/assets/e8aa195a-f9a5-41b6-afef-7f39263ad77e" />
+  <img width="200" src="https://github.com/user-attachments/assets/32200609-4163-4ab0-b9f8-c16604e98b94" />
+  <img width="200" src="https://github.com/user-attachments/assets/c65e4b4c-9c03-433f-adfb-f62c6beffba0" />
+  <img width="200" src="https://github.com/user-attachments/assets/1dd7a5d4-5327-46bf-b074-d8edf39723bb" />
+
+</p>
+
 While viewing a specific month's budget, the user can log financial activity by using the "Add Transaction" button. The user must:
 
 - Choose whether it's Income or Expense
