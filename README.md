@@ -144,7 +144,6 @@ In the "Homescreen" page, if there is already one or more budgets create, the us
   <img width="200" src="https://github.com/user-attachments/assets/32200609-4163-4ab0-b9f8-c16604e98b94" />
   <img width="200" src="https://github.com/user-attachments/assets/c65e4b4c-9c03-433f-adfb-f62c6beffba0" />
   <img width="200" src="https://github.com/user-attachments/assets/1dd7a5d4-5327-46bf-b074-d8edf39723bb" />
-
 </p>
 
 While viewing a specific month's budget, the user can log financial activity by using the "Add Transaction" button. The user must:
@@ -155,7 +154,19 @@ While viewing a specific month's budget, the user can log financial activity by 
 
 - Click Save Transaction to update the database and adjust the corresponding budget totals
 
+As you can see below, the transaction successfully updated the "Rent" subsection's budget.
+
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/c40548e2-cd37-4131-b70d-f4e889af54f5" />
+  <img width="250" src="https://github.com/user-attachments/assets/b3d51472-d51e-4d3f-afc6-bd566c5a4a12" />
+</p>
+
 ### Transaction History
+
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/df1ab321-ae35-4ee8-80ba-70e35edf893f" />
+  <img width="250" src="https://github.com/user-attachments/assets/5f67a558-bb68-4e54-bff2-582286423668" />
+</p>
 
 In the "Transaction History" page, the user will use the dropdown to select a budget month. Once selected:
 - A scrollable list of non-clickable transaction summaries will appear, sorted by date (newest to oldest).
@@ -169,13 +180,31 @@ In the "Transaction History" page, the user will use the dropdown to select a bu
 
 ### Student Loan Planner
 
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/d9d2d357-2679-4441-8cf8-2554af9fbc43" />
+</p>
+
+
+
 In the "Loan Planner" page, the user has access two tools:
 
 1. Calculate Monthly Payment
    Input loan amount, annual interest rate, and duration (months).
 
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/179276ed-4747-478a-93bc-c3fdc2e2440c" />
+  <img width="250" src="https://github.com/user-attachments/assets/5d3d7d32-4edf-4fde-b31d-ac681a3474bd" />
+
+</p>
+
 2. Calculate Timeline
   Input loan amount, annual interest rate, and monthly payment.
+
+<p align="center">
+  <img width="250" src="https://github.com/user-attachments/assets/671df3ab-7569-4052-92ff-42304406deff" />
+  <img width="250" src="https://github.com/user-attachments/assets/08141c30-e4ec-4961-b34d-bbf7e3206f71" />
+
+</p>
 
 > **Note:**
 > - Handles 0% interest correctly
