@@ -89,7 +89,7 @@ The app will create the required database (`DegreeDollars`) and all necessary ta
 </p>
 
 
-Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
+Upon opening the app, users will be prompted to either sign up or log in. New users must complete all fields on the sign-up screen. Once created, account credentials are stored in the MySQL database and can be used to log in to the app in the future.
 
 ### Account Management
 
@@ -99,9 +99,13 @@ Upon opening the app, you will be prompted to either sign up or log in. If you h
   <img src="https://github.com/user-attachments/assets/49dcffc6-f220-4368-9558-a80290d2a2c2" width="250"/>
 </p>
 
-In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly. The "Logout" button will return the user to the opening screen to either sign in or login.
+In the Profile menu, users can:
 
-> **Note:** No duplicates are allowed for usernames or passwords across users.
+- Log out, which returns them to the welcome screen
+
+- Change their username or password, which updates the information in the database
+
+> **Note:** Duplicate usernames and passwords are not allowed
 
 ### Create Monthly Budget
 
@@ -111,7 +115,19 @@ In the "Profile" menu, you are provided the option to log out of your currently 
   <img width="250" src="https://github.com/user-attachments/assets/a407fc6a-4525-425a-9f4d-b8a7ce1a58a5" />
 </p>
 
-In the "Homescreen" page, if the account is new or has no budgets then the only option is to select "Create New Budget". This will prompt the user to select the desired month and year. Additionally, there are seven predefined sections: "Education", "Housing/Utilities", "Food", "Transportation", "Entertainment", "Medical", "Other". The user can enter custom subsections with no limit for the budget. At the bottom of the page, the user will select "Save Budget" to store the budget in the database.
+On the Home screen:
+
+- If no budgets exist yet, users can select Create New Budget
+
+- Users must specify the month and year for the budget
+
+- Each budget contains seven predefined sections:
+
+  - Education, Housing/Utilities, Food, Transportation, Entertainment, Medical, Other
+
+- Users can add unlimited custom subsections and amounts
+
+After inputting budget information, click Save Budget to store the data in the MySQL database.
 
 <p align="center">
   <img width="250" src="https://github.com/user-attachments/assets/643b31b5-ad39-4c55-97e0-ed2b44f4bac7" />
@@ -123,16 +139,38 @@ In the "Homescreen" page, if there is already one or more budgets create, the us
 
 ### Income & Expenses
 
-While viewing a specific month's budget, the user can log financial activity by using the "Add Transaction" button. The user must select whether it is an income or expense, the section then subsection to be stored under, the date of the transaction, and the merchant. Then the user will select "Save Transaction" to store the transaction to the database and update the budget for the month accordingly.
+While viewing a specific month's budget, the user can log financial activity by using the "Add Transaction" button. The user must:
+
+- Choose whether it's Income or Expense
+
+- Select the section, subsection, date, merchant, and amount
+
+- Click Save Transaction to update the database and adjust the corresponding budget totals
 
 ### Transaction History
 
-In the "Transaction History" page, the user will be prompted to choose from the months that budgets have been created for. Once selected, a scrollable list of non-clickable transaction summaries will be viewable sorted by date (newest to oldest). Each summary will show the date, subsection, merchant, and amount (red text for expense, green text for income).
+In the "Transaction History" page, the user will use the dropdown to select a budget month. Once selected:
+- A scrollable list of non-clickable transaction summaries will appear, sorted by date (newest to oldest).
+- Each summary will show the
+  - Date
+  - Subsection
+  - Merchant
+  - Amount
+    - Displayed in green with a "+" sign for income
+    - Displayed in red with a "-" sign for expenses
 
 ### Student Loan Planner
 
-In the "Loan Planner" page, the user can calculate information about their loans in two ways. One is calculating the monthly payment based on the loan amount, interest, and the amount of months the loan will be paid off in. The other is calculating the time needed to repay the loan based on the monthly payment, interest, and loan amount.
+In the "Loan Planner" page, the user has access two tools:
 
-> **Note:** The calculation handles 0% interest rate and detects mathematicaly invalid plans. Additionally, all calcuations are local only (not stored in the database).
+1. Calculate Monthly Payment
+   Input loan amount, annual interest rate, and duration (months).
+
+2. Calculate Timeline
+  Input loan amount, annual interest rate, and monthly payment.
+
+> **Note:**
+> - Handles 0% interest correctly
+> - All calculations are local and not stored in the database
 
 
