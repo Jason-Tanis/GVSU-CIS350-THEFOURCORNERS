@@ -1013,7 +1013,7 @@ class DegreeDollars(toga.App):
         fields.add(subsection_box)
         conn.close()
 
-        #Date input fields
+        #Day of month input field
         date_box = toga.Box(
             style = Pack(
                 background_color = "#C0E4B8",
@@ -1022,30 +1022,14 @@ class DegreeDollars(toga.App):
                 padding = (15, 0, 0)
             )
         )
-        month_label = toga.Label(
-            "Month:",
-             style=Pack(
-                background_color="#C0E4B8",
-                color="#000000",
-                font_size=12
-            )
-        )
-        self.month_input = toga.NumberInput(
-            min = 1,
-            max = 12,
-            value = datetime.datetime.now().month,
-            step = 1,
-            style=Pack(width=50)
-        )
         day_label = toga.Label(
-            "Day:",
+            "Day of Month:",
              style=Pack(
                 background_color="#C0E4B8",
                 color="#000000",
-                font_size=12
+                font_size=14
             )
         )
-
         self.day_input = toga.NumberInput(
             min = 1,
             max = 31,
@@ -1053,24 +1037,7 @@ class DegreeDollars(toga.App):
             step = 1,
             style=Pack(width=50)
         )
-        year_label = toga.Label(
-            "Year:",
-             style=Pack(
-                background_color="#C0E4B8",
-                color="#000000",
-                font_size=12
-            )
-        )
-        #User can go back to previous year if need be
-        self.year_input = toga.NumberInput(
-            min = datetime.datetime.now().year - 1,
-            value = datetime.datetime.now().year,
-            step = 1,
-            style=Pack(width=75)
-        )
-        date_box.add(month_label, self.month_input,
-                     day_label, self.day_input,
-                     year_label, self.year_input)
+        date_box.add(day_label, self.day_input)
         fields.add(date_box)
 
         #Amount input field
@@ -1183,8 +1150,8 @@ class DegreeDollars(toga.App):
         
         try:
             date_object = datetime.date(
-                int(self.year_input.value),
-                int(self.month_input.value),
+                int(year),
+                int(month),
                 int(self.day_input.value)
             )
         except ValueError:
@@ -1567,7 +1534,7 @@ class DegreeDollars(toga.App):
                         direction=ROW,
                         padding=10,
                         background_color="#F5F5F5",
-                        width=350,
+                        width=500,
                         alignment=CENTER
                     )
                 )
@@ -1579,7 +1546,7 @@ class DegreeDollars(toga.App):
                 )
                 
                 amount_box = toga.Box(
-                    style=Pack(direction=COLUMN, alignment=LEFT, background_color="#F5F5F5", width=80)
+                    style=Pack(direction=COLUMN, alignment=RIGHT, background_color="#F5F5F5", width=80)
                 )
                 
                 amount_box.add(amount_label)
@@ -1595,7 +1562,7 @@ class DegreeDollars(toga.App):
                 )
                 
                 text_box = toga.Box(
-                    style=Pack(direction=COLUMN, background_color="#F5F5F5", width=160)
+                    style=Pack(direction=COLUMN, background_color="#F5F5F5", width=250)
                 )
                 text_box.add(subsection_label, merchant_label)
                 
