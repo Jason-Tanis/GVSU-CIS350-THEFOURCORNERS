@@ -91,7 +91,7 @@ The app will create the required database (`DegreeDollars`) and all necessary ta
 
 Upon opening the app, you will be prompted to either sign up or log in. If you have not yet created an account with Degree Dollars, you will need to sign up, completing all fields on the sign up screen. Once you sign up, your account information will be stored in the MySQL database, and you can log in to your created account in the future.
 
-### Changing your Account Credentials
+### Account Management
 
 <p align="center">
   <img src="https://github.com/user-attachments/assets/0f5da08b-2d54-4e92-825a-ec7e916615bf" width="250"/>
@@ -99,7 +99,9 @@ Upon opening the app, you will be prompted to either sign up or log in. If you h
   <img src="https://github.com/user-attachments/assets/49dcffc6-f220-4368-9558-a80290d2a2c2" width="250"/>
 </p>
 
-In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
+In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly. The "Logout" button will return the user to the opening screen to either sign in or login.
+
+> **Note:** No duplicates are allowed for usernames or passwords across users.
 
 ### Create Monthly Budget
 
@@ -128,5 +130,9 @@ While viewing a specific month's budget, the user can log financial activity by 
 In the "Transaction History" page, the user will be prompted to choose from the months that budgets have been created for. Once selected, a scrollable list of non-clickable transaction summaries will be viewable sorted by date (newest to oldest). Each summary will show the date, subsection, merchant, and amount (red text for expense, green text for income).
 
 ### Student Loan Planner
+
+In the "Loan Planner" page, the user can calculate information about their loans in two ways. One is calculating the monthly payment based on the loan amount, interest, and the amount of months the loan will be paid off in. The other is calculating the time needed to repay the loan based on the monthly payment, interest, and loan amount.
+
+> **Note:** The calculation handles 0% interest rate and detects mathematicaly invalid plans. Additionally, all calcuations are local only (not stored in the database).
 
 
