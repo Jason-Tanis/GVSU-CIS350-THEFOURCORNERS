@@ -92,9 +92,9 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 | ID  | Requirement     | 
 | :-------------: | :----------: | 
-| LPNF1 | If the interest rate provided to "Calculate Monthly Payment" is zero (0), the monthly payment shall simply be computed as "Principle/months". | 
-| LPNF2 | If the interest rate provided to "Calculate Timeline" is zero (0), the number of months to pay off the loan shall simply be computed as "Principle/Amt" (where Amt is the amount of monthly payment). | 
-| LPNF3 | In "Calculate Timeline", if the product between Principle and the monthly interest rate (i.e., the quotient "APR/12/100") is greater than or equal to the provided monthly payment amount, the message "Your plan is not recommended: try a larger monthly payment" shall be displayed in the results screen. | 
+| LPNF1 | If the interest rate provided to "Calculate Monthly Payment" is zero (0), the monthly payment shall simply be computed as ```Principle / months```. | 
+| LPNF2 | If the interest rate provided to "Calculate Timeline" is zero (0), the number of months to pay off the loan shall simply be computed as ```Principle / Amt``` (where Amt is the amount of monthly payment). | 
+| LPNF3 | In "Calculate Timeline", if the product between Principle and the monthly interest rate (where the monthly interest rate is ```APR / 12 / 100```) is greater than or equal to the provided monthly payment amount, the message "Your plan is not recommended: try a larger monthly payment" shall be displayed in the results screen. | 
 | LPNF4 | The input fields for "Principle", "Months to pay off" and "Amount of monthly payment" shall not accept numbers less than or equal to zero (0). |
 | LPNF5 | The input fields for interest rate shall not accept negative numbers, but zero (0) will be permitted. |
 | LPNF6 | The Loan Planner feature shall not interact with the MySQL database. |
