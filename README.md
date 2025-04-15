@@ -93,7 +93,11 @@ Upon opening the app, you will be prompted to either sign up or log in. If you h
 
 ### Changing your Account Credentials
 
-![Change Username](https://github.com/user-attachments/assets/f411da78-fc5f-4f3e-99be-18fd0852880d) ![Change Password](https://github.com/user-attachments/assets/cc2426a1-58dc-41b3-ab6e-3cc8d2096f41)
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/0f5da08b-2d54-4e92-825a-ec7e916615bf" width="250"/>
+  <img src="https://github.com/user-attachments/assets/1ab4ec00-a2a6-4525-9ccd-3195e1c658d5" width="250"/>
+  <img src="https://github.com/user-attachments/assets/49dcffc6-f220-4368-9558-a80290d2a2c2" width="250"/>
+</p>
 
 In the "Profile" menu, you are provided the option to log out of your currently active account. Additionally, you can change your username and/or your password. Your account credentials will be updated in the MySQL database accordingly.
 
