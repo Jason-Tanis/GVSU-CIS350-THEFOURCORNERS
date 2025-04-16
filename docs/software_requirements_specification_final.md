@@ -119,7 +119,7 @@ As the implementation of Degree Dollars neared its end in late March/early April
 
 | ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
 | :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-| TC1 | <Verify if subsection inputs work with letters and numbers> | <Login, click create new budget button, add subsection name> | <Books #3> | <should save the name of the subsection for the created budget> | <Saves the budget and the saved subsection shows Books #3> | <Pass> | <CBF2> |
+| TC1 | Verify if subsection inputs work with letters and numbers | Login, click create new budget button, add subsection name | Books #3 | should save the name of the subsection for the created budget | Saves the budget and the saved subsection shows Books #3 | Pass | CBF2 |
 
 | ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
 | :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
