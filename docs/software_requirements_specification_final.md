@@ -120,17 +120,8 @@ As the implementation of Degree Dollars neared its end in late March/early April
 | ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
 | :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
 | TC1 | Verify if subsection inputs work with letters and numbers | Login, click "Create New Budget", add subsection name | Books #3 | Name of the subsection should be saved for the created budget | Saves the budget and the saved subsection shows Books #3 | Pass | CBF2 |
-
-| ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
-| :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-| TC2 | Verify if dollar amount input works | Login, click “Create New Budget”, add subsection, enter budgeted amount | Subsection: "Electric", Amount: 125  | Amount "$125.00" should be saved for the budget created | "$125.00" is saved into new budget | Pass | <requirement IDs this test case is linked to> |
-
-| ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
-| :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
+| TC2 | Verify if dollar amount input works | Login, click “Create New Budget”, add subsection, enter budgeted amount | Subsection: "Electric", Amount: 125  | Amount "$125.00" should be saved for the budget created | "$125.00" is saved into new budget | Pass | CBF4 |
 | TC3 | Verify if Monthly Payment Calculation works | Login, navigate to loan planner, click "Calculate Monthly Payment", add inputs for Principle, APR, and "Months to pay off", click "Compute!" | Principle: 10000, APR: 5, Months to pay off: 40 | Recommended monthly payment should be around 270 | Recommended monthly payment is $271.93 | Pass | LPF3 |
-
-| ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
-| :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
 | TC4 | Verify if timeline calculation works | Login, navigate to loan planner, click "Calculate Timeline", add inputs for Principle, Interest Rate, and Amount of monthly payment, click "Compute!" | Principle: 10000, Interest Rate: 5, Amount of monthly payment: 200 | Recommended payment duration should be 56 months | Recommended payment duration: 56 months | Pass| LPF5 |
 
 ## Integration tests
