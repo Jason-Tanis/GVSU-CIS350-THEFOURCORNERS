@@ -4,6 +4,8 @@ This document outlines the Software Requirements Specification (SRS) for Degree 
 
 # Software Requirements
 
+The following tables summarize the functional and non-functional requirements for each of the app's five major features: Create New Budget, Income/Expense, History, Loan Planner, and Profile.
+
 ## Functional Requirements
 
 ### Create New Budget
@@ -132,7 +134,9 @@ As the implementation of Degree Dollars neared its end in late March/early April
 
 ## System tests
 
-(copy/paste the above table a minimum of 3 times)
+| ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
+| :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
+| STC1 | Verify that, upon app startup, the MySQL database tables Profile, Budgets, and Transactions are successfully created/loaded (under MySQL host localhost in port 3306). | In MySQL Workbench, click "Database", and then "Manage Connections". Create a connection for localhost in port 3306 (see "Input Values") and click "Test Connection". Then, start Degree Dollars. | MySQL Workbench input: {Hostname: localhost, Port: 3306, Username: root, Password: click "Store in Vault", and then enter "DegreeDollars350!" as the password} Degree Dollars input: briefcase run (inside the directory ```CIS350\GVSU-CIS350-THEFOURCORNERS\src\degree_dollars```} | In MySQL Workbench, the message "Successfully made the MySQL connection" should appear when "Test Connection" is clicked. Upon starting Degree Dollars, the message "Database and tables created successfully!" should print to the terminal. | In MySQL Workbench, the "Successfully made the MySQL connection" dialog message appears, and when starting Degree Dollars, the message "Database and tables created successfully!" prints to the terminal. | Pass | HF4, ACCF2 (Note: this test case only checks for the existence of the three MySQL tables) |
 
 # Software Artifacts
 
