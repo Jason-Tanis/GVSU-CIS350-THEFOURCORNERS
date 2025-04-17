@@ -115,22 +115,20 @@ As the implementation of Degree Dollars neared its end in late March/early April
 
 ## Unit tests
 
-(copy/paste the below table a minimum of 4 times)
-
 | ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
 | :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-| TC1 | Verify if subsection inputs work with letters and numbers | Login, click "Create New Budget", add subsection name | Books #3 | Name of the subsection should be saved for the created budget | Saves the budget and the saved subsection shows Books #3 | Pass | CBF2 |
-| TC2 | Verify if dollar amount input works | Login, click “Create New Budget”, add subsection, enter budgeted amount | Subsection: "Electric", Amount: 125  | Amount "$125.00" should be saved for the budget created | "$125.00" is saved into new budget | Pass | CBF4 |
-| TC3 | Verify if Monthly Payment Calculation works | Login, navigate to loan planner, click "Calculate Monthly Payment", add inputs for Principle, APR, and "Months to pay off", click "Compute!" | Principle: 10000, APR: 5, Months to pay off: 40 | Recommended monthly payment should be around 270 | Recommended monthly payment is $271.93 | Pass | LPF3 |
-| TC4 | Verify if timeline calculation works | Login, navigate to loan planner, click "Calculate Timeline", add inputs for Principle, Interest Rate, and Amount of monthly payment, click "Compute!" | Principle: 10000, Interest Rate: 5, Amount of monthly payment: 200 | Recommended payment duration should be 56 months | Recommended payment duration: 56 months | Pass| LPF5 |
+| UTC1 | Verify that subsection inputs work with letters and numbers. | Log in, click "Create New Budget", and add the subsection name "Books #3". | Books #3 | The name of the subsection should be saved for the created budget. | The budget is saved and the saved subsection shows Books #3. | Pass | CBF2 |
+| UTC2 | Verify that dollar amount input fields are working. | Log in, click "Create New Budget", add a subsection "Electric", and enter the amount 125.00. | Subsection: Electric, Amount: 125.00 | The amount "$125.00" should be saved for the budget created. | "$125.00" is saved into the new budget. | Pass | CBF4 |
+| UTC3 | Verify that the Monthly Payment calculation produces mathematically correct results for a non-zero interest rate. | Log in, navigate to the Loan Planner, click "Calculate Monthly Payment", add inputs for Principle, APR, and Months to pay off, and click "Compute!" | Principle: 10000, APR: 5, Months to pay off: 40 | Recommended monthly payment should be around 270. | Recommended monthly payment is $271.93. | Pass | LPF3 |
+| UTC4 | Verify that the Timeline calculation produces mathematically correct results for a non-zero interest rate. | Log in, navigate to the Loan Planner, click "Calculate Timeline", add inputs for Principle, Interest Rate, and Amount of monthly payment, and click "Compute!" | Principle: 10000, Interest Rate: 5, Amount of monthly payment: 200 | Recommended payment duration should be 56 months. | Recommended payment duration is 56 months. | Pass | LPF5 |
 
 ## Integration tests
 
-(copy/paste the above table a minimum of 3 times)
-
 | ID  | Description | Steps | Input Values | Expected Output | Actual Output | Pass/Fail | Requirement Link |
 | :-------------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: | :----------: |
-| TC1 | <TC1 description> | <steps to execute TC1> | <input values to this test case> | <expected output as a result of test case> | <actual output of test case> | <did it pass or fail?> | <requirement IDs this test case is linked to> |
+| ITC1 | Verify that a saved budget is added to the dropdown menu on the Home screen. This test will determine whether budget creation and budget viewing/editing are integrated properly. | Log in, click "Create New Budget", select June 2025 for the month and year, add a subsection "Rent" with amount 500.00, and click "Save Budget". | Month: June, Year: 2025, Subsection: Rent, Amount: 500.00 | On the Home screen, June 2025 should be selectable from the dropdown menu. | June 2025 is selectable from the dropdown menu on the Home screen. | Pass | CBF5 |
+| ITC2 | Verify that a saved budget is added to the dropdown menu on the History screen. This test will determine whether budget creation and history viewing are integrated properly. | Log in, click "Create New Budget", select July 2025 for the month and year, add a subsection "Classes" with amount 250.00, and click "Save Budget". Then, navigate to the History screen. | Month: July, Year: 2025, Subsection: Classes, Amount: 250.00 | On the History screen, July 2025 should be selectable from the dropdown menu. | July 2025 is selectable from the dropdown menu on the History screen. | Pass | HF1 |
+| ITC3 | Verify that adding a transaction to a saved budget subsection modifies the amount previously saved for the subsection. This test will determine whether transaction creation and budget viewing/editing are integrated properly. | Log in, click "Create New Budget", select August 2025 for the month and year, add a subsection "Loans" with amount 200.00, and click "Save Budget". Then, select August 2025 from the Home screen and click "Income/Expense +/-". In the Add Transaction window, add an expense from merchant "Loaner" with amount 250.00 and click "Save Transaction". | For budget creation: {Month: August, Year: 2025, Subsection: Loans, Amount: 200.00} For transaction creation: {Income or Expense: Expense, Section: Education, Subsection: Loans, Day of Month: 17, Amount: 250.00, Merchant: Loaner} | On the viewing screen for August 2025's budget, the new amount for Loans should be $-50.00. | The new amount for Loans is $-50.00. | Pass | IEF5 |
 
 ## System tests
 
