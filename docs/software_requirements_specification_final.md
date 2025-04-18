@@ -150,7 +150,7 @@ The artifacts linked below reflect our team's progress on Degree Dollars over th
 
 ### Software Structure Diagrams
 * [Use Case Description and Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/8d3ffafb65417b45a8cf8489ce96fb1b7b8cc52d/artifacts/use_case_diagram/use_case_description.md)
-* [Sequence Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/c442e40b191b2a9bf7fcf7843f34ef1fc217d6b7/artifacts/Sequence%20Diagram.pdf)
+* [Sequence Diagram](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/adb9fa6dfe12a3a1ff75624ccabd191173920976/artifacts/Sequence%20Diagram.pdf)
 * [ER Diagram (for MySQL Database)](https://github.com/Jason-Tanis/GVSU-CIS350-THEFOURCORNERS/blob/31d1bdb65044709f7d00b8dbafa1f695ea8fadf3/artifacts/ER%20Diagram%20(for%20MySQL%20Database).pdf)
 
 ### Figma Prototype and Jira KANBAN Board
